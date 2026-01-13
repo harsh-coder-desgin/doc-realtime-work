@@ -31,11 +31,22 @@ function App() {
     const editor = editorRef.current;
 
     if (editorRef.current) {
-      // const handleCursorMove = () => {
+      let finalans = null
+      const dataall = tinyMCE.activeEditor.getContent()
+      const contentreomve = editor.dom.get('user1');
+      if (contentreomve?.outerHTML) {
+        finalans = dataall.replace(contentreomve.outerHTML, '')
+        if (finalans !== null) {
+          socket.emit("content-all", {
+            contentall: finalans
+          })
+        }
+      }
       const selection = editor.selection.getRng();
       const rect = selection.getBoundingClientRect();
 
       socket.emit("cursor-move", {
+        content: finalans,
         left: rect.left,
         right: rect.right,
         top: rect.top,
@@ -45,11 +56,45 @@ function App() {
         startOffset: selection.startOffset,
       });
     }
-    // editor.on("keyup click", handleCursorMove);
 
-    // return () => {
-    //   editor.off("keyup click", handleCursorMove);
-    // };
+    socket.on("content-send", (incomingHTML) => {
+      const editor = editorRef.current;
+      let bookmark = null;
+      bookmark = editor.selection.getBookmark(2, true);
+
+      const currentHTML = editor.getContent();
+      const removeNode = editor.dom.get("user1");
+
+      let HTMLdata = currentHTML;
+      if (removeNode?.outerHTML) {
+        HTMLdata = currentHTML.replace(removeNode.outerHTML, "");
+      }
+
+      const parser = new DOMParser();
+      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
+      const ccincomingDoc = parser.parseFromString(HTMLdata, "text/html");
+      const ccincomingParas = ccincomingDoc.body.children;
+      const incomingParas = incomingDoc.body.children;
+
+      for (let i = 0; i < incomingParas.length; i++) {
+        if (!ccincomingParas[i]) {
+          ccincomingDoc.body.appendChild(incomingParas[i].cloneNode(true));
+        }
+        else if (ccincomingParas[i].textContent !== incomingParas[i].textContent) {
+          ccincomingParas[i].textContent = incomingParas[i].textContent;
+        }
+        if (ccincomingParas[i]?.children) {
+          const selectionNode = editor.selection.getStart();
+          if (!ccincomingParas[i].contains(selectionNode)) {
+            ccincomingParas[i].replaceWith(incomingParas[i].cloneNode(true));
+          }
+          continue;
+        }
+      }
+      editor.setContent(ccincomingDoc.body.innerHTML);
+      editor.selection.moveToBookmark(bookmark);
+    });
+
     socket.on('cursor-update', (data) => {
 
       const editor = editorRef.current;
@@ -78,6 +123,9 @@ function App() {
         editor.getBody().appendChild(cursor);
       }
     });
+    return () => {
+      socket.off("content-send");
+    };
   }, [content]);
 
   const handleEditorChange = (value) => {

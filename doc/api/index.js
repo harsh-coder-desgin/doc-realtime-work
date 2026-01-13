@@ -23,9 +23,13 @@ io.on("connection", (socket) => {
     socket.join(roomName);
     socket.emit("joined-room", roomName);
     socket.on("cursor-move", (data) => {
-      console.log(data);
       socket.broadcast.emit("cursor-update", data);
     });
+    socket.on("content-all",(alldata)=>{
+      alldata['id']=socket.id
+      socket.broadcast.emit("content-send",alldata)
+      console.log(alldata);
+    })
     // io.to(roomName).emit("room-mess", "Hello room users");
   });
 
