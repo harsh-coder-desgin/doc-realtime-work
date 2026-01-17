@@ -6,7 +6,7 @@ function Navbar() {
   const navItems = [
     { name: "Home", slug: "/", active: true },
     { name: "Feature", slug: "/", active: true },
-    { name: "Template", slug: "/", active: true },
+    { name: "Template", slug: "/template", active: true },
     { name: "Login", slug: "/login", active: true },
     { name: "Get started", slug: "/signup", active: true },
   ];

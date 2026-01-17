@@ -6,6 +6,7 @@ import Home from './pages/Home.jsx'
 import Login from './Components/Login.jsx'
 import Signup from './Components/Singup.jsx'
 import './index.css'
+import Template from './pages/Template.jsx'
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
       {
         path: '/template',
         element:(
-          <Home />
+          <Template/>
         )
       },
     ],
