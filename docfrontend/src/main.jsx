@@ -5,9 +5,11 @@ import App from './App.jsx'
 import Home from './pages/Home.jsx'
 import Login from './Components/Login.jsx'
 import Signup from './Components/Singup.jsx'
-import './index.css'
 import Template from './pages/Template.jsx'
 import TemplateDoc from './Components/TemplateDoc.jsx'
+import Dashboard from './Components/Dashboard.jsx'
+import Userlayout from './layout/Userlayout.jsx'
+import './index.css'
 
 const router = createBrowserRouter([
   {
@@ -49,6 +51,18 @@ const router = createBrowserRouter([
         <Signup/>
       // </CreatorAuthLayout>
     ),
+  },
+   {
+    path: '/dashboard',
+    element: <Userlayout/>,
+    children: [
+      {
+        path: '/dashboard',
+        element:(
+          <Dashboard/>
+        )
+      },
+    ],
   },
 ])
 
