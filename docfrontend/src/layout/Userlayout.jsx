@@ -7,7 +7,7 @@ function Userlayout() {
   return !loading ? (
     <>
       <div className="flex flex-col min-h-screen md:min-h-[124dvh] lg:min-h-[100dvh]">
-        {/* <UserNavbar/> */}
+        <UserNavbar/>
         <main className="flex-grow">
           <Outlet />
         </main>
