@@ -7,6 +7,7 @@ import Login from './Components/Login.jsx'
 import Signup from './Components/Singup.jsx'
 import './index.css'
 import Template from './pages/Template.jsx'
+import TemplateDoc from './Components/TemplateDoc.jsx'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,12 @@ const router = createBrowserRouter([
         path: '/template',
         element:(
           <Template/>
+        )
+      },
+      {
+        path: '/template/doc/:id',
+        element:(
+          <TemplateDoc/>
         )
       },
     ],
