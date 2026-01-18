@@ -10,7 +10,7 @@ function Userlayout() {
       <div className="flex flex-col min-h-screen md:min-h-[124dvh] lg:min-h-[100dvh]">
         <UserNavbar/>
         <main className="flex-grow">
-          <Outlet />
+          <Outlet/>
         </main>
         <Footer />
       </div>

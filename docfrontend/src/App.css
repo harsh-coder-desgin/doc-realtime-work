@@ -1,1 +1,4 @@
 @import "tailwindcss";
+#ds{
+    justify-content: space-evenly;
+}

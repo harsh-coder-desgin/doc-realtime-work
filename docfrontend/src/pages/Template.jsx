@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function Template() {
-    const doc = [{id:1,name:"Resume"},{id:2,name:"Resume"},{id:3,name:"Resume"},{id:4,name:"Resume"},
+  const doc = [{id:1,name:"Resume"},{id:2,name:"Resume"},{id:3,name:"Resume"},{id:4,name:"Resume"},
         {id:5,name:"Resume"},{id:6,name:"Resume"},{id:7,name:"Resume"},{id:8,name:"Resume"},{id:9,name:"Resume"},{id:10,name:"Resume"}]
   return (
     <div className='mb-50'>
