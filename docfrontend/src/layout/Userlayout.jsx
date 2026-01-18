@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import UserNavbar from './UserNavbar'
+import { Footer } from '../Components/index.js' 
 
 function Userlayout() {
   const [loading, SetLoading] = useState(false)
@@ -11,10 +12,11 @@ function Userlayout() {
         <main className="flex-grow">
           <Outlet />
         </main>
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </>
   ) : null
 }
 
 export default Userlayout
+ 

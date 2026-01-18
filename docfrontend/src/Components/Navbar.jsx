@@ -13,7 +13,7 @@ function Navbar() {
   
    return (
     <>
-      <header className="py-4 text-black sticky top-0 z-50 mt-7">
+      <header className="py-4 text-black sticky top-0 z-50 mt-5">
           <nav className="flex items-center">
             <ul className="flex items-center ml-110 space-x-9 bg-blue-900 px-11 py-2 rounded-md shadow-xl ">
               {navItems?.map((item) =>
