@@ -8,10 +8,12 @@ function Home() {
   { id: 2, image: '/featureimg2.png', des: "Work with multiple users at the same time. See who is online and collaborating on the document live.", name: "Multi-User Collaboration" },
   { id: 3, image: '/featureimg3.png', des: "Each user’s cursor position is preserved during updates, ensuring smooth typing without cursor jumps or content conflicts", name: "Cursor Sync" }]
 
-  const how_it_works = [{ id: 1, step: "Step 1: Create Doc", des: "First craete new docunent then add other user then do work same doc and save data" },
-  { id: 2, step: "Step 2: Add user", des: "First craete new docunent then add other user then do work same doc and save data" },
-  { id: 3, step: "Step 3: Work with", des: "First craete new docunent then add other user then do work same doc and save data" },
-  { id: 4, step: "Step 4: Work with all", des: "First craete new docunent then add other user then do work same doc and save data" }]
+  const how_it_works = [{ id: 1, step: "Step 1: Create or Join a Document", des: "Users can create a new document or join an existing one using a unique room ID.Each room represents a shared editing session." },
+  { id: 2, step: "Step 2: Start Editing in Real Time", des: "As users type inside the TinyMCE editor, changes are captured instantly and sent to the server." },
+  { id: 3, step: "Step 3: Content Sync Without Conflicts", des: "Incoming content is merged safely instead of replacing the whole document. This prevents content loss and unnecessary re-renders." },
+  { id: 4, step: "Step 4: Smart Cursor Preservation", des: "Each user’s cursor position is saved before updates and restored after syncing" },
+  { id: 5, step: "Step 5: Multi-User Awareness", des: "Users can collaborate simultaneously while maintaining independent cursor positions" },
+  { id: 6, step: "Step 6:  Smooth & Reliable Sync", des: "Listeners are properly managed to avoid repeated updates and cursor resets" }]
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -64,8 +66,8 @@ function Home() {
       <h1 className='text-center text-3xl mt-20 ml-12'>How it Works</h1>
       <div className='grid grid-cols-2 gap-4 space-x-5 ml-72 mt-15 mb-20 w-250'>
         {how_it_works.map((item, index) => (
-          <div key={item.id} className='bg-blue-100 w-120 p-5 hover:bg-blue-200 fade-up transition-all duration-300
-           hover:scale-103 hover:shadow-xl shadow-blue-100' ref={(el) => (itemsRef.current[index + 5] = el)}>
+          <div key={item.id} className='bg-[#E9EBFF] border border-[#8991FF] rounded-lg w-120 p-5 hover:bg-blue-200 fade-up transition-all duration-300
+           hover:scale-103 hover:shadow-xl shadow-blue-100 h-38' ref={(el) => (itemsRef.current[index + 5] = el)}>
             <h1 className='text-lg ml-2'>{item.step}</h1>
             <p className='font-light ml-2'> {item.des}</p>
           </div>
