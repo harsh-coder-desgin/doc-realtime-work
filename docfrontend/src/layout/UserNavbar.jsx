@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input, Button } from '../Components/index.js'
 
-function UserNavbar() {
+function UserNavbar({sendfunction}) {
+  const [doc,Setdoc] = useState("Personal")
+  
+  useEffect(()=>{
+    sendfunction(doc)
+  },[doc])
+  
   return (
     <div className='w-full border-b border-gray-200 mt-5'>
       <div className='flex justify-around -mt-2 mb-1'>
@@ -19,8 +25,8 @@ function UserNavbar() {
             </svg>
           </Button>
           <div className="absolute hidden group-hover:block bg-white w-41 border border-gray-200 shadow-lg">
-            <Button className='px-4 w-full py-2 hover:bg-blue-200' bgColor='' textColor=''>Personal Doc</Button>
-            <Button className='px-4 w-full py-2 hover:bg-blue-200' bgColor='' textColor=''>Organstion Doc</Button>
+            <Button className='px-4 w-full py-2 hover:bg-blue-200' bgColor='' textColor='' onClick={()=>Setdoc("Personal")}>Personal Doc</Button>
+            <Button className='px-4 w-full py-2 hover:bg-blue-200' bgColor='' textColor='' onClick={()=>Setdoc("Organstion")}>Organstion Doc</Button>
           </div>
         </div>
       </div>
