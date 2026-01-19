@@ -7,6 +7,9 @@ import Signup from './Singup'
 import TemplateDoc from './TemplateDoc'
 import Footer from './Footer'
 import Button from './Button'
+import PersonalDoc from './PersonalDoc'
+import OrgansationDoc from './OrgansationDoc'
+import WorkingDoc from './WorkingDoc'
 
 export{
     Dashboard,
@@ -17,5 +20,8 @@ export{
     Signup,
     TemplateDoc,
     Footer,
-    Button
+    Button,
+    PersonalDoc,
+    OrgansationDoc,
+    WorkingDoc
 }
