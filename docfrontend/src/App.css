@@ -18,3 +18,48 @@
 .fade-up.show {
   animation: fadeUp 0.8s ease-out forwards;
 }
+
+@keyframes heroUp {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.head-up {
+  animation: heroUp 0.9s ease-out forwards;
+}
+
+@keyframes buttonUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button-up{
+  animation: heroUp 1.0s ease-out forwards;
+}
+
+@keyframes docUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doc-up{
+  animation: heroUp 1.1s ease-out forwards;
+}
