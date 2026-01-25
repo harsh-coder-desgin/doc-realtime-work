@@ -1,13 +1,13 @@
 import React from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { PersonalDoc, OrgansationDoc } from './index.js'
+import { PersonalDoc, OrgansationDashboard } from './index.js'
 
 function Dashboard() {
   const { data } = useOutletContext()
 
   return (
     <div>
-      {data === "Personal" ? <PersonalDoc data={data} /> : <OrgansationDoc data={data} />}
+      {data === "Personal" ? <PersonalDoc data={data} /> : <OrgansationDashboard data={data} />}
     </div>
   )
 }

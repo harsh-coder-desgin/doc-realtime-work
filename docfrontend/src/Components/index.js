@@ -10,6 +10,8 @@ import Button from './Button'
 import PersonalDoc from './PersonalDoc'
 import OrgansationDoc from './OrgansationDoc'
 import WorkingDoc from './WorkingDoc'
+import OrgansationDashboard from './OrgansationDashboard'
+import OrganstionMange from './OrganstionMange'
 
 export{
     Dashboard,
@@ -23,5 +25,7 @@ export{
     Button,
     PersonalDoc,
     OrgansationDoc,
-    WorkingDoc
+    WorkingDoc,
+    OrgansationDashboard,
+    OrganstionMange
 }

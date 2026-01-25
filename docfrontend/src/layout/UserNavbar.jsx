@@ -14,8 +14,8 @@ function UserNavbar({sendfunction}) {
         <h1 className='text-xl ml-6 mt-1'>Logo</h1>
         <Input placeholder='Search' className='px-5 py-2 bg-gray-100 w-130 rounded-full ml-110' />
         <div className="relative inline-block mr-19 group w-40">
-          <Button bgColor="" textColor="" className="flex items-center w-41 py-2 px-6 text-white gap-1 rounded-md bg-blue-900">
-            Personal Doc
+          <Button bgColor="" textColor="" className={`flex items-center ${doc === "Personal" ? 'pl-7' :'pl-4'} py-2 w-41 text-white gap-1 rounded-md bg-blue-900`}>
+            {doc} Doc
             <svg
               className="w-5 h-5 transition-transform duration-200 transform group-hover:rotate-180"
               xmlns="http://www.w3.org/2000/svg"

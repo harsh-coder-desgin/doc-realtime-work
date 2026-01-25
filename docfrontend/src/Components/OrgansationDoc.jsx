@@ -8,7 +8,7 @@ function OrgansationDoc({ data }) {
 
   return (
     <div>
-      <h1 className='ml-30 text-2xl mt-8 text-blue-900'>Create New {data} Document</h1>
+      <h1 className='ml-30 text-2xl mt-8 text-blue-900'>Create New Oragnation Document</h1>
       <div>
         <div className='grid grid-cols-5 text-center mt-5 w-320 ml-30 gap-y-15 gap-x-10'>
           {doc.map((item) => (
