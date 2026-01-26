@@ -11,8 +11,8 @@ function Navbar({onFeatureClick}) {
     { name: "Login", slug: "/login", active: true },
     { name: "Get started", slug: "/signup", active: true },
   ];
-  const hanldeclick = (slugs) =>{
-    navigate(slugs)
+  const hanldeclick = () =>{
+    navigate("/", { state: { scrollTo: "feature" } });
     onFeatureClick()
   }
    return (
@@ -22,7 +22,7 @@ function Navbar({onFeatureClick}) {
             <ul className="flex items-center ml-110 space-x-9 bg-blue-900 px-11 py-2 rounded-md shadow-xl ">
               {navItems?.map((item) =>
                   <li key={item.name}>
-                   {item.name === "Feature" ? <Button onClick={()=>{hanldeclick(item.slug)}}
+                   {item.name === "Feature" ? <Button onClick={hanldeclick}
                       bgColor='' textColor=''
                       className="text-white px-3 py-2 font-semibold hover:text-black transition hover:bg-white hover:px-3 hover:py-2 hover:rounded-md">
                       {item.name}

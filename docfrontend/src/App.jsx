@@ -1,13 +1,15 @@
-import { useState ,useRef } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useState ,useRef, useEffect } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from './Components/Navbar'
 import Footer from './Components/Footer'
 import './App.css'
 
 function App() {
   const featureRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, SetLoading] = useState(false)
-  
+
   const outletContextValue = { featureRef };
 
   const scrollToFeature = () => {
@@ -16,6 +18,16 @@ function App() {
       block: "start",
     });
   };
+
+  useEffect(() => {
+    if (location.state?.scrollTo === "feature") {
+      featureRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location]);
 
   return !loading ? (
     <>

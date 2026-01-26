@@ -1,13 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom'
+import { PersonalDoc } from './index.js';
 
-function OrgansationDoc({ data }) {
-  const doc = [{ id: 1, name: "Resume" }, { id: 2, name: "Resume" }, { id: 3, name: "Resume" }, { id: 4, name: "Resume" }, { id: 5, name: "Resume" }]
+function OrgansationDoc() {
+  const { data } = useOutletContext()
+  const doc = [{ id: 1, name: "Resume"}, { id: 2, name: "Resume" }, { id: 3, name: "Resume" }, { id: 4, name: "Resume" }, { id: 5, name: "Resume" }]
   const alldoc = [{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, 
     { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }]
-
-  return (
-    <div>
+    
+    return (
+      <div>
+       { data === "Personal" ? <PersonalDoc data={data} /> : <div>
       <h1 className='ml-30 text-2xl mt-8 text-blue-900'>Create New Oragnation Document</h1>
       <div>
         <div className='grid grid-cols-5 text-center mt-5 w-320 ml-30 gap-y-15 gap-x-10'>
@@ -39,6 +43,7 @@ function OrgansationDoc({ data }) {
           </div>
         </div>
       </div>
+      </div>}
     </div>
   )
 }

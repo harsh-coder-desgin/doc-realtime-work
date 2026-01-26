@@ -4,7 +4,8 @@ import { PersonalDoc, OrgansationDashboard } from './index.js'
 
 function Dashboard() {
   const { data } = useOutletContext()
-
+  console.log(data,"dash");
+  
   return (
     <div>
       {data === "Personal" ? <PersonalDoc data={data} /> : <OrgansationDashboard data={data} />}

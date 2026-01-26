@@ -5,9 +5,7 @@ import { useOutletContext } from 'react-router-dom'
 function Home() {
   const itemsRef = useRef([]);
   const { featureRef } = useOutletContext()
-  console.log(featureRef);
   
-
   const feature = [{ id: 1, image: '/featureimg1.png', des: "Edit documents together in real time. Every change is instantly synced across all connected users without refreshing", name: "Muti-user" },
   { id: 2, image: '/featureimg2.png', des: "Work with multiple users at the same time. See who is online and collaborating on the document live.", name: "Multi-User Collaboration" },
   { id: 3, image: '/featureimg3.png', des: "Each user’s cursor position is preserved during updates, ensuring smooth typing without cursor jumps or content conflicts", name: "Cursor Sync" }]
@@ -55,7 +53,7 @@ function Home() {
       <div className='h-180 bg-gray-200 mt-10 w-300 ml-40 doc-up'>
         {/* here demo of doc */}
       </div>
-      <h1 className='text-center text-4xl mt-20' ref={featureRef}>Our Feature</h1>
+      <h1 className='text-center text-4xl mt-20 scroll-mt-40' ref={featureRef}>Our Feature</h1>
       <div className='flex space-x-5 ml-72 mt-15 w-240 mb-20'>
         {feature.map((item, index) => (
           <div key={item.id} className="w-100 p-10 rounded-md border border-blue-900 fade-up transition-all duration-300

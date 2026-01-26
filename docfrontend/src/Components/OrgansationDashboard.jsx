@@ -1,10 +1,9 @@
 import React from 'react'
 import { Button } from './index.js'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
 function OrgansationDashboard() {
-  const { data } = useOutletContext()
   const navigate = useNavigate();
   const alldoc = [{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" },
   { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }]
