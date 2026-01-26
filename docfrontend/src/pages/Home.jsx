@@ -4,7 +4,7 @@ import { useOutletContext } from 'react-router-dom'
 
 function Home() {
   const itemsRef = useRef([]);
-  const { featureRef } = useOutletContext()
+  const { featureRef ,HomeeRef } = useOutletContext()
   
   const feature = [{ id: 1, image: '/featureimg1.png', des: "Edit documents together in real time. Every change is instantly synced across all connected users without refreshing", name: "Muti-user" },
   { id: 2, image: '/featureimg2.png', des: "Work with multiple users at the same time. See who is online and collaborating on the document live.", name: "Multi-User Collaboration" },
@@ -38,7 +38,7 @@ function Home() {
   }, []);
 
   return (
-    <div>
+    <div ref={HomeeRef} className='scroll-mt-50'>
       <div className="text-center mt-20 w-180 ml-100">
         <h1 className="text-7xl mb-7 head-up">
           <a style={{ fontStyle: "italic", fontWeight: "lighter" }}>Real Time</a>

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from './index.js'
 
-function Navbar({onFeatureClick}) {
+function Navbar({onFeatureClick,ontop}) {
   const navigate = useNavigate();
   
   const navItems = [
@@ -15,6 +15,14 @@ function Navbar({onFeatureClick}) {
     navigate("/", { state: { scrollTo: "feature" } });
     onFeatureClick()
   }
+  const hanldetopscroll = (slug) =>{
+    if (slug === "/login" || slug === "/signup") {
+      navigate(slug)
+    }else{
+      navigate(slug, { state: { scrollTo: "Top" } });
+      ontop()
+    }
+  }
    return (
     <>
       <header className="py-4 text-black sticky top-0 z-50 mt-5">
@@ -27,12 +35,11 @@ function Navbar({onFeatureClick}) {
                       className="text-white px-3 py-2 font-semibold hover:text-black transition hover:bg-white hover:px-3 hover:py-2 hover:rounded-md">
                       {item.name}
                     </Button> :
-                    <Button onClick={()=> navigate(item.slug)}
+                    <Button onClick={()=> hanldetopscroll(item.slug)}
                       bgColor='' textColor=''
                       className="text-white px-3 py-2 font-semibold hover:text-black transition hover:bg-white hover:px-3 hover:py-2 hover:rounded-md">
                       {item.name}
                     </Button>}
-                    
                   </li>
               )}
             </ul>
