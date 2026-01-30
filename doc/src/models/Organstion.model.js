@@ -1,0 +1,26 @@
+import mongoose, { Schema } from "mongoose";
+
+const OrganstionDocSchema = new Schema({
+    createrdoc: [
+        {
+            userid: { type: Schema.Types.ObjectId, ref: "User"},
+            username: { type: String, required: true }
+        }
+    ],
+    alluserworking: [
+        {
+            userid: [{ type: String, required: true }],
+            username: [{ type: String, required: true }]
+        }
+    ],
+    Doc: {
+        type: String,
+        required: true
+    }
+},
+    {
+        timestamps: true
+    })
+
+export const Review = mongoose.model("OrganstionDoc", OrganstionDocSchema)
+
