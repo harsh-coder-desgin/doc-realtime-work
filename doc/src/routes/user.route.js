@@ -1,19 +1,19 @@
 import { Router } from "express"
-// import { } from "../controllers/user.controller.js"
-// import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
+import { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile } from "../controllers/user.controller.js"
+import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
 
 const router = Router()
 
 //singup and login
-router.route("/register").post(registercreator)
-router.route("/login").post(logincreator)
-router.route("/logout").post(verifyJWT,logoutcreator)
+router.route("/register").post(userregister)
+router.route("/login").post(userlogin)
+router.route("/logout").post(verifyJWT,userlogout)
 router.route("/refreshtoken").post(refreshaccesstoken)
-router.route("/verifyauth").get(verifyJWT,verifyauth)
+router.route("/verifyauth").get(verifyJWT)
 router.route("/getuser").get(verifyJWT,getcurrentuser)
 
 //edit profile
-router.route("/changepassword").post(verifyJWT,changecurrentpassword)
-router.route("/editprofile").patch(verifyJWT,editprofilcreator)
+router.route("/changepassword").post(verifyJWT,changepassword)
+router.route("/editprofile").patch(verifyJWT,editprofile)
 
 export default router 
