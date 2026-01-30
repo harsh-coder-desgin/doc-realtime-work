@@ -1,6 +1,7 @@
 import React from 'react'
 import { useEffect, useRef } from "react";
 import { useOutletContext } from 'react-router-dom'
+import { TinyMceDoc } from '../Components/index.js';
 
 function Home() {
   const itemsRef = useRef([]);
@@ -50,8 +51,8 @@ function Home() {
         <h1 className="text-5xl mt-5 underline ml-2 head-up delay-3">by TinyMce</h1>
       </div>
       <h1 className='text-center text-2xl mt-20 ml-172 text-green-100 bg-green-900 px-2 py-2 w-40 rounded-lg button-up'>Live Demo</h1>
-      <div className='h-180 bg-gray-200 mt-10 w-300 ml-40 doc-up'>
-        {/* here demo of doc */}
+      <div className='mt-10 w-300 ml-45 doc-up'>
+        <TinyMceDoc valueonly="Welcome User"/>
       </div>
       <h1 className='text-center text-4xl mt-20 scroll-mt-40' ref={featureRef}>Our Feature</h1>
       <div className='flex space-x-5 ml-72 mt-15 w-240 mb-20'>
