@@ -21,6 +21,10 @@ const InviteSchema = new Schema({
     docid:{
         type: Schema.Types.ObjectId, ref: "OrganstionDoc",
         required:true
+    },
+    Docname:{
+        type:String,
+        required:true
     }
 },
     {
