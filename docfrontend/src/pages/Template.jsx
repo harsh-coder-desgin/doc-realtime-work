@@ -4,8 +4,8 @@ import { useOutletContext } from 'react-router-dom'
 
 function Template() {
   const { HomeeRef } = useOutletContext()
-  const doc = [{id:1,name:"Resume"},{id:2,name:"Resume"},{id:3,name:"Resume"},{id:4,name:"Resume"},
-    {id:5,name:"Resume"},{id:6,name:"Resume"}]
+  const doc = [{id:1,name:"Letter",img:"/coverimage-1.png"},{id:2,name:"Resume",img:"/coverimage-2.png"},{id:3,name:"Resume Template 2",img:"/coverimage-3.png"},{id:4,name:"Project Prosposal",img:"/coverimage-4.png"},
+    {id:5,name:"Brochure",img:"/coverimage-5.png"},{id:6,name:"Report",img:"/coverimage-6.png"}]
   return (
     <div className='scroll-mt-50' ref={HomeeRef}>
     <h1 className='font-medium text-4xl text-center mt-5 mr-10 temp-up'>All Template</h1>
@@ -14,7 +14,8 @@ function Template() {
          {doc.map((item)=>(
            <Link to={`/template/doc/${item.id}`} key={item.id}>
             <div>
-                <div className='border h-80 w-60'>
+                <div className='border h-90 w-60'>
+                  <img src={item.img}/>
                 </div>
                 <h1 className='mr-12'>{item.name}</h1>
             </div>
