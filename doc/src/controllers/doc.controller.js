@@ -2,9 +2,13 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PersonalDoc } from "../models/personaldoc.model.js";
+import { OrganstionDoc } from "../models/Organstion.model.js"
+import { Invite } from "../models/Invite.modle.js"
+
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
+//Personal Doc api
 //personal doc create
 const personaldoccreate = asyncHandler(async (req, res) => {
 
@@ -34,7 +38,7 @@ const personaldoccreate = asyncHandler(async (req, res) => {
     }
 
     return res.status(201).json(
-        new ApiResponse(200, createdUser, "Doc Create successfully")
+        new ApiResponse(200, user, "Doc Create successfully")
     )
 
 })
@@ -52,180 +56,228 @@ const personalalldoc = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(new ApiResponse(200, getallcourse, "All Document fetched successfully"));
+        .json(new ApiResponse(200, getalldoc, "All Document fetched successfully"));
 })
 
-//personalsavedoc
+//personal save doc
 const personalsavedoc = asyncHandler(async (req, res) => {
 
     const { doc } = req.body
     const docId = req.params.id;
-    const docget = await PersonalDoc.findById(docId)
 
-    if (!countratingandreview) {
-        throw new ApiError(404, "No reviews found for the selected course.");
-    }
-
-    const totalreview = countratingandreview.length
-    let totalrating = 0;
-
-    countratingandreview.forEach(course => {
-        totalrating += course.userrating || 0;
-    });
-
-    const averageRating = totalreview > 0 ? (totalrating / totalreview).toFixed(1) : 0;
-
-    courseget.totalreview = totalreview
-    courseget.rating = averageRating
-
-    await courseget.save()
-
-    if (!courseget) {
-        throw new ApiError(400, "Course not found. Please check the ID and try again");
-    }
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, courseget, "Course details fetched successfully"));
-})
-
-//getuser
-const getcurrentuser = asyncHandler(async (req, res) => {
-    return res
-        .status(200)
-        .json(new ApiResponse(
-            200,
-            req.users,
-            "User fetched Successfully"))
-
-})
-
-//refreshaccesstoken
-const refreshaccesstoken = asyncHandler(async (req, res) => {
-
-    const incomeingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
-
-    if (!incomeingRefreshToken) {
-        throw new ApiError(400, "Refresh token is missing. Please log in again")
-    }
-
-    try {
-        const decodeedtoken = jwt.verify(
-            incomeingRefreshToken,
-            process.env.REFRESH_TOKEN_SECRET
-        )
-
-        const users = await User.findById(decodeedtoken?._id)
-
-        if (!users) {
-            throw new ApiError(401, "Session is invalid or has expired. Please log in again.")
-        }
-
-        if (incomeingRefreshToken !== users.refreshToken) {
-            throw new ApiError(401, "Session expired or token is invalid. Please log in again")
-        }
-
-        const options = {
-            httpOnly: true,
-            secure: true
-        }
-
-        const { accessToken, refreshToken } = await generateAccessRefreshTokens(users._id)
-
-        return res
-            .status(200)
-            .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", refreshToken, options)
-            .json(
-                new ApiResponse(
-                    200,
-                    { accessToken },
-                    "Access token refreshed successfully"
-                )
-            )
-    } catch (error) {
-        throw new ApiError(401, "Invalid or expired refresh token. Please log in again")
-    }
-})
-
-//changepassword
-const changepassword = asyncHandler(async (req, res) => {
-
-    const { currentPassword, newPassword, confirmPassword } = req.body
-
-    if (
-        [currentPassword, newPassword, confirmPassword].some((field) => field?.trim() === "")
+     if (
+        [doc].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "Both old and new passwords are required")
+        throw new ApiError(400, "All fields Doc are required")
     }
 
-    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
-    if (!strongPasswordRegex.test(currentPassword)) {
-        throw new ApiError(400, "OldPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (!strongPasswordRegex.test(newPassword)) {
-        throw new ApiError(400, "NewPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (!strongPasswordRegex.test(confirmPassword)) {
-        throw new ApiError(400, "ConfirmPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (confirmPassword !== newPassword) {
-        throw new ApiError(400, "New password cannot match ConfirmPassword")
-    }
-
-    if (currentPassword === newPassword) {
-        throw new ApiError(400, "New password must be different from the old password")
-    }
-
-    const users = await User.findById(req.users?._id)
-    const ispasswordcorrect = await users.isPasswordCorrect(currentPassword)
-
-    if (!ispasswordcorrect) {
-        throw new ApiError(400, "Old password is incorrect")
-    }
-
-    users.password = newPassword
-    await users.save({ validateBeforeSave: false })
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, "Password changed successfully"))
-})
-
-//editprofile
-const editprofile = asyncHandler(async (req, res) => {
-
-    const { username } = req.body
-
-    if (
-        [username].some((field) => field?.trim() === "")
-    ) {
-        throw new ApiError(400, "User name required")
-    }
-
-    if (username.trim().length < 5) {
-        throw new ApiError(400, "User name must be at least 5 characters long")
-    }
-
-    const users = await Creator.findByIdAndUpdate(
-        req.users?._id,
+    const updateddoc = await PersonalDoc.findByIdAndUpdate(
+        docId,
         {
             $set: {
-                username: username,
+                Doc:doc,
             }
         }
         ,
         { new: true }
     )
-        .select("-password -refreshToken");
+
+    await updateddoc.save().catch(() => {
+        throw new ApiError(500, "An unexpected error occurred while updating the doc. Please try again later.");
+    });
+
+    if (!updateddoc) {
+        throw new ApiError(404, "Doc not found. Please check the doc ID and try again.");
+    }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, users, "User name updated successfully"));
+        .json(new ApiResponse(200, updateddoc, "Doc Saved successfully"));
 })
 
-export { personaldoccreate, personalalldoc, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile }
+//personal get docone
+const personalgetdocone = asyncHandler(async (req, res) => {
+
+    const docId = req.params.id;
+    const docget = await PersonalDoc.findById(docId)
+
+    if (!docget) {
+        throw new ApiError(400, "Doc not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, docget, "Doc details fetched successfully"));
+})
+
+//personal doc delete
+const personaldocdelete = asyncHandler(async (req, res) => {
+
+    const docId = req.params.id;
+    const deletedata = await PersonalDoc.findByIdAndDelete(docId)
+
+    if (!deletedata) {
+        throw new ApiError(400, "Failed to delete the course. Please try again");
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "Doc deleted successfully"));
+})
+
+//Organstion Doc api
+//organstion doc create
+const organstiondoccreate = asyncHandler(async (req, res) => {
+
+    const { doc, docname  } = req.body
+    const userId = req.users._id
+    const username = req.users.username
+
+    if (
+        [doc,docname,username].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields (doc docname username) are required")
+    }
+
+    const docget = await OrganstionDoc.create({
+        createrdocusername: username.toLowerCase(),
+        Doc:doc,
+        Docname:docname,
+        // userId
+    })
+
+    if (!docget) {
+        throw new ApiError(500, "Failed to create doc. Please try again.");
+    }
+
+    return res.status(201).json(
+        new ApiResponse(200, docget, "Doc Create successfully")
+    )
+
+})
+
+//organstion alldoc
+const organstionalldoc = asyncHandler(async (req, res) => {
+
+    const userid = req.users._id.toString()
+    const getalldoc = await OrganstionDoc.find({ alluserworking: userid })
+
+    if (!getalldoc) {
+        throw new ApiError(400, "Unable to fetch Doc at the moment. Please try again later");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, getalldoc, "All Document fetched successfully"));
+})
+
+//organstion save doc
+const organstionsavedoc = asyncHandler(async (req, res) => {
+
+    const { doc } = req.body
+    const docId = req.params.id;
+
+     if (
+        [doc].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields Doc are required")
+    }
+
+    const updateddoc = await OrganstionDoc.findByIdAndUpdate(
+        docId,
+        {
+            $set: {
+                Doc:doc,
+            }
+        }
+        ,
+        { new: true }
+    )
+
+    await updateddoc.save().catch(() => {
+        throw new ApiError(500, "An unexpected error occurred while updating the doc. Please try again later.");
+    });
+
+    if (!updateddoc) {
+        throw new ApiError(404, "Doc not found. Please check the doc ID and try again.");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updateddoc, "Doc Saved successfully"));
+})
+
+//organstion get docone
+const organstionlgetdocone = asyncHandler(async (req, res) => {
+
+    const docId = req.params.id;
+    const docget = await OrganstionDoc.findById(docId)
+
+    if (!docget) {
+        throw new ApiError(400, "Doc not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, docget, "Doc details fetched successfully"));
+})
+
+//organstion doc delete
+const organstiondocdelete = asyncHandler(async (req, res) => {
+
+    const docId = req.params.id;
+    const deletedata = await OrganstionDoc.findByIdAndDelete(docId)
+
+    if (!deletedata) {
+        throw new ApiError(400, "Failed to delete the course. Please try again");
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "Doc deleted successfully"));
+})
+
+//Invite send organstion doc
+const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
+
+    const {docname,invitedemail,username} = req.body
+    const userId = req.users._id
+
+    if (
+        [invitedemail,userId,username].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields (invitedemail,userId,username) are required")
+    }
+
+    const invited = await Invite.create({
+        Docname:docname,
+        invitedemail:invitedemail,
+        createrdoc:username,userId,
+        invitedaccpetreject:false
+        // userId
+    })
+
+    if (!invited) {
+        throw new ApiError(500, "Failed to send invite. Please try again.");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "invite send successfully"));
+})
+
+//Invite get organstion doc
+const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
+
+    const useremail = req.users.email
+    const invited = await Invite.find({invitedemail:useremail})
+
+    if (!invited) {
+        throw new ApiError(400, "Invited not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
+})
+
+export { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
+    organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete,Invitesendorganstiondoc,Invitegetorganstiondoc }

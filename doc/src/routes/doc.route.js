@@ -1,25 +1,27 @@
 import { Router } from "express"
-// import {} from "../controllers/creator.controller.js"
-// import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
+import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete 
+    ,organstiondoccreate,organstionalldoc,organstionsavedoc,organstionlgetdocone,
+    organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc} from "../controllers/doc.controller.js"
+import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
 
 const router = Router()
 
 //Personal doc
-router.route("/createdoc").post(verifyJWT)
-router.route("/alldoc").get(verifyJWT)
-router.route("/savedoc/:id").post(verifyJWT)
-router.route("/getdoc/:id").get(verifyJWT)
-router.route("/docdelete/:id").delete(verifyJWT)
+router.route("/createdoc").post(verifyJWT,personaldoccreate)
+router.route("/alldoc").get(verifyJWT,personalalldoc)
+router.route("/savedoc/:id").post(verifyJWT,personalsavedoc)
+router.route("/getdoc/:id").get(verifyJWT,personalgetdocone)
+router.route("/docdelete/:id").delete(verifyJWT,personaldocdelete)
 
 //Organstion doc
-router.route("/orgcreatedoc").post(verifyJWT)
-router.route("/orgalldoc").get(verifyJWT)
-router.route("/orgsavedoc/:id").post(verifyJWT)
-router.route("/orggetdoc/:id").get(verifyJWT)
-router.route("/orgdeletedoc/:id").delete(verifyJWT)
+router.route("/orgcreatedoc").post(verifyJWT,organstiondoccreate)
+router.route("/orgalldoc").get(verifyJWT,organstionalldoc)
+router.route("/orgsavedoc/:id").post(verifyJWT,organstionsavedoc)
+router.route("/orggetdoc/:id").get(verifyJWT,organstionlgetdocone)
+router.route("/orgdeletedoc/:id").delete(verifyJWT,organstiondocdelete)
 
 //inivite
-router.route("/createinvite").post(verifyJWT)
-router.route("/getinvite").get(verifyJWT)
+router.route("/createinvite").post(verifyJWT,Invitesendorganstiondoc)
+router.route("/getinvite").get(verifyJWT,Invitegetorganstiondoc)
 
 export default router 

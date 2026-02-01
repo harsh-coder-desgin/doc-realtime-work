@@ -1,12 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 
 const OrganstionDocSchema = new Schema({
-    createrdoc: [
-        {
-            userid: { type: Schema.Types.ObjectId, ref: "User"},
-            username: { type: String, required: true }
-        }
-    ],
+    createrdocusername: {
+        type: String, 
+        required: true 
+    },
+    createuserid: { 
+        type: Schema.Types.ObjectId, 
+        ref: "User"
+    },
     alluserworking: [
         {
             userid: [{ type: String, required: true }],

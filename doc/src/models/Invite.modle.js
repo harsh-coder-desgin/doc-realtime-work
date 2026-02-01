@@ -16,7 +16,6 @@ const InviteSchema = new Schema({
     },
     timeexpire:{
         type:String,
-        required:true
     },
     docid:{
         type: Schema.Types.ObjectId, ref: "OrganstionDoc",
