@@ -1,18 +1,18 @@
 import { Router } from "express"
 // import {} from "../controllers/creator.controller.js"
-// import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
+import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
 
 const router = Router()
 
 //Comment doc
-router.route("/createcomment/:id").post(verifyJWT)
-router.route("/getcomment/:id").get(verifyJWT)
-router.route("/commentdelete/:id").delete(verifyJWT)
+router.route("/createcomment").post(verifyJWT)
+router.route("/getcomment").get(verifyJWT)
+router.route("/commentdelete").delete(verifyJWT)
 
 //Reply doc
-router.route("/createreply/:id").post(verifyJWT)
-router.route("/getreply/:id").get(verifyJWT)
-router.route("/replydelete/:id").delete(verifyJWT)
+router.route("/createreply").post(verifyJWT)
+router.route("/getreply").get(verifyJWT)
+router.route("/replydelete").delete(verifyJWT)
 
 //parentreply
 router.route("/createparentreply/:id").post(verifyJWT)

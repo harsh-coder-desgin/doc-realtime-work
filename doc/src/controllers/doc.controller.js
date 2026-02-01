@@ -4,7 +4,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { PersonalDoc } from "../models/personaldoc.model.js";
 import { OrganstionDoc } from "../models/Organstion.model.js"
 import { Invite } from "../models/Invite.modle.js"
-
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
