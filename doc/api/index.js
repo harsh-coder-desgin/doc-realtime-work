@@ -1,50 +1,68 @@
-import http from "http";
-import express from "express";
-import cors from "cors";
-import { Server } from "socket.io";
+import dotenv from "dotenv"
+import connectDB from "../src/db/index.js";
+import { app } from '../src/app.js'
 
-const app = express();
-const server = http.createServer(app);
+dotenv.config({
+    path: './.env'
+})
 
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-app.use(cors());
-
-io.on("connection", (socket) => {
-  console.log("a user connected:", socket.id);
-
-  socket.on("join-room", (roomName) => {
-    socket.join(roomName);
-    socket.emit("joined-room", roomName);
-    socket.on("cursor-move", (data) => {
-      socket.broadcast.emit("cursor-update", data);
-    });
-    socket.on("content-all",(alldata)=>{
-      alldata['id']=socket.id
-      socket.broadcast.emit("content-send",alldata)
-      console.log(alldata);
+connectDB()
+.then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+        console.log(`⚙️ Server is running at port : ${process.env.PORT}`);
     })
-    // io.to(roomName).emit("room-mess", "Hello room users");
-  });
+})
+.catch((err) => {
+    console.log("MONGO db connection failed !!! ", err);
+})
 
-  socket.on("message", (message) => {
-    // io.emit("private-mess", message);
-    console.log(message);
-  });
+// import http from "http";
+// import express from "express";
+// import cors from "cors";
+// import { Server } from "socket.io";
 
-  socket.emit("helloserver", "connected form server");
+// const app = express();
+// const server = http.createServer(app);
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected:", socket.id);
-  });
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173",
+//     methods: ["GET", "POST"],
+//     credentials: true,
+//   },
+// });
 
-server.listen(8000, () => {
-  console.log("Server running on port 8000");
-});
+// app.use(cors());
+
+// io.on("connection", (socket) => {
+//   console.log("a user connected:", socket.id);
+
+//   socket.on("join-room", (roomName) => {
+//     socket.join(roomName);
+//     socket.emit("joined-room", roomName);
+//     socket.on("cursor-move", (data) => {
+//       socket.broadcast.emit("cursor-update", data);
+//     });
+//     socket.on("content-all",(alldata)=>{
+//       alldata['id']=socket.id
+//       socket.broadcast.emit("content-send",alldata)
+//       console.log(alldata);
+//     })
+//     // io.to(roomName).emit("room-mess", "Hello room users");
+//   });
+
+//   socket.on("message", (message) => {
+//     // io.emit("private-mess", message);
+//     console.log(message);
+//   });
+
+//   socket.emit("helloserver", "connected form server");
+
+//   socket.on("disconnect", () => {
+//     console.log("user disconnected:", socket.id);
+//   });
+// });
+
+// server.listen(8000, () => {
+//   console.log("Server running on port 8000");
+// });
