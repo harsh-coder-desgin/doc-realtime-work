@@ -28,5 +28,5 @@ const OrganstionDocSchema = new Schema({
         timestamps: true
     })
 
-export const Review = mongoose.model("OrganstionDoc", OrganstionDocSchema)
+export const OrganstionDoc = mongoose.model("OrganstionDoc", OrganstionDocSchema)
 

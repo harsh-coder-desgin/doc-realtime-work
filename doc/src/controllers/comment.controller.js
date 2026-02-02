@@ -3,8 +3,8 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Reply } from "../models/reply.model.js"
 import { Comment } from "../models/comment.model.js"
-import jwt from "jsonwebtoken"
-import mongoose from "mongoose";
+// import jwt from "jsonwebtoken"
+// import mongoose from "mongoose";
 
 //comment write
 const userwritecomment = asyncHandler(async (req, res) => {

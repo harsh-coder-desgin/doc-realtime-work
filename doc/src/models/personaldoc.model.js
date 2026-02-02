@@ -22,5 +22,5 @@ const PersonalDocSchema = new Schema({
         timestamps: true
     })
 
-export const Review = mongoose.model("PersonalDoc", PersonalDocSchema)
+export const PersonalDoc = mongoose.model("PersonalDoc", PersonalDocSchema)
 

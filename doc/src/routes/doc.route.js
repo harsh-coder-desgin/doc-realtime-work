@@ -2,7 +2,7 @@ import { Router } from "express"
 import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete 
     ,organstiondoccreate,organstionalldoc,organstionsavedoc,organstionlgetdocone,
     organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc} from "../controllers/doc.controller.js"
-import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
+import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
 

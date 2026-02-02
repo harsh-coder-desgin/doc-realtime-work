@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile } from "../controllers/user.controller.js"
-import { verifyJWT } from "../middlewares/tokenverfiy.middleware.js"
+import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
 

@@ -3,9 +3,9 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { PersonalDoc } from "../models/personaldoc.model.js";
 import { OrganstionDoc } from "../models/Organstion.model.js"
-import { Invite } from "../models/Invite.modle.js"
-import jwt from "jsonwebtoken"
-import mongoose from "mongoose";
+import { Invite } from "../models/Invite.model.js"
+// import jwt from "jsonwebtoken"
+// import mongoose from "mongoose";
 
 //Personal Doc api
 //personal doc create

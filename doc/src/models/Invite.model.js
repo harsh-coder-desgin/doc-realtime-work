@@ -30,5 +30,5 @@ const InviteSchema = new Schema({
         timestamps: true
     })
 
-export const Review = mongoose.model("Invite", InviteSchema)
+export const Invite = mongoose.model("Invite", InviteSchema)
 
