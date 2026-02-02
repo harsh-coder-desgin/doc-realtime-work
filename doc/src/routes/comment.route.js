@@ -1,18 +1,18 @@
 import { Router } from "express"
-// import {} from "../controllers/creator.controller.js"
+import { userwritecomment, getcomment, deletecomment, userwritereply, getreply ,deletereply } from "../controllers/comment.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
 
 //Comment doc
-router.route("/createcomment").post(verifyJWT)
-router.route("/getcomment").get(verifyJWT)
-router.route("/commentdelete").delete(verifyJWT)
+router.route("/createcomment").post(verifyJWT,userwritecomment)
+router.route("/getcomment").get(verifyJWT,getcomment)
+router.route("/commentdelete").delete(verifyJWT,deletecomment)
 
 //Reply doc
-router.route("/createreply").post(verifyJWT)
-router.route("/getreply").get(verifyJWT)
-router.route("/replydelete").delete(verifyJWT)
+router.route("/createreply").post(verifyJWT,userwritereply)
+router.route("/getreply").get(verifyJWT,getreply)
+router.route("/replydelete").delete(verifyJWT,deletereply)
 
 //parentreply
 router.route("/createparentreply/:id").post(verifyJWT)
