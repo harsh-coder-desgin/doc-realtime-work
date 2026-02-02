@@ -294,7 +294,7 @@ const editprofile = asyncHandler(async (req, res) => {
         throw new ApiError(400, "User name must be at least 5 characters long")
     }
 
-    const users = await Creator.findByIdAndUpdate(
+    const users = await User.findByIdAndUpdate(
         req.users?._id,
         {
             $set: {
@@ -311,4 +311,16 @@ const editprofile = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "User name updated successfully"));
 })
 
-export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile }
+//testonly
+const testonly = asyncHandler(async (req, res) => {
+    console.log("call");
+    const users = await User.findById("698085861bcaf09c6dee7c90")
+    console.log(users);
+    
+    return res
+        .status(200)
+        .json(new ApiResponse(200, users, "User name updated successfully"));
+})
+
+
+export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile,testonly }

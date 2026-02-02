@@ -1,1 +1,1 @@
-export const DB_NAME="dbdoc"
+export const DB_NAME="document"
