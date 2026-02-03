@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Input, Button } from '../Components/index.js'
+import { Input, Button ,Logoutbtn } from '../Components/index.js'
 
 function UserNavbar({sendfunction}) {
   const [doc,Setdoc] = useState("")  
@@ -34,6 +34,9 @@ function UserNavbar({sendfunction}) {
             }}>Organstion Doc</Button>
           </div>
         </div>
+          <div className='mr-12'>
+            <Logoutbtn/>
+          </div>
       </div>
     </div>
   )

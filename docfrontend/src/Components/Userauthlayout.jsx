@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { userLogin as authlogin } from '../store/userAuthslice'
 
-export default function userauthlayout({children}) {
+export default function userauthlayout({ children }) {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const users = useSelector(state => state.userAuth.users)
@@ -21,7 +21,7 @@ export default function userauthlayout({children}) {
                 }
                 if (
                     location.pathname === "/login" ||
-                    location.pathname === "/signup" 
+                    location.pathname === "/signup"
                 ) {
                     navigate("/dashboard");
                 }
@@ -37,7 +37,11 @@ export default function userauthlayout({children}) {
                             navigate("/login");
                         }
                     } catch {
-                        console.log("error");
+                        if (location.pathname === "/login") {
+                            navigate("/login");
+                        } else {
+                            navigate("/signup");
+                        }
                     }
                 }
             })

@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     path: '/signup',
     element: (
       <Userauthlayout>
-      <Signup />
+        <Signup />
        </Userauthlayout>
     ),
   },
@@ -66,25 +66,25 @@ const router = createBrowserRouter([
       {
         path: '/dashboard/workingdoc/:id',
         element: (
-          // <Userauthlayout>
-          <WorkingDoc />
-          // </Userauthlayout>
+          <Userauthlayout>
+            <WorkingDoc />
+          </Userauthlayout>
         )
       },
       {
         path: '/dashboard/orgdoc',
         element: (
-          // <Userauthlayout>
-          <OrgansationDoc/>
-          // </Userauthlayout> 
+          <Userauthlayout>
+            <OrgansationDoc/>
+          </Userauthlayout> 
         )
       },
       {
         path: '/dashboard/orgdoc/:id',
         element: (
-           // <Userauthlayout>
-           <OrganstionMange/>
-           // </Userauthlayout>
+           <Userauthlayout>
+            <OrganstionMange/>
+           </Userauthlayout>
         )
       },
     ],
