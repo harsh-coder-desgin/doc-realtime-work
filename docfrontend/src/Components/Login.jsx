@@ -51,8 +51,8 @@ function Login() {
                             },
                         })}
                         placeholder="Enter your email" type="email" className='px-3 py-3 mt-2 bg-white text-black outline-none duration-200 border border-blue-900 w-full' />
-                    <Input label="Password"  {...register("password", { required: true })}
-                        type="password" placeholder="Enter your password" 
+                    <Input label="Password"  type={showPassword ? "text" : "password"}  
+                        {...register("password", { required: true })} placeholder="Enter your password" 
                         className='px-3 mt-2 py-3 bg-white text-black outline-none duration-200 border border-blue-900 w-full' />
                     <button
                         type="button"
@@ -69,7 +69,7 @@ function Login() {
                             </svg>
                         )}
                     </button>
-                    <Button type="submit" className="w-full bg-blue-900 border border-blue-900 py-3 text-white hover:bg-white hover:text-blue-900">
+                    <Button type="submit" className="hover:cursor-pointer w-full bg-blue-900 border border-blue-900 py-3 text-white hover:bg-white hover:text-blue-900">
                         Login
                     </Button>
                     <p className="text-center text-gray-600 mb-6 text-sm">

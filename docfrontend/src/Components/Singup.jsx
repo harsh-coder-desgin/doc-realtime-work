@@ -14,17 +14,21 @@ function Signup() {
     const [error, setError] = useState("")
 
     const create = async (data) => {
+        console.log(data);
         setError("")
         try {
             const res = await authuser.register(data)
+            console.log(res); 
             if (res) {
                 const users = await authuser.getuser()
+                console.log(users);
                 if (users) {
                     dispatch(authlogin(users.data))
                 }
                 navigate('/dashboard')
             }
         } catch (error) {
+            console.log(error);
             setError(error.response.data.message)
         }
     }
@@ -59,7 +63,7 @@ function Signup() {
                     <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-49 -mt-17 mr-3">
+                        className="absolute right-144 -mt-13 mr-3">
                         {showPassword ? (
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12z" />
@@ -71,7 +75,7 @@ function Signup() {
                             </svg>
                         )}
                     </button>
-                    <Button type="submit" className="w-full bg-blue-900 border border-blue-900 py-3 text-white hover:bg-white hover:text-blue-900">
+                    <Button type="submit" className="hover:cursor-pointer w-full bg-blue-900 border border-blue-900 py-3 text-white hover:bg-white hover:text-blue-900">
                         Create Account
                     </Button>
                     <p className="text-center text-gray-600 mb-6 text-sm">

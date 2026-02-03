@@ -1,7 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Dashboard, TemplateDoc, Login, Signup, WorkingDoc, DocFile, OrganstionMange, OrgansationDoc,Userauthlayout} from './Components/index.js'
+import store from './store/store.js'
 import Template from './pages/Template.jsx'
 import App from './App.jsx'
 import Home from './pages/Home.jsx'
@@ -36,17 +38,17 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: (
-      // <Userauthlayout>
+      <Userauthlayout>
         <Login />
-      // </Userauthlayout>
+      </Userauthlayout>
     ),
   },
   {
     path: '/signup',
     element: (
-      // <Userauthlayout>
+      <Userauthlayout>
       <Signup />
-      // </Userauthlayout>
+       </Userauthlayout>
     ),
   },
   {
@@ -56,9 +58,9 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: (
-          // <Userauthlayout>
+          <Userauthlayout>
             <Dashboard />
-          // </Userauthlayout>
+          </Userauthlayout>
         )
       },
       {
@@ -91,6 +93,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}> 
+      <RouterProvider router={router} />
+    </Provider>
   </StrictMode>,
 )

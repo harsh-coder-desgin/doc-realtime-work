@@ -10,7 +10,7 @@ app.use(cors({
 }))
 
 app.use(express.json({limit: "16kb"}))
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
+// app.use(express.urlencoded({extended:true}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
@@ -19,7 +19,7 @@ import comment from './routes/comment.route.js'
 import doc from './routes/doc.route.js'
 
 // http://localhost:8000/api/v1/users/register
-app.use("/api/users",user)
+app.use("/api/user",user)
 app.use("/api/comment",comment)
 app.use("/api/doc",doc)
 app.use(errorHandler)

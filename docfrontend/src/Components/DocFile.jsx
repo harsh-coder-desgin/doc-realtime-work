@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { Editor } from "@tinymce/tinymce-react"
-import { socket } from '../../socket.js'
+// import { socket } from '../../socket.js'
 
 function DocFile() {
   const editorRef = useRef(null);

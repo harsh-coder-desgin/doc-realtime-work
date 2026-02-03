@@ -3,23 +3,20 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken"
-// import mongoose from "mongoose";
+import mongoose from "mongoose";
 
 //generate-AccessRefreshTokens
 const generateAccessRefreshTokens = async (userId) => {
     try {
         const user = await User.findById(userId)
-        // const accessToken=user.generateAccessToken
-        // const refreshToken=user.generateRefreshToken
         const accessToken = user.generateAccessToken()
-        const refreshToken = user.generateRefreshToken()
+        const refreshToken = user.generateRefreshToken()        
 
         user.refreshToken = refreshToken
         await user.save({ validateBeforeSave: false })
         return { accessToken, refreshToken }
     } catch (error) {
         throw new ApiError(500, "something went wrong while refresh and access token")
-
     }
 }
 
@@ -27,7 +24,7 @@ const generateAccessRefreshTokens = async (userId) => {
 const userregister = asyncHandler(async (req, res) => {
 
     const { username, email, password } = req.body
-
+    
     if (
         [username, email, password].some((field) => field?.trim() === "")
     ) {
@@ -65,18 +62,17 @@ const userregister = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to create user. Please try again.");
     }
 
-    const createdUser = await User.findById(user._id).select(
-        "-password -refreshToken"
-    )
-
-    if (!createdUser) {
-        throw new ApiError(500, "Something went wrong while creating your account. Please try again")
+    const { refreshToken, accessToken } = await generateAccessRefreshTokens(user._id)
+    const loginUser = await User.findById(user._id).select("-password -refreshToken")
+    
+    const options = {
+        httpOnly: true,
+        secure: true
     }
-
-    return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered successfully")
-    )
-
+    return res.status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(new ApiResponse(200, { users: loginUser, accessToken,refreshToken},"Login successfully"))
 })
 
 //user-login
@@ -311,4 +307,9 @@ const editprofile = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "User name updated successfully"));
 })
 
-export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile,testonly }
+//verfiyauth
+const verifyauth = asyncHandler(async (req, res) => {
+    return res.status(200).json(new ApiResponse(200,req.users,"User fetched Successfully"))
+})
+
+export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile,verifyauth }

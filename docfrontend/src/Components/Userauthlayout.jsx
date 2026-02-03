@@ -5,18 +5,16 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { userLogin as authlogin } from '../store/userAuthslice'
 
-export default function userauthlayout() {
+export default function userauthlayout({children}) {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const users = useSelector(state => state.userAuth.users)
-    // console.log(users);
 
     const dispatch = useDispatch()
     const location = useLocation();
-    // console.log(location);
 
     useEffect(() => {
-        authuser.verifyauth()
+        authuser.verifyuserauth()
             .then((data) => {
                 if (users === null) {
                     dispatch(authlogin(data.data))
@@ -33,7 +31,7 @@ export default function userauthlayout() {
                     try {
                         const newAccessToken = await authuser.refreshtoken()
                         if (newAccessToken) {
-                            await authuser.verifyauth();
+                            await authuser.verifyuserauth()
                             navigate("/dashboard")
                         } else {
                             navigate("/login");

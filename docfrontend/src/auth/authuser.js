@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const API = "/api/users";
+const API = "/api/user";
 
 const User = {
     register: async (data) => {        
@@ -39,8 +39,8 @@ const User = {
             throw error
         }
     },
-    verifyauth: async () => {        
-        try {
+    verifyuserauth: async () => {     
+        try {            
             const res = await axios.get(`${API}/verifyauth`,{ withCredentials: true});
             return res
         } catch (error) {
