@@ -13,6 +13,7 @@ import WorkingDoc from './WorkingDoc'
 import OrgansationDashboard from './OrgansationDashboard'
 import OrganstionMange from './OrganstionMange'
 import TinyMceDoc from './TinyMceDoc'
+import Userauthlayout from './Userauthlayout'
 
 export{
     Dashboard,
@@ -29,5 +30,6 @@ export{
     WorkingDoc,
     OrgansationDashboard,
     OrganstionMange,
-    TinyMceDoc
+    TinyMceDoc,
+    Userauthlayout
 }

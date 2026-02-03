@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Dashboard, TemplateDoc, Login, Signup, WorkingDoc, DocFile, OrganstionMange, OrgansationDoc} from './Components/index.js'
+import { Dashboard, TemplateDoc, Login, Signup, WorkingDoc, DocFile, OrganstionMange, OrgansationDoc,Userauthlayout} from './Components/index.js'
 import Template from './pages/Template.jsx'
 import App from './App.jsx'
 import Home from './pages/Home.jsx'
@@ -36,17 +36,17 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: (
-      // <CreatorAuthLayout>
-      <Login />
-      // </CreatorAuthLayout>
+      // <Userauthlayout>
+        <Login />
+      // </Userauthlayout>
     ),
   },
   {
     path: '/signup',
     element: (
-      // <CreatorAuthLayout>
+      // <Userauthlayout>
       <Signup />
-      // </CreatorAuthLayout>
+      // </Userauthlayout>
     ),
   },
   {
@@ -56,25 +56,33 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: (
-          <Dashboard />
+          // <Userauthlayout>
+            <Dashboard />
+          // </Userauthlayout>
         )
       },
       {
         path: '/dashboard/workingdoc/:id',
         element: (
+          // <Userauthlayout>
           <WorkingDoc />
+          // </Userauthlayout>
         )
       },
       {
         path: '/dashboard/orgdoc',
         element: (
+          // <Userauthlayout>
           <OrgansationDoc/>
+          // </Userauthlayout> 
         )
       },
       {
         path: '/dashboard/orgdoc/:id',
         element: (
-          <OrganstionMange/>
+           // <Userauthlayout>
+           <OrganstionMange/>
+           // </Userauthlayout>
         )
       },
     ],
