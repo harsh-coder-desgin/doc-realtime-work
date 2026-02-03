@@ -74,7 +74,7 @@ const userregister = asyncHandler(async (req, res) => {
     }
 
     return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered successfully. Please verify your email to activate your account")
+        new ApiResponse(200, createdUser, "User registered successfully")
     )
 
 })
@@ -310,17 +310,5 @@ const editprofile = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, users, "User name updated successfully"));
 })
-
-//testonly
-const testonly = asyncHandler(async (req, res) => {
-    console.log("call");
-    const users = await User.findById("698085861bcaf09c6dee7c90")
-    console.log(users);
-    
-    return res
-        .status(200)
-        .json(new ApiResponse(200, users, "User name updated successfully"));
-})
-
 
 export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile,testonly }

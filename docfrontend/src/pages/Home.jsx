@@ -2,21 +2,11 @@ import React from 'react'
 import { useEffect, useRef } from "react";
 import { useOutletContext } from 'react-router-dom'
 import { TinyMceDoc } from '../Components/index.js';
-import test from '../auth/test.js'
 
 function Home() {
   const itemsRef = useRef([]);
   const { featureRef ,HomeeRef } = useOutletContext()
 
-   const testhandle = async () => {
-    try {
-      const name = await test.test()
-      console.log(name);
-    } catch (error) {
-      console.log(error); 
-    }
-  }
-  
   const feature = [{ id: 1, image: '/featureimg1.png', des: "Edit documents together in real time. Every change is instantly synced across all connected users without refreshing", name: "Muti-user" },
   { id: 2, image: '/featureimg2.png', des: "Work with multiple users at the same time. See who is online and collaborating on the document live.", name: "Multi-User Collaboration" },
   { id: 3, image: '/featureimg3.png', des: "Each user’s cursor position is preserved during updates, ensuring smooth typing without cursor jumps or content conflicts", name: "Cursor Sync" }]
@@ -60,7 +50,6 @@ function Home() {
         </h1>
         <h1 className="text-5xl mt-5 underline ml-2 head-up delay-3">by TinyMce</h1>
       </div>
-      <button onClick={testhandle}>Test only</button>
       <h1 className='text-center text-2xl mt-20 ml-172 text-green-100 bg-green-900 px-2 py-2 w-40 rounded-lg button-up'>Live Demo</h1>
       <div className='mt-10 w-300 ml-45 doc-up'>
         <TinyMceDoc valueonly="Welcome User"/>

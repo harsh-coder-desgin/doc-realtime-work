@@ -12,9 +12,6 @@ router.route("/refreshtoken").post(refreshaccesstoken)
 router.route("/verifyauth").get(verifyJWT)
 router.route("/getuser").get(verifyJWT,getcurrentuser)
 
-router.route("/test").get(testonly)
-
-
 //edit profile
 router.route("/changepassword").post(verifyJWT,changepassword)
 router.route("/editprofile").patch(verifyJWT,editprofile)
