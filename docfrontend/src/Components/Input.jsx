@@ -23,7 +23,6 @@ const Input = React.forwardRef(function Input({
                 id={id}
             />
             <p className='text-red-500 font-semibold text-sm mt-2 ml-2'>{err}</p>
-
         </div>
     )
 })

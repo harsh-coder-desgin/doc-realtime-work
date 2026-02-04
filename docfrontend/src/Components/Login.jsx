@@ -8,7 +8,7 @@ import authuser from '../auth/authuser.js'
 
 function Login() {
     const navigate = useNavigate()
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit,formState: { errors } } = useForm()
     const dispatch = useDispatch()
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("")
@@ -41,23 +41,31 @@ function Login() {
                     </p>
                 )}
                 <form onSubmit={handleSubmit(login)} className="space-y-7">
-                    <Input label="Email"
+                    <Input label="Email" err={errors?.email?.message}
                         {...register("email", {
-                            required: true,
+                            required: "Enter your email",
                             validate: {
                                 matchPatern: (value) =>
-                                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value) ||
+                                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)||
                                     "Invalid email address",
                             },
                         })}
-                        placeholder="Enter your email" type="email" className='px-3 py-3 mt-2 bg-white text-black outline-none duration-200 border border-blue-900 w-full' />
-                    <Input label="Password"  type={showPassword ? "text" : "password"}  
-                        {...register("password", { required: true })} placeholder="Enter your password" 
-                        className='px-3 mt-2 py-3 bg-white text-black outline-none duration-200 border border-blue-900 w-full' />
+                        placeholder="Enter your email" type="email" className={`${errors.email ? "border-pink-500 text-pink-600" : "border-black"} px-3 py-3 mt-2 bg-white text-black outline-none duration-200 border border-blue-900 w-full`}/>
+                    <Input label="Password"  type={showPassword ? "text" : "password"} err={errors?.password?.message} 
+                        {...register("password", {
+                            required: "Enter your password",
+                            validate: {
+                                matchPatern: (value) =>
+                                   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(value) ||
+                                "Password needs 8 length upper, lower, digit & symbol"                            
+                            },
+                        })
+                        } placeholder="Enter your password" 
+                        className={`${errors.password ? "border-pink-500 text-pink-600" : "border-black"} px-3 mt-2 py-3 bg-white text-black outline-none duration-200 border border-blue-900 w-full`}/>
                     <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-144 -mt-16 mr-3">
+                        className={`${errors.password?.message ? "-mt-23" : "-mt-16"} absolute right-144 mr-3`}>
                         {showPassword ? (
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12z" />

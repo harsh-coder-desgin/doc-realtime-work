@@ -30,26 +30,31 @@ const userregister = asyncHandler(async (req, res) => {
     ) {
         throw new ApiError(400, "All fields (user name, email, password) are required")
     }
+    
+    if (typeof username !== "string") {
+        throw new ApiError(400, "user name must be String value")
+    }
 
     if (username.trim().length < 5) {
         throw new ApiError(400, "user name must be at least 5 characters long")
     }
 
-    if (password.trim().length < 8) {
+    if (password.trim().length !== 8) {
         throw new ApiError(400, "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character")
     }
 
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
+    
     if (!strongPasswordRegex.test(password)) {
         throw new ApiError(400, "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character");
     }
+
     const existeduser = await User.findOne({
         $or: [{ email }]
     })
 
     if (existeduser) {
-        throw new ApiError(400, "A user with this email or user name already exists")
+        throw new ApiError(400, "A user with this email is already exists")
     }
 
     const user = await User.create({
@@ -83,10 +88,10 @@ const userlogin = asyncHandler(async (req, res) => {
     if (
         [email, password].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "Email, user name, and password are required")
+        throw new ApiError(400, "Email and password are required")
     }
 
-    if (password.trim().length < 8) {
+    if (password.trim().length !== 8) {
         throw new ApiError(400, "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character")
     }
 
@@ -101,12 +106,13 @@ const userlogin = asyncHandler(async (req, res) => {
     })
 
     if (!users) {
-        throw new ApiError(400, "No account matches the provided email and creator name")
+        throw new ApiError(400, "No account matches the provided email")
     }
 
     if (users.email !== email) {
         throw new ApiError(400, "The email is incorrect.");
     }
+    
     const checkpasswordiscorrect = await users.isPasswordCorrect(password)
 
     if (!checkpasswordiscorrect) {
