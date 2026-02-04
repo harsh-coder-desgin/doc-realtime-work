@@ -1,7 +1,7 @@
 import { Router } from "express"
-import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete 
-    ,organstiondoccreate,organstionalldoc,organstionsavedoc,organstionlgetdocone,
-    organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc} from "../controllers/doc.controller.js"
+import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
+    organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc ,
+    newpersonalsavedoc} from "../controllers/doc.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -10,6 +10,7 @@ const router = Router()
 router.route("/createdoc").post(verifyJWT,personaldoccreate)
 router.route("/alldoc").get(verifyJWT,personalalldoc)
 router.route("/savedoc/:id").post(verifyJWT,personalsavedoc)
+router.route("/newdocsave").post(verifyJWT,newpersonalsavedoc)
 router.route("/getdoc/:id").get(verifyJWT,personalgetdocone)
 router.route("/docdelete/:id").delete(verifyJWT,personaldocdelete)
 

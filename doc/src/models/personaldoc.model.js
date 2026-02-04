@@ -11,7 +11,6 @@ const PersonalDocSchema = new Schema({
     },
     Doc:{
         type:String,
-        required:true
     },
     Docname:{
         type:String,

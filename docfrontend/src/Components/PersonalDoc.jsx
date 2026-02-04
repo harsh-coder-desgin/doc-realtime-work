@@ -1,20 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import authdoc from '../auth/authdoc'
 
 function PersonalDoc({ data }) {
-  const doc = [{ id: 1, name: "Resume" }, { id: 2, name: "Resume" }, { id: 3, name: "Resume" }, { id: 4, name: "Resume" }, { id: 5, name: "Resume" }]
-  const alldoc = [{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, 
-    { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }]
-    
+  const [alldoc,Setalldoc]=useState([])
+  const doc = [{ id: 11, name: "Create new", img: "" }, { id: 1, name: "Letter", img: "/coverimage-1.png" }, { id: 2, name: "Resume", img: "/coverimage-2.png" }, { id: 3, name: "Resume Template 2", img: "/coverimage-3.png" }, { id: 4, name: "Project Prosposal", img: "/coverimage-4.png" },
+  { id: 5, name: "Brochure", img: "/coverimage-5.png" }, { id: 6, name: "Report", img: "/coverimage-6.png" }]
+  
+  const createdoc = async() =>{
+    const createdoc = await authdoc.createdoc({docname:"new document"})
+    console.log(createdoc);
+    if (createdoc) {
+      localStorage.setItem("Doc",createdoc.data.data._id)
+    }
+  }
+
+  useEffect(()=>{
+    authdoc.alldoc().then((data)=>{
+      console.log(data.data.data);
+      Setalldoc(data.data.data)
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  },[])
+
   return (
     <div>
-      <h1 className='ml-30 text-2xl mt-8 text-blue-900'>Create New {data} Document</h1>
+      <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New {data} Document</h1>
       <div>
-        <div className='grid grid-cols-5 text-center mt-5 w-320 ml-30 gap-y-15 gap-x-10'>
+        <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
           {doc.map((item) => (
-            <Link to={`/dashboard/workingdoc/:id`} key={item.id}>
-              <div>
-                <div className='border h-80 w-60'>
+            <Link to={`/dashboard/workingdoc/${item.id}`} key={item.id}>
+              <div onClick={createdoc}>
+                <div className='border'>
+                  {!item.img ? <div className="h-60 w-50 flex items-center justify-center"><p className="text-4xl mr-4">+</p></div> :
+                    <img src={item.img} className='h-60 w-50' />}
                 </div>
                 <h1 className='ml-4'>{item.name}</h1>
               </div>
@@ -22,18 +43,18 @@ function PersonalDoc({ data }) {
           ))}
         </div>
         <div className='mb-22'>
-          <h1 className='text-xl ml-29 mt-5 mb-5'>All {data} Document</h1>
-          <div className=''>
-            {alldoc.map((item) => (
-              <Link to={`/dashboard/workingdoc/:id`} key={item.id}>
-              <div className='flex justify-around'>
-                <div className='flex mr-190 mt-2 space-x-1'>
-                  <p className='text-xl mt-[1px]'>{item.id}.</p>
-                  <img src={item.image} className='w-10 h-10 ml-3' />
-                  <p className='mt-[3px] ml-3'>{item.name}</p>
+          <h1 className='text-xl ml-17 mt-5 mb-5'>All {data} Document</h1>
+          <div className='-ml-10'>
+            {alldoc?.map((item,index) => (
+              <Link to={`/dashboard/workingdoc/${item._id}`} key={item._id}>
+                <div className='flex justify-around'>
+                  <div className='flex mr-190 mt-2 space-x-1'>
+                    <p className='text-xl mt-[1px]'>{index+=1}.</p>
+                    <img src="/featureimg1.png" className='w-10 h-10 ml-3' />
+                    <p className='mt-[3px] ml-3'>{item.Docname}</p>
+                  </div>
+                  <p>{item.createdAt.split("T")[0]}</p>
                 </div>
-                <p>{item.time}</p>
-              </div>
               </Link>
             ))}
           </div>

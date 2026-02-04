@@ -11,14 +11,14 @@ import { Invite } from "../models/Invite.model.js"
 //personal doc create
 const personaldoccreate = asyncHandler(async (req, res) => {
 
-    const { doc, docname } = req.body
+    const { docname }  = req.body
     const userId = req.users._id
-    const username = req.users.username
+    const username = req.users.username    
 
     if (
-        [doc, docname,userId,username].some((field) => field?.trim() === "")
+        [docname,username].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields (doc docname) are required")
+        throw new ApiError(400, "All fields (docname) are required")
     }
 
     if (username.trim().length < 5) {
@@ -27,9 +27,8 @@ const personaldoccreate = asyncHandler(async (req, res) => {
 
     const user = await PersonalDoc.create({
         username: username.toLowerCase(),
-        Doc:doc,
         Docname:docname,
-        // userId
+        userid:userId
     })
 
     if (!user) {
@@ -61,7 +60,7 @@ const personalalldoc = asyncHandler(async (req, res) => {
 //personal save doc
 const personalsavedoc = asyncHandler(async (req, res) => {
 
-    const { doc } = req.body
+    const { doc , docid } = req.body
     const docId = req.params.id;
 
      if (
@@ -71,7 +70,43 @@ const personalsavedoc = asyncHandler(async (req, res) => {
     }
 
     const updateddoc = await PersonalDoc.findByIdAndUpdate(
-        docId,
+        docId || docid,
+        {
+            $set: {
+                Doc:doc,
+            }
+        }
+        ,
+        { new: true }
+    )
+
+    await updateddoc.save().catch(() => {
+        throw new ApiError(500, "An unexpected error occurred while updating the doc. Please try again later.");
+    });
+
+    if (!updateddoc) {
+        throw new ApiError(404, "Doc not found. Please check the doc ID and try again.");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updateddoc, "Doc Saved successfully"));
+})
+
+
+//personal save doc
+const newpersonalsavedoc = asyncHandler(async (req, res) => {
+
+    const { doc , docid } = req.body
+
+    if (
+        [doc].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields Doc are required")
+    }
+
+    const updateddoc = await PersonalDoc.findByIdAndUpdate(
+        docid,
         {
             $set: {
                 Doc:doc,
@@ -279,4 +314,5 @@ const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
 })
 
 export { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
-    organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete,Invitesendorganstiondoc,Invitegetorganstiondoc }
+        organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete,Invitesendorganstiondoc,Invitegetorganstiondoc,
+        newpersonalsavedoc}

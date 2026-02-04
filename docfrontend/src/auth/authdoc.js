@@ -31,6 +31,15 @@ const User = {
             throw error
         }
     },
+    newdocsave: async (data) => {        
+        try {
+            const res = await axios.post(`${API}/newdocsave`,data,{ withCredentials: true});
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
     getdoc: async () => {        
         try {
             const res = await axios.get(`${API}/getdoc/:id`,{ withCredentials: true});
