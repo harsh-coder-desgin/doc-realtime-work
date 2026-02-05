@@ -58,13 +58,13 @@ function PersonalDoc({ data }) {
           <div className='-ml-10'>
             {alldoc?.map((item,index) => (
               <Link to={`/dashboard/workingdoc/${item._id}`} key={item._id}>
-                <div className='flex justify-around'>
-                  <div className='flex mr-190 mt-2 space-x-1'>
-                    <p className='text-xl mt-[1px]'>{index+=1}.</p>
-                    <img src="/featureimg1.png" className='w-10 h-10 ml-3' />
+                <div className='flex justify-between'>
+                  <div className='flex mt-2 ml-32 space-x-1'>
+                    <p className='text-xl mt-[1px]'>{index+1}.</p>
+                    <img src="/featureimg1.png" className='w-10 h-10 ml-3'/>
                     <p className='mt-[3px] ml-3'>{item.Docname}</p>
                   </div>
-                  <p>{item.createdAt.split("T")[0]}</p>
+                  <p className='mr-23'>{item.createdAt.split("T")[0]}</p>
                 </div>
               </Link>
             ))}
