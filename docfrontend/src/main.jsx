@@ -18,19 +18,25 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: (
+        <Userauthlayout>
           <Home />
+        </Userauthlayout> 
         )
       },
       {
         path: '/template',
         element: (
+        <Userauthlayout>
           <Template />
+        </Userauthlayout> 
         )
       },
       {
         path: '/template/doc/:id',
         element: (
+        <Userauthlayout>
           <TemplateDoc />
+        </Userauthlayout> 
         )
       },
     ],

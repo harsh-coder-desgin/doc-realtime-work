@@ -22,9 +22,9 @@ const User = {
             throw error
         }
     },
-    savedoc: async (data) => {        
+    savedoc: async (data,id) => {        
         try {
-            const res = await axios.post(`${API}/savedoc/:id`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/savedoc/${id}`,data,{ withCredentials: true});
             return res
         } catch (error) {
             console.log(error);
@@ -40,9 +40,9 @@ const User = {
             throw error
         }
     },
-    getdoc: async () => {        
+    getdoc: async (id) => {        
         try {
-            const res = await axios.get(`${API}/getdoc/:id`,{ withCredentials: true});
+            const res = await axios.get(`${API}/getdoc/${id}`,{ withCredentials: true});
             return res
         } catch (error) {
             console.log(error);

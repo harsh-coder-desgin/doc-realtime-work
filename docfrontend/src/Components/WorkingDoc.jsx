@@ -1,25 +1,52 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Editor } from "@tinymce/tinymce-react"
 import { Button } from './index.js'
 import authdoc from '../auth/authdoc.js'
+import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 function WorkingDoc() {
 
-  const handlesavedoc = async()=>{
+  const { id } = useParams();
+  const [docdata, Setdocdata] = useState("Hello User")
+
+  const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
+  { id: 2, name: "Resume", content: '<h1>Your Name</h1><p><em>Full-Stack Developer | Problem Solver | Tech Enthusiast</em><br />123 Your Street | Your City, ST 12345<br />(123) 456-7890 | yourname@email.com</p><hr /><h2>EXPERIENCE</h2><p><strong>ABC Technologies, Remote — Software Developer</strong><br /><em>June 2023 – Present</em><br />Developed and maintained web applications using modern JavaScript frameworks. Collaborated with cross-functional teams to deliver features on time and improve application performance and user experience.</p><p><strong>XYZ Solutions, City — Junior Developer</strong><br /><em>Jan 2022 – May 2023</em><br />Assisted in building responsive user interfaces, fixing bugs, and writing clean, maintainable code. Gained hands-on experience working with real-world production systems.</p><p><strong>Startup Studio, City — Intern</strong><br /><em>Jun 2021 – Dec 2021</em><br />Supported senior developers in developing internal tools and learned best practices for version control, debugging, and documentation.</p><h2>EDUCATION</h2><p><strong>University Name, Location — Bachelor of Computer Science</strong><br /><em>2018 – 2022</em><br />Studied core computer science subjects including data structures, algorithms, databases, and web development.</p><p><strong>Higher Secondary School, Location — Science Stream</strong><br /><em>2016 – 2018</em><br />Completed coursework with a strong foundation in mathematics and problem-solving.</p><h2>PROJECTS</h2><p><strong>Online Food Delivery App — Full-Stack Project</strong><br />Built a complete food delivery platform with user authentication, restaurant dashboards, order management, and real-time updates using modern web technologies.</p><h2>SKILLS</h2><ul><li>JavaScript, HTML, CSS</li><li>React, Next.js</li><li>Node.js, Express</li><li>MongoDB, REST APIs</li></ul><h2>AWARDS</h2><p><strong>Best Final Year Project</strong><br />Awarded for designing and implementing a scalable web application as part of the final academic project.</p><p><strong>Hackathon Participation Certificate</strong><br />Recognized for active participation and teamwork in a national-level hackathon.</p><h2>LANGUAGES</h2><p>English, Hindi, Gujarati</p>' },
+  { id: 3, name: "Resume Template 2", content: '<h1>Hello</h1><h2>I’m Your Name</h2><p>123 Your Street<br />Your City, ST 12345<br />(123) 456-7890<br />yourname@email.com</p><h3>Skills</h3><p>Strong foundation in web development with experience building responsive user interfaces, writing clean code, and solving real-world problems using modern technologies.</p><h3>Experience</h3><p><strong>June 2023 – Present</strong><br />ABC Tech, Remote — Frontend Developer</p><ul><li>Designed and implemented reusable UI components for web applications.</li><li>Worked closely with designers and backend developers to deliver features.</li><li>Improved website performance and accessibility across devices.</li></ul><p><strong>Jan 2022 – May 2023</strong><br />XYZ Solutions, City — Junior Developer</p><ul><li>Assisted in developing and maintaining client-facing web applications.</li><li>Fixed bugs and enhanced existing features based on user feedback.</li></ul><p><strong>Jun 2021 – Dec 2021</strong><br />Startup Studio, City — Software Intern</p><ul><li>Supported senior developers in daily development tasks.</li><li>Learned version control, debugging, and code review practices.</li><li>Contributed to internal tools and documentation.</li></ul><h3>Education</h3><p><strong>2018 – 2022</strong><br />University Name, Location — Bachelor of Computer Science</p><p>Completed coursework in data structures, algorithms, databases, and full-stack web development.</p><h3>Awards</h3><p>Academic Excellence Award for consistent performance and project work.<br />Recognized for teamwork and active participation in technical events.</p>' },
+  { id: 4, name: "Project Prosposal", content: '<img src="/project.png"/><h1>Project Name</h1><p>09.04.20XX</p><p>─</p><p><strong>Your Name</strong><br />Your Company<br />123 Your Street<br />Your City, ST 12345</p><h2>Overview</h2><p>This project proposal outlines the scope, objectives, and execution plan for building a practical and user-focused solution. The goal is to deliver a reliable product that meets business requirements while remaining scalable and easy to maintain.</p><h2>Goals</h2><ul><li>Define clear project objectives and expected outcomes.</li><li>Deliver a solution that improves efficiency and user experience.</li></ul><h2>Specifications</h2><p>The project will be developed using modern tools and best practices. The system will focus on performance, security, and maintainability while allowing room for future enhancements based on user feedback.</p><h3>Technical Approach</h3><p>The solution will follow a structured development process including planning, design, implementation, testing, and deployment. Regular reviews will ensure quality and timely delivery.</p><h2>Milestones</h2><p><strong>Planning & Design</strong><br />Gather requirements, define architecture, and create initial designs to align with project goals.</p><p><strong>Development & Delivery</strong><br />Implement core features, perform testing, and prepare the final deliverable for launch.</p>' },
+  { id: 5, name: "Brochure", content: '<p><strong>Your Company</strong><br />123 Your Street<br />Your City, ST 12345<br />(123) 456-7890</p><h1>Product Brochure</h1><p>September 04, 20XX</p><h2>Product Overview</h2><p>This brochure provides an overview of our product, highlighting its key features, benefits, and use cases. It is designed to help customers quickly understand how the product solves real problems and adds value to their daily work.</p><img src="/Brochure.png"/><h3>Key Features</h3><p>The product offers an intuitive interface, reliable performance, and flexible configuration options. It is built to adapt to different business needs while remaining easy to use.</p><h3>Why Choose This Product</h3><p>Customers choose this product for its simplicity, scalability, and strong support. It helps teams work more efficiently and reduces the time spent on manual processes.</p><h3>Use Cases</h3><p>The product can be used by individuals, small teams, and large organizations to streamline workflows, improve collaboration, and deliver consistent results.</p><h2>Details</h2><p>Developed using modern technologies and best practices, the product focuses on security, performance, and long-term reliability. Regular updates ensure continued improvement based on customer feedback.</p><p>For more information, pricing details, or a personalized demo, please contact our team using the details provided above.</p>' },
+  { id: 6, name: "Report", content: '<p style="text-align: center;"><strong>COURSE NAME</strong><br /><strong>REPORT TITLE</strong><br />A Study on Practical Concepts and Applications</p><img src="/report.png" style="margin-left:490px"/><h2>Introduction</h2><p>This report presents an overview of the selected topic and explains its importance within the course curriculum. The objective is to understand key concepts, analyze their applications, and connect theoretical knowledge with real-world examples in a structured manner.</p><h3>Background and Context</h3><p>The topic covered in this report has significant relevance in today’s academic and professional environments. It provides foundational knowledge while also encouraging critical thinking and problem-solving skills. Through this study, the reader gains clarity on how core ideas are developed and applied.</p><p>In addition, the report highlights important observations gathered during research and learning activities. These insights help strengthen understanding and improve the ability to apply concepts effectively.</p><h3>Discussion and Analysis</h3><p>This section discusses the main findings and explains them in detail using clear examples. The analysis focuses on interpreting results, identifying patterns, and drawing meaningful conclusions that align with the objectives of the report.</p>' },
+  ]
+
+  const handlesavedoc = async () => {
     const data = tinyMCE.activeEditor.getContent();
-    console.log(data);
-   const saveddoc= localStorage.getItem("Doc")
+    const saveddoc = localStorage.getItem("Doc")
     if (saveddoc) {
-      const save = await authdoc.newdocsave({docid:saveddoc,doc:data})
-      console.log(save);
+      const save = await authdoc.newdocsave({ docid: saveddoc, doc: data })
       localStorage.removeItem("Doc");
+    } else {
+      const old_doc = await authdoc.savedoc({ doc: data, id: id })
     }
   }
 
+  useEffect(() => {
+    authdoc.getdoc(id).then((data) => {
+      console.log(data);
+      tinyMCE.activeEditor.setContent(data.data.data.Doc);
+    })
+      .catch((err) => {
+        console.log(err);
+      })
+    const getdefaultdoc = allcontent.find(item => (item.id == id))
+    if (getdefaultdoc) {
+      Setdocdata(getdefaultdoc.content)
+    }
+  },[])
+  
   return (
     <div>
       <div className='text-center'>
-      <Button className='px-4 py-1 text-lg mt-1 mb-1 hover:bg-green-700 rounded-md' bgColor='bg-green-600'onClick={handlesavedoc}>Save</Button>
+        <Button className='px-4 py-1 text-lg mt-1 mb-1 hover:bg-green-700 rounded-md' bgColor='bg-green-600' onClick={handlesavedoc}>Save</Button>
       </div>
       <div className='w-full border border-gray-500 rounded-[10px]'>
         <Editor
@@ -38,7 +65,7 @@ function WorkingDoc() {
               { value: 'Email', title: 'Email' },
             ],
           }}
-          initialValue="Hello User"
+          initialValue={docdata}
         />
       </div>
     </div>

@@ -40,7 +40,7 @@ export default function userauthlayout({ children }) {
                         if (location.pathname === "/login") {
                             navigate("/login");
                         } else {
-                            navigate("/signup");
+                            navigate("/");
                         }
                     }
                 }

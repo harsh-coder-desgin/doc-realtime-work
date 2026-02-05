@@ -11,7 +11,7 @@ import { Invite } from "../models/Invite.model.js"
 //personal doc create
 const personaldoccreate = asyncHandler(async (req, res) => {
 
-    const { docname }  = req.body
+    const { docname,doc }  = req.body
     const userId = req.users._id
     const username = req.users.username    
 
@@ -28,7 +28,8 @@ const personaldoccreate = asyncHandler(async (req, res) => {
     const user = await PersonalDoc.create({
         username: username.toLowerCase(),
         Docname:docname,
-        userid:userId
+        userid:userId,
+        Doc:doc
     })
 
     if (!user) {
@@ -60,7 +61,7 @@ const personalalldoc = asyncHandler(async (req, res) => {
 //personal save doc
 const personalsavedoc = asyncHandler(async (req, res) => {
 
-    const { doc , docid } = req.body
+    const { doc } = req.body
     const docId = req.params.id;
 
      if (
@@ -70,7 +71,7 @@ const personalsavedoc = asyncHandler(async (req, res) => {
     }
 
     const updateddoc = await PersonalDoc.findByIdAndUpdate(
-        docId || docid,
+        docId,
         {
             $set: {
                 Doc:doc,
