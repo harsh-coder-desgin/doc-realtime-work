@@ -48,7 +48,7 @@ function PersonalDoc({ data }) {
                   {!item.img ? <div className="h-60 w-50 flex items-center justify-center"><p className="text-4xl mr-4">+</p></div> :
                     <img src={item.img} className='h-60 w-50' />}
                 </div>
-                <h1 className='ml-4'>{item.name}</h1>
+                <h1 className=''>{item.name}</h1>
               </div>
             </Link>
           ))}

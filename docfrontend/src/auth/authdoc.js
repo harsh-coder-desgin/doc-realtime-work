@@ -4,54 +4,63 @@ const API = "/api/doc";
 
 const User = {
     //Personal doc
-    createdoc: async (data) => {        
+    createdoc: async (data) => {
         try {
-            const res = await axios.post(`${API}/createdoc`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/createdoc`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    alldoc: async () => {        
+    alldoc: async () => {
         try {
-            const res = await axios.get(`${API}/alldoc`,{ withCredentials: true});
+            const res = await axios.get(`${API}/alldoc`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    savedoc: async (data,id) => {        
+    savedoc: async (data, id) => {
         try {
-            const res = await axios.post(`${API}/savedoc/${id}`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/savedoc/${id}`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    newdocsave: async (data) => {        
+    newdocsave: async (data) => {
         try {
-            const res = await axios.post(`${API}/newdocsave`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/newdocsave`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    getdoc: async (id) => {        
+    renamedoc: async (data) => {        
         try {
-            const res = await axios.get(`${API}/getdoc/${id}`,{ withCredentials: true});
+            const res = await axios.patch(`${API}/renamedoc/${data.id}`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    docdelete: async (data) => {        
+    getdoc: async (id) => {
         try {
-            const res = await axios.delete(`${API}/docdelete`,data,{ withCredentials: true});
+            const res = await axios.get(`${API}/getdoc/${id}`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    docdelete: async (data) => {
+        try {
+            const res = await axios.delete(`${API}/docdelete`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
@@ -60,45 +69,45 @@ const User = {
     },
 
     //Organstion doc
-    orgcreatedoc: async (data) => {        
+    orgcreatedoc: async (data) => {
         try {
-            const res = await axios.post(`${API}/orgcreatedoc`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/orgcreatedoc`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    orgalldoc: async () => {        
+    orgalldoc: async () => {
         try {
-            const res = await axios.get(`${API}/orgalldoc`,{ withCredentials: true});
+            const res = await axios.get(`${API}/orgalldoc`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    orgsavedoc: async (data) => {        
+    orgsavedoc: async (data) => {
         try {
-            const res = await axios.post(`${API}/orgsavedoc/:id`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/orgsavedoc/:id`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    orggetdoc: async () => {        
+    orggetdoc: async () => {
         try {
-            const res = await axios.get(`${API}/orggetdoc/:id`,{ withCredentials: true});
+            const res = await axios.get(`${API}/orggetdoc/:id`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    orgdeletedoc: async (data) => {        
+    orgdeletedoc: async (data) => {
         try {
-            const res = await axios.delete(`${API}/orgdeletedoc/:id`,data,{ withCredentials: true});
+            const res = await axios.delete(`${API}/orgdeletedoc/:id`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
@@ -107,18 +116,18 @@ const User = {
     },
 
     //inivite
-    createinvite: async (data) => {        
+    createinvite: async (data) => {
         try {
-            const res = await axios.post(`${API}/createinvite`,data,{ withCredentials: true});
+            const res = await axios.post(`${API}/createinvite`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
             throw error
         }
     },
-    getinvite: async () => {        
+    getinvite: async () => {
         try {
-            const res = await axios.get(`${API}/getinvite`,{ withCredentials: true});
+            const res = await axios.get(`${API}/getinvite`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);

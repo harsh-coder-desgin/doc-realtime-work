@@ -11,12 +11,12 @@ import { Invite } from "../models/Invite.model.js"
 //personal doc create
 const personaldoccreate = asyncHandler(async (req, res) => {
 
-    const { docname,doc }  = req.body
+    const { docname, doc } = req.body
     const userId = req.users._id
-    const username = req.users.username    
+    const username = req.users.username
 
     if (
-        [docname,username].some((field) => field?.trim() === "")
+        [docname, username].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (docname) are required")
     }
@@ -27,9 +27,9 @@ const personaldoccreate = asyncHandler(async (req, res) => {
 
     const user = await PersonalDoc.create({
         username: username.toLowerCase(),
-        Docname:docname,
-        userid:userId,
-        Doc:doc
+        Docname: docname,
+        userid: userId,
+        Doc: doc
     })
 
     if (!user) {
@@ -64,7 +64,7 @@ const personalsavedoc = asyncHandler(async (req, res) => {
     const { doc } = req.body
     const docId = req.params.id;
 
-     if (
+    if (
         [doc].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields Doc are required")
@@ -74,7 +74,7 @@ const personalsavedoc = asyncHandler(async (req, res) => {
         docId,
         {
             $set: {
-                Doc:doc,
+                Doc: doc,
             }
         }
         ,
@@ -98,7 +98,7 @@ const personalsavedoc = asyncHandler(async (req, res) => {
 //personal save doc
 const newpersonalsavedoc = asyncHandler(async (req, res) => {
 
-    const { doc , docid } = req.body
+    const { doc, docid } = req.body
 
     if (
         [doc].some((field) => field?.trim() === "")
@@ -110,7 +110,7 @@ const newpersonalsavedoc = asyncHandler(async (req, res) => {
         docid,
         {
             $set: {
-                Doc:doc,
+                Doc: doc,
             }
         }
         ,
@@ -163,20 +163,20 @@ const personaldocdelete = asyncHandler(async (req, res) => {
 //organstion doc create
 const organstiondoccreate = asyncHandler(async (req, res) => {
 
-    const { doc, docname  } = req.body
+    const { doc, docname } = req.body
     const userId = req.users._id
     const username = req.users.username
 
     if (
-        [doc,docname,username].some((field) => field?.trim() === "")
+        [doc, docname, username].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (doc docname username) are required")
     }
 
     const docget = await OrganstionDoc.create({
         createrdocusername: username.toLowerCase(),
-        Doc:doc,
-        Docname:docname,
+        Doc: doc,
+        Docname: docname,
         // userId
     })
 
@@ -211,7 +211,7 @@ const organstionsavedoc = asyncHandler(async (req, res) => {
     const { doc } = req.body
     const docId = req.params.id;
 
-     if (
+    if (
         [doc].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields Doc are required")
@@ -221,7 +221,7 @@ const organstionsavedoc = asyncHandler(async (req, res) => {
         docId,
         {
             $set: {
-                Doc:doc,
+                Doc: doc,
             }
         }
         ,
@@ -273,20 +273,20 @@ const organstiondocdelete = asyncHandler(async (req, res) => {
 //Invite send organstion doc
 const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 
-    const {docname,invitedemail,username} = req.body
+    const { docname, invitedemail, username } = req.body
     const userId = req.users._id
 
     if (
-        [invitedemail,userId,username].some((field) => field?.trim() === "")
+        [invitedemail, userId, username].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (invitedemail,userId,username) are required")
     }
 
     const invited = await Invite.create({
-        Docname:docname,
-        invitedemail:invitedemail,
-        createrdoc:username,userId,
-        invitedaccpetreject:false
+        Docname: docname,
+        invitedemail: invitedemail,
+        createrdoc: username, userId,
+        invitedaccpetreject: false
         // userId
     })
 
@@ -303,7 +303,7 @@ const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
 
     const useremail = req.users.email
-    const invited = await Invite.find({invitedemail:useremail})
+    const invited = await Invite.find({ invitedemail: useremail })
 
     if (!invited) {
         throw new ApiError(400, "Invited not found. Please check the ID and try again");
@@ -314,6 +314,41 @@ const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
 })
 
-export { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
-        organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete,Invitesendorganstiondoc,Invitegetorganstiondoc,
-        newpersonalsavedoc}
+//renamedoc doc
+const renamedoc = asyncHandler(async (req, res) => {
+
+    const { docname } = req.body
+    const docID = req.params.id
+
+    if (
+        [docname].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "Doc name required")
+    }
+
+    if (docname.trim().length < 2) {
+        throw new ApiError(400, "Doc name must be at least 2 characters long")
+    }
+
+    const users = await PersonalDoc.findByIdAndUpdate(
+        docID,
+        {
+            $set: {
+                Docname: docname,
+            }
+        }
+        ,
+        { new: true }
+    )
+        .select("-password -refreshToken");
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, users, "Doc name updated successfully"));
+})
+
+export {
+    personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
+    organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
+    newpersonalsavedoc,renamedoc
+}
