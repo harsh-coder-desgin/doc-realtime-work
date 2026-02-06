@@ -94,8 +94,7 @@ const personalsavedoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, updateddoc, "Doc Saved successfully"));
 })
 
-
-//personal save doc
+//personal new save doc
 const newpersonalsavedoc = asyncHandler(async (req, res) => {
 
     const { doc, docid } = req.body

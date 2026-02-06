@@ -13,7 +13,7 @@ router.route("/savedoc/:id").post(verifyJWT,personalsavedoc)
 router.route("/newdocsave").post(verifyJWT,newpersonalsavedoc)
 router.route("/renamedoc/:id").patch(verifyJWT,renamedoc)
 router.route("/getdoc/:id").get(verifyJWT,personalgetdocone)
-router.route("/docdelete/:id").delete(verifyJWT,personaldocdelete)
+router.route("/docdelete/:id").get(verifyJWT,personaldocdelete)
 
 //Organstion doc
 router.route("/orgcreatedoc").post(verifyJWT,organstiondoccreate)

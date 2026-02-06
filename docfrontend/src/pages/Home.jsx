@@ -52,7 +52,7 @@ function Home() {
       </div>
       <h1 className='text-center text-2xl mt-20 ml-172 text-green-100 bg-green-900 px-2 py-2 w-40 rounded-lg button-up'>Live Demo</h1>
       <div className='mt-10 w-300 ml-45 doc-up'>
-        <TinyMceDoc valueonly="Welcome User"/>
+        {/* <TinyMceDoc valueonly="Welcome User"/> */}
       </div>
       <h1 className='text-center text-4xl mt-20 scroll-mt-40' ref={featureRef}>Our Feature</h1>
       <div className='flex space-x-5 ml-72 mt-15 w-240 mb-20'>

@@ -22,9 +22,9 @@ const User = {
             throw error
         }
     },
-    savedoc: async (data, id) => {
+    savedoc: async (data) => {
         try {
-            const res = await axios.post(`${API}/savedoc/${id}`, data, { withCredentials: true });
+            const res = await axios.post(`${API}/savedoc/${data.id}`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
@@ -40,7 +40,9 @@ const User = {
             throw error
         }
     },
-    renamedoc: async (data) => {        
+    renamedoc: async (data) => {       
+        console.log(data);
+         
         try {
             const res = await axios.patch(`${API}/renamedoc/${data.id}`, data, { withCredentials: true });
             return res
@@ -60,7 +62,7 @@ const User = {
     },
     docdelete: async (data) => {
         try {
-            const res = await axios.delete(`${API}/docdelete`, data, { withCredentials: true });
+            const res = await axios.get(`${API}/docdelete/${data}`,{ withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
