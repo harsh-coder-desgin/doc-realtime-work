@@ -23,11 +23,8 @@ function PersonalDoc({ data }) {
     }
   }
 
-  const handledeletedoc = async (ID) =>{
-    console.log(ID);
-    
+  const handledeletedoc = async (ID) =>{    
     const deletedoc = await authdoc.docdelete(ID)
-    console.log(deletedoc);
     if (deletedoc) {
       const getnewall = await authdoc.alldoc()
       Setalldoc(getnewall.data.data)  

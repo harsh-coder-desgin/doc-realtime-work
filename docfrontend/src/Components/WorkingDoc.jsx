@@ -40,7 +40,7 @@ function WorkingDoc() {
         }
       }
     } catch (error) {
-      SetMessage({ text: error.response.data.message, type: "error" });
+      SetMessage({ text: "Some error Please try again later", type: "error" });
     }
   }
 
@@ -71,7 +71,13 @@ function WorkingDoc() {
     if (getdefaultdoc) {
       Setdocdata(getdefaultdoc.content)
     }
-  }, [])
+
+    if (message.text.length > 0) {
+      setTimeout(() => {  
+        SetMessage({ text: "", type: "" });
+      }, 3000);
+    }
+  }, [message.text.length])
 
   return (
     <div>
@@ -127,7 +133,7 @@ function WorkingDoc() {
       </div>
 
       <div className='w-full border border-gray-500 rounded-[10px]'>
-        <Editor
+        {/* <Editor
           apiKey={import.meta.env.VITE_TINYMCE_KEY}
           init={{
             height: 600,
@@ -144,7 +150,7 @@ function WorkingDoc() {
             ],
           }}
           initialValue={docdata}
-        />
+        /> */}
       </div>
     </div>
   )

@@ -40,9 +40,7 @@ const User = {
             throw error
         }
     },
-    renamedoc: async (data) => {       
-        console.log(data);
-         
+    renamedoc: async (data) => {                
         try {
             const res = await axios.patch(`${API}/renamedoc/${data.id}`, data, { withCredentials: true });
             return res
