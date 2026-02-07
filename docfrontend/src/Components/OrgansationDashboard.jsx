@@ -1,19 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from './index.js'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import authdoc from '../auth/authdoc.js'
 
 function OrgansationDashboard() {
   const navigate = useNavigate();
-  const alldoc = [{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" },
-  { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }]
+  const [orgalldoc, Setorgalldoc] = useState([{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" },
+  { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }])
+
+  const createnewdoc = async () => {
+    const craetenew = await authdoc.orgname( {organstionname:"New Organstion"})
+    console.log(craetenew);
+    if (craetenew) {
+      // if userid match to Orgnstion then load data and if in organstion alluserworking have my userid then load data
+      const alldoc = await authdoc.oneorgdocall()
+      if (alldoc) {
+        Setorgalldoc(alldoc.data.data)
+      }
+    }
+  }
+
+  useEffect(() => {
+    authdoc.oneorgdocall().then((data) => {
+      console.log(data.data.data);
+      Setorgalldoc(data.data.data)
+    })
+      .catch((err) => {
+        console.log(err);
+      })
+  }, [])
 
   return (
     <div>
       <div className='mb-22'>
         <h1 className='text-xl ml-29 mt-5 mb-5'>All Organstion Document</h1>
+        <Button bgColor='' textColor='' onClick={createnewdoc}
+          className='ml-29 px-4 py-2 bg-blue-200 hover:bg-blue-300 rounded-md mb-2'>Create New Organstion</Button>
         <div className=''>
-          {alldoc?.map((item) => (
+          {orgalldoc?.map((item) => (
             <div key={item.id}>
               <div className='flex justify-around'>
                 <Link to={`/dashboard/orgdoc`}>

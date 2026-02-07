@@ -15,13 +15,14 @@ const OrganstionDocSchema = new Schema({
             username: [{ type: String, required: true }]
         }
     ],
+    organstionname:{
+        type:String,
+    },
     Doc: {
         type: String,
-        required: true
     },
     Docname:{
         type:String,
-        required:true
     }
 },
     {

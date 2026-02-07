@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { PersonalDoc } from "../models/personaldoc.model.js";
 import { OrganstionDoc } from "../models/Organstion.model.js"
 import { Invite } from "../models/Invite.model.js"
+import { OrganstionName } from "../models/OrganastionName.model.js";
 // import jwt from "jsonwebtoken"
 // import mongoose from "mongoose";
 
@@ -162,21 +163,21 @@ const personaldocdelete = asyncHandler(async (req, res) => {
 //organstion doc create
 const organstiondoccreate = asyncHandler(async (req, res) => {
 
-    const { doc, docname } = req.body
+    const { docname ,organstionname} = req.body
     const userId = req.users._id
     const username = req.users.username
 
     if (
-        [doc, docname, username].some((field) => field?.trim() === "")
+        [docname, username,organstionname].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields (doc docname username) are required")
+        throw new ApiError(400, "All fields (docname username organstionname) are required")
     }
 
     const docget = await OrganstionDoc.create({
         createrdocusername: username.toLowerCase(),
-        Doc: doc,
         Docname: docname,
-        // userId
+        createuserid:userId,
+        organstionname:organstionname
     })
 
     if (!docget) {
@@ -185,6 +186,35 @@ const organstiondoccreate = asyncHandler(async (req, res) => {
 
     return res.status(201).json(
         new ApiResponse(200, docget, "Doc Create successfully")
+    )
+
+})
+
+//organstinamecreate
+const organstinamecreate = asyncHandler(async (req, res) => {
+
+    const { organstionname } = req.body
+    const userId = req.users._id
+    const username = req.users.username
+
+    if (
+        [organstionname,username].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields (username organstionname) are required")
+    }
+
+    const docget = await OrganstionName.create({
+        createuserid:userId,
+        createrdocusername:username,
+        organstionname:organstionname
+    })
+
+    if (!docget) {
+        throw new ApiError(500, "Failed to create doc. Please try again.");
+    }
+
+    return res.status(201).json(
+        new ApiResponse(200, docget, "Organstion Create successfully")
     )
 
 })
@@ -346,7 +376,7 @@ const renamedoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "Doc name updated successfully"));
 })
 
-//renamedoc doc
+//airepsons emessage doc
 const airesponsemessage = asyncHandler(async (req, res) => {
 
     const { usermessage } = req.body
@@ -356,8 +386,30 @@ const airesponsemessage = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, Aires, "Doc name updated successfully"));
 })
 
+//orgonedoc get docone
+const orgonedoconly = asyncHandler(async (req, res) => {
+
+    const userId = req.users._id
+    let docget = await OrganstionDoc.find({createuserid:userId})
+    let joinuserdoc 
+
+    if (!docget) {
+        joinuserdoc = await OrganstionDoc.find({alluserworking:userId})
+    }
+
+    if (joinuserdoc) {
+        docget =null
+    }else{
+        joinuserdoc =null
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, docget,joinuserdoc, "Doc details fetched successfully"));
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc,airesponsemessage
+    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate
 }

@@ -78,9 +78,27 @@ const User = {
             throw error
         }
     },
+    orgname: async (data) => {
+        try {
+            const res = await axios.post(`${API}/orgname`, data, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
     orgalldoc: async () => {
         try {
             const res = await axios.get(`${API}/orgalldoc`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    oneorgdocall: async () => {
+        try {
+            const res = await axios.get(`${API}/oneorgdocall`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
