@@ -15,6 +15,7 @@ import OrganstionMange from './OrganstionMange'
 import TinyMceDoc from './TinyMceDoc'
 import Userauthlayout from './Userauthlayout'
 import Logoutbtn from './Logoutbtn'
+import OrgWorkingDoc from './OrgWorkingDoc'
 
 export{
     Dashboard,
@@ -33,5 +34,6 @@ export{
     OrganstionMange,
     TinyMceDoc,
     Userauthlayout,
-    Logoutbtn
+    Logoutbtn,
+    OrgWorkingDoc
 }

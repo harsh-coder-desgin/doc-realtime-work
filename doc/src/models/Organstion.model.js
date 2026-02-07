@@ -23,6 +23,10 @@ const OrganstionDocSchema = new Schema({
     },
     Docname:{
         type:String,
+    },
+    orgnameid:{
+        type: Schema.Types.ObjectId, 
+        ref: "OrganstionName"
     }
 },
     {

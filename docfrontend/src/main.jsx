@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Dashboard, TemplateDoc, Login, Signup, WorkingDoc, DocFile, OrganstionMange, OrgansationDoc,Userauthlayout} from './Components/index.js'
+import { Dashboard, TemplateDoc, Login, Signup, WorkingDoc, DocFile, OrganstionMange, OrgansationDoc,Userauthlayout,OrgWorkingDoc} from './Components/index.js'
 import store from './store/store.js'
 import Template from './pages/Template.jsx'
 import App from './App.jsx'
@@ -83,6 +83,14 @@ const router = createBrowserRouter([
           <Userauthlayout>
             <OrgansationDoc/>
           </Userauthlayout> 
+        )
+      },
+      {
+        path: '/dashboard/orgworkingdoc/:id',
+        element: (
+          <Userauthlayout>
+            <OrgWorkingDoc />
+          </Userauthlayout>
         )
       },
       {

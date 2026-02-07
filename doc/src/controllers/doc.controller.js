@@ -163,21 +163,22 @@ const personaldocdelete = asyncHandler(async (req, res) => {
 //organstion doc create
 const organstiondoccreate = asyncHandler(async (req, res) => {
 
-    const { docname ,organstionname} = req.body
-    const userId = req.users._id
-    const username = req.users.username
+    const {Doc, docname ,organstionname,createuserid,createrdocusername} = req.body
+    const DocID = req.params.id
 
     if (
-        [docname, username,organstionname].some((field) => field?.trim() === "")
+        [Doc,docname, createrdocusername,organstionname,createuserid].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields (docname username organstionname) are required")
+        throw new ApiError(400, "All fields (Doc docname createuserid organstionname createrdocusername) are required")
     }
 
     const docget = await OrganstionDoc.create({
-        createrdocusername: username.toLowerCase(),
+        createrdocusername: createrdocusername,
         Docname: docname,
-        createuserid:userId,
-        organstionname:organstionname
+        createuserid:createuserid,
+        organstionname:organstionname,
+        Doc:Doc,
+        orgnameid:DocID
     })
 
     if (!docget) {
@@ -408,8 +409,38 @@ const orgonedoconly = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, docget,joinuserdoc, "Doc details fetched successfully"));
 })
 
+//organstion get name
+const organstionnameget = asyncHandler(async (req, res) => {
+
+    const orgnameId = req.params.id;
+    const orgnameget = await OrganstionName.findById(orgnameId)
+
+    if (!orgnameget) {
+        throw new ApiError(400, "orgname not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, orgnameget, "Doc details fetched successfully"));
+})
+
+//organstion name alldoc
+const organstionnamealldoc = asyncHandler(async (req, res) => {
+
+    const orgnameId = req.params.id;
+    const orgnameget = await OrganstionDoc.find({orgnameid:orgnameId})
+
+    if (!orgnameget) {
+        throw new ApiError(400, "Doc not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, orgnameget, "Doc details fetched successfully"));
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate
+    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc
 }

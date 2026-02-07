@@ -69,9 +69,9 @@ const User = {
     },
 
     //Organstion doc
-    orgcreatedoc: async (data) => {
+    orgcreatedoc: async (data,id) => {
         try {
-            const res = await axios.post(`${API}/orgcreatedoc`, data, { withCredentials: true });
+            const res = await axios.post(`${API}/orgcreatedoc/:${id}`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
@@ -81,6 +81,15 @@ const User = {
     orgname: async (data) => {
         try {
             const res = await axios.post(`${API}/orgname`, data, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    getorgname: async (id) => {
+        try {
+            const res = await axios.get(`${API}/getorgname/:${id}`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
@@ -123,9 +132,18 @@ const User = {
             throw error
         }
     },
-    orgdeletedoc: async (data) => {
+    orgdeletedoc: async (id) => {
         try {
-            const res = await axios.delete(`${API}/orgdeletedoc/:id`, data, { withCredentials: true });
+            const res = await axios.get(`${API}/orgdeletedoc/${id}`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    orgnamedocget: async (id) => {
+        try {
+            const res = await axios.get(`${API}/orgnamedocget/${id}`, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);
