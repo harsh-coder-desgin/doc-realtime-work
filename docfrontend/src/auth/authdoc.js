@@ -134,5 +134,16 @@ const User = {
             throw error
         }
     },
+
+    //ai api
+    airesponse: async (data) => {
+        try {
+            const res = await axios.post(`${API}/airesponse`,data, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
 };
 export default User;

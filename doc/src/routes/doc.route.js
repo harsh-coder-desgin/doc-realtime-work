@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
     organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc ,
-    newpersonalsavedoc,renamedoc} from "../controllers/doc.controller.js"
+    newpersonalsavedoc,renamedoc,airesponsemessage} from "../controllers/doc.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -25,5 +25,8 @@ router.route("/orgdeletedoc/:id").delete(verifyJWT,organstiondocdelete)
 //inivite
 router.route("/createinvite").post(verifyJWT,Invitesendorganstiondoc)
 router.route("/getinvite").get(verifyJWT,Invitegetorganstiondoc)
+
+//AI api
+router.route("/airesponse").post(verifyJWT,airesponsemessage)
 
 export default router 

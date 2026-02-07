@@ -346,8 +346,18 @@ const renamedoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "Doc name updated successfully"));
 })
 
+//renamedoc doc
+const airesponsemessage = asyncHandler(async (req, res) => {
+
+    const { usermessage } = req.body
+    const Aires = "How are you i am good"
+    return res
+        .status(200)
+        .json(new ApiResponse(200, Aires, "Doc name updated successfully"));
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc
+    newpersonalsavedoc,renamedoc,airesponsemessage
 }
