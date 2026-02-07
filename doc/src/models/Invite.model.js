@@ -24,6 +24,13 @@ const InviteSchema = new Schema({
     Docname:{
         type:String,
         required:true
+    },
+    orgid:{
+        type: Schema.Types.ObjectId, ref: "OrganstionName",
+        required:true
+    },
+    senderemail:{
+        type:String
     }
 },
     {

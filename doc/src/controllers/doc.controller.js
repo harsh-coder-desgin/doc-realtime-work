@@ -303,20 +303,24 @@ const organstiondocdelete = asyncHandler(async (req, res) => {
 //Invite send organstion doc
 const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 
-    const { docname, invitedemail, username } = req.body
+    const { docname, invitedemail, username ,docid ,orgid} = req.body
     const userId = req.users._id
+    const senderemail = req.users.email
 
     if (
-        [invitedemail, userId, username].some((field) => field?.trim() === "")
+        [invitedemail, userId, username,docid,orgid,senderemail].some((field) => field?.trim() === "")
     ) {
-        throw new ApiError(400, "All fields (invitedemail,userId,username) are required")
+        throw new ApiError(400, "All fields (invitedemail,userId,username,docid,orgid,senderemail) are required")
     }
 
     const invited = await Invite.create({
         Docname: docname,
         invitedemail: invitedemail,
         createrdoc: username, userId,
-        invitedaccpetreject: false
+        invitedaccpetreject: false,
+        docid:docid,
+        orgid:orgid,
+        senderemail:senderemail
         // userId
     })
 
@@ -331,6 +335,32 @@ const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 
 //Invite get organstion doc
 const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
+
+    const orgid = req.params.id
+    const invited = await Invite.find({ orgid: orgid })
+
+    if (!invited) {
+        throw new ApiError(400, "Invited not found. Please check the ID and try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
+
+    // const useremail = req.users.email
+    // const invited = await Invite.find({ invitedemail: useremail })
+
+    // if (!invited) {
+    //     throw new ApiError(400, "Invited not found. Please check the ID and try again");
+    // }
+
+    // return res
+    //     .status(200)
+    //     .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
+})
+
+//Invite get for input accpet or reject users organstion doc
+const accpetorreject = asyncHandler(async (req, res) => {
 
     const useremail = req.users.email
     const invited = await Invite.find({ invitedemail: useremail })
@@ -471,8 +501,43 @@ const orgrenamedoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "Doc name updated successfully"));
 })
 
+//response invite 
+const responseinvite = asyncHandler(async (req, res) => {
+
+    const { acceptorreject ,inviteID} = req.body
+
+    if (
+        [acceptorreject].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "accept or reject is required")
+    }
+
+    const update = await Invite.findByIdAndUpdate(
+        inviteID,
+        {
+            $set: {
+                invitedaccpetreject: acceptorreject,
+            }
+        }
+        ,
+        { new: true }
+    )
+
+    await update.save().catch(() => {
+        throw new ApiError(500, "An unexpected error occurred while updating the Invited. Please try again later.");
+    });
+
+    if (!update) {
+        throw new ApiError(404, "Invited not found. Please check the Invited ID and try again.");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, update, "Invited Saved successfully"));
+})
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc,orgrenamedoc
+    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc,orgrenamedoc,
+    accpetorreject,responseinvite
 }

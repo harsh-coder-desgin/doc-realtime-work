@@ -48,7 +48,8 @@ function OrgansationDashboard() {
                     <p className='mt-[3px] ml-3'>{item.name}</p>
                   </div>
                 </Link>
-                <Button bgColor='' textColor='' className='text-[14px] mb-4 border p-2 rounded-full shadow-md hover:bg-gray-100 hover:hand' onClick={() => { navigate('/dashboard/orgdoc/:id') }}>Manage</Button>
+                <Button bgColor='' textColor='' className='text-[14px] mb-4 border p-2 rounded-full shadow-md hover:bg-gray-100 hover:hand' 
+                onClick={() => { navigate('/dashboard/orgdoc/:id') }}>Manage</Button>
                 <p className='mt-1'>{item.time}</p>
               </div>
             </div>

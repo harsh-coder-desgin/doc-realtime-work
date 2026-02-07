@@ -170,9 +170,27 @@ const User = {
             throw error
         }
     },
-    getinvite: async () => {
+    getinvite: async (id) => {
         try {
-            const res = await axios.get(`${API}/getinvite`, { withCredentials: true });
+            const res = await axios.get(`${API}/getinvite/${id}`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    userinviteget: async () => {
+        try {
+            const res = await axios.get(`${API}/userinviteget`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+    responseofinvite: async (data) => {
+        try {
+            const res = await axios.patch(`${API}/responseofinvite`,data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);

@@ -1,15 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom'
 import { PersonalDoc, Button } from './index.js';
+import { useSelector } from 'react-redux';
 import authdoc from '../auth/authdoc.js'
-import { useState } from 'react';
 
 function OrgansationDoc() {
   const { id } = useParams();
   const { data } = useOutletContext()
-  const [alldoc, Setalldoc] = useState([])
 
+  const users = useSelector(state => state.userAuth.users)
+  console.log(users);
+
+  const [alldoc, Setalldoc] = useState([])
+  const [showdoc, SetShowdoc] = useState(false)
+  
   const doc = [{ id: 11, name: "New Document", img: "" }, { id: 1, name: "Letter", img: "/coverimage-1.png" }, { id: 2, name: "Resume", img: "/coverimage-2.png" }, { id: 3, name: "Resume Template 2", img: "/coverimage-3.png" }, { id: 4, name: "Project Prosposal", img: "/coverimage-4.png" },
   { id: 5, name: "Brochure", img: "/coverimage-5.png" }, { id: 6, name: "Report", img: "/coverimage-6.png" }]
   const allcontent = [{ id: 11, name: "New Document", content: "<p>Hello user</p>" }, { id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
@@ -51,6 +56,17 @@ function OrgansationDoc() {
       .catch((err) => {
         console.log(err);
       })
+    authdoc.getorgname(id).then((data) => {
+      console.log(data)
+      if (data.data.data.createuserid === users._id) {
+        SetShowdoc(true)
+      }
+    })
+      .catch((err) => {
+        SetShowdoc(false)
+        console.log(err);
+      })  
+
     const localdoc = localStorage.getItem("OrgDoc")
     if (localdoc) {
       localStorage.removeItem("OrgDoc");
@@ -60,9 +76,9 @@ function OrgansationDoc() {
   return (
     <div>
       {data === "Personal" ? <PersonalDoc data={data} /> : <div>
-        <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>
+       {showdoc === false && <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>}
         <div>
-          <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
+        {showdoc === false &&  <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
             {doc.map((item) => (
               <Link to={`/dashboard/orgworkingdoc/:id`} key={item.id}>
                 <div onClick={() => createnewdoc(item.id)}>
@@ -74,7 +90,7 @@ function OrgansationDoc() {
                 </div>
               </Link>
             ))}
-          </div>
+          </div>}
           <div className='mb-22'>
             <h1 className='text-xl ml-18 mt-5 mb-5'>All {data} Document</h1>
             <div className='-ml-10'>
@@ -92,9 +108,7 @@ function OrgansationDoc() {
                   <div className='flex mt-1'>
                     <Button className='mt-0 mr-12 px-2 h-7 text-sm text-white bg-red-600 text-white rounded hover:bg-red-700'
                       bgColor='bg-red-400' textColor='' onClick={() => handledeletedoc(item._id)}>Delete</Button>
-                    {/* <p className='mr-23'>{item.createdAt.split("T")[0]}</p> */}
-                    <p className='mr-23'>{item.time}</p>
-
+                    <p className='mr-23'>{item.createdAt.split("T")[0]}</p>
                   </div>
                 </div>
               ))}
