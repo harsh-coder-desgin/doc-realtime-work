@@ -439,8 +439,40 @@ const organstionnamealldoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, orgnameget, "Doc details fetched successfully"));
 })
 
+//renamedoc org
+const orgrenamedoc = asyncHandler(async (req, res) => {
+
+    const { docname } = req.body
+    const docID = req.params.id
+
+    if (
+        [docname].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "Doc name required")
+    }
+
+    if (docname.trim().length < 2) {
+        throw new ApiError(400, "Doc name must be at least 2 characters long")
+    }
+
+    const users = await OrganstionDoc.findByIdAndUpdate(
+        docID,
+        {
+            $set: {
+                Docname: docname,
+            }
+        }
+        ,
+        { new: true }
+    )
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, users, "Doc name updated successfully"));
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc
+    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc,orgrenamedoc
 }

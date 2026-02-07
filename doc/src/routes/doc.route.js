@@ -1,7 +1,8 @@
 import { Router } from "express"
 import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
     organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc ,
-    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate,organstionnameget,organstionnamealldoc} from "../controllers/doc.controller.js"
+    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate,organstionnameget,organstionnamealldoc ,orgrenamedoc
+    } from "../controllers/doc.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -20,6 +21,8 @@ router.route("/orgcreatedoc/:id").post(verifyJWT,organstiondoccreate)
 router.route("/orgname").post(verifyJWT,organstinamecreate)
 router.route("/getorgname/:id").get(verifyJWT,organstionnameget)
 router.route("/orgnamedocget/:id").get(verifyJWT,organstionnamealldoc)
+router.route("/orgrenamedoc/:id").patch(verifyJWT,orgrenamedoc)
+
 
 router.route("/oneorgdocall").get(verifyJWT,orgonedoconly)
 router.route("/orgalldoc").get(verifyJWT,organstionalldoc)

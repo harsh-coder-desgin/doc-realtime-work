@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 
 function OrgWorkingDoc() {
- const { id } = useParams();
+  const { id } = useParams();
   const ref = useRef(null);
   const [docdata, Setdocdata] = useState("Hello User")
   const [open, setOpen] = useState(false);
@@ -15,7 +15,6 @@ function OrgWorkingDoc() {
   const [aidata, SetAidata] = useState("")
   const [chataidata, SetChataidata] = useState([])
   const [messageaidata, SetMessageaidata] = useState([])
-
   const [docname, setdocname] = useState("New Document");
 
   const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
@@ -29,15 +28,15 @@ function OrgWorkingDoc() {
   const handlesavedoc = async () => {
     try {
       const data = tinyMCE.activeEditor.getContent();
-      const saveddoc = localStorage.getItem("Doc")
+      const saveddoc = localStorage.getItem("OrgDoc")
       if (saveddoc) {
-        const save = await authdoc.newdocsave({ docid: saveddoc, doc: data })
+        const save = await authdoc.orgsavedoc({ id: saveddoc, doc: data })
         if (save) {
           SetMessage({ text: "✅ Doc Saved successfully!", type: "success" });
         }
         localStorage.removeItem("Doc");
       } else {
-        const old_doc = await authdoc.savedoc({ doc: data, id: id })
+        const old_doc = await authdoc.orgsavedoc({ doc: data, id: id })
         if (old_doc) {
           SetMessage({ text: "✅ Doc Saved successfully!", type: "success" });
         }
@@ -48,12 +47,12 @@ function OrgWorkingDoc() {
   }
 
   const newname = async () => {
-    const saveddoc = localStorage.getItem("Doc")
+    const saveddoc = localStorage.getItem("OrgDoc")
     if (saveddoc) {
-      const changedocnamelocal = await authdoc.renamedoc({ docname: docname, id: saveddoc })
-      localStorage.removeItem("Doc");
+      const changedocnamelocal = await authdoc.orgrenamedoc({ docname: docname, id: saveddoc })
+      localStorage.removeItem("OrgDoc");
     } else {
-      const changedocname = await authdoc.renamedoc({ docname: docname, id: id })
+      const changedocname = await authdoc.orgrenamedoc({ docname: docname, id: id })
       console.log(changedocname);
     }
   }
@@ -86,7 +85,7 @@ function OrgWorkingDoc() {
   };
 
   useEffect(() => {
-    authdoc.getdoc(id).then((data) => {
+    authdoc.orggetdoc(id).then((data) => {
       console.log(data);
       setdocname(data?.data?.data?.Docname)
       // SetDocument(data) 
