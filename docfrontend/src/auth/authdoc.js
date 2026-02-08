@@ -116,9 +116,9 @@ const User = {
             throw error
         }
     },
-    orgsavedoc: async (data,id) => {
+    orgsavedoc: async (data) => {
         try {
-            const res = await axios.post(`${API}/orgsavedoc/:${id}`, data, { withCredentials: true });
+            const res = await axios.post(`${API}/orgsavedoc/${data.id}`, data, { withCredentials: true });
             return res
         } catch (error) {
             console.log(error);

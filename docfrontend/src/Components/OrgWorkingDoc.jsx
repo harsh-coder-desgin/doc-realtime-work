@@ -30,7 +30,7 @@ function OrgWorkingDoc() {
       const data = tinyMCE.activeEditor.getContent();
       const saveddoc = localStorage.getItem("OrgDoc")
       if (saveddoc) {
-        const save = await authdoc.orgsavedoc({ id: saveddoc, doc: data })
+        const save = await authdoc.orgsavedoc({ doc: data ,id: saveddoc })
         if (save) {
           SetMessage({ text: "✅ Doc Saved successfully!", type: "success" });
         }
@@ -88,11 +88,11 @@ function OrgWorkingDoc() {
 
   useEffect(() => {
     authdoc.orggetdoc(id).then((data) => {
-      console.log(data);
-      setdocname(data?.data?.Docname)
+      console.log(data.data.data);
+      setdocname(data?.data?.data.Docname)
       // SetDocument(data) 
       if (data?.data?.data?.Doc) {
-        Setdocdata(data?.data?.Doc);
+        Setdocdata(data?.data?.data.Doc);
       }
     })
       .catch((err) => {
