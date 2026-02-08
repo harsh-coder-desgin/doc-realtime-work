@@ -52,6 +52,8 @@ function OrgWorkingDoc() {
       const changedocnamelocal = await authdoc.orgrenamedoc({ docname: docname, id: saveddoc })
       localStorage.removeItem("OrgDoc");
     } else {
+      console.log(docname,id);
+      
       const changedocname = await authdoc.orgrenamedoc({ docname: docname, id: id })
       console.log(changedocname);
     }
@@ -87,10 +89,10 @@ function OrgWorkingDoc() {
   useEffect(() => {
     authdoc.orggetdoc(id).then((data) => {
       console.log(data);
-      setdocname(data?.data?.data?.Docname)
+      setdocname(data?.data?.Docname)
       // SetDocument(data) 
       if (data?.data?.data?.Doc) {
-        Setdocdata(data?.data?.data?.Doc);
+        Setdocdata(data?.data?.Doc);
       }
     })
       .catch((err) => {
@@ -120,7 +122,7 @@ function OrgWorkingDoc() {
       )}
       <div className="flex items-center gap-3 px-4 mt-2">
         <Input placeholder="Doc name" className="flex-1 h-12 rounded-md bg-gray-100 px-3 text-black"
-          onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname} />
+          onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname ?? "New Document"} />
         <Button className="h-12 px-4 w-35 -mt-2 text-lg flex items-center justify-center hover:bg-green-700 rounded-md"
           bgColor="bg-green-600" onClick={handlesavedoc}>
           Save Doc

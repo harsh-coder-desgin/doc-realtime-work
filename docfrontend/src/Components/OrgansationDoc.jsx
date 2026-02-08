@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import authdoc from '../auth/authdoc.js'
 
 function OrgansationDoc() {
-  const { id } = useParams();
+  const { id } = useParams();  
   const { data } = useOutletContext()
 
   const users = useSelector(state => state.userAuth.users)
@@ -14,7 +14,8 @@ function OrgansationDoc() {
 
   const [alldoc, Setalldoc] = useState([])
   const [showdoc, SetShowdoc] = useState(false)
-  
+  const [getid, SetGetid] = useState("")
+
   const doc = [{ id: 11, name: "New Document", img: "" }, { id: 1, name: "Letter", img: "/coverimage-1.png" }, { id: 2, name: "Resume", img: "/coverimage-2.png" }, { id: 3, name: "Resume Template 2", img: "/coverimage-3.png" }, { id: 4, name: "Project Prosposal", img: "/coverimage-4.png" },
   { id: 5, name: "Brochure", img: "/coverimage-5.png" }, { id: 6, name: "Report", img: "/coverimage-6.png" }]
   const allcontent = [{ id: 11, name: "New Document", content: "<p>Hello user</p>" }, { id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
@@ -27,7 +28,7 @@ function OrgansationDoc() {
 
   const createnewdoc = async (ID) => {
     const getdefaultdoc = allcontent.find(item => (item.id == ID))
-    const orgname = await authdoc.getorgname(id)
+    const orgname = await authdoc.getorgname({id:id})
     if (orgname) {
       const createdoc = await authdoc.orgcreatedoc({
         docname: "New Document", Doc: getdefaultdoc.content, organstionname: orgname.data.data.organstionname,
@@ -41,7 +42,7 @@ function OrgansationDoc() {
   }
 
   const handledeletedoc = async (ID) => {
-    const deletedoc = await authdoc.docdelete(ID)
+    const deletedoc = await authdoc.orgdeletedoc(ID)
     if (deletedoc) {
       const getnewall = await authdoc.orgnamedocget(id)
       Setalldoc(getnewall.data.data)
@@ -56,9 +57,10 @@ function OrgansationDoc() {
       .catch((err) => {
         console.log(err);
       })
-    authdoc.getorgname(id).then((data) => {
+    authdoc.getorgname({id:id}).then((data) => {
       console.log(data)
-      if (data.data.data.createuserid === users._id) {
+      SetGetid(id)
+      if (data.data.createuserid === users._id) {
         SetShowdoc(true)
       }
     })
@@ -76,11 +78,11 @@ function OrgansationDoc() {
   return (
     <div>
       {data === "Personal" ? <PersonalDoc data={data} /> : <div>
-       {showdoc === false && <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>}
+       {showdoc === true && <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>}
         <div>
-        {showdoc === false &&  <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
+        {showdoc === true &&  <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
             {doc.map((item) => (
-              <Link to={`/dashboard/orgworkingdoc/:id`} key={item.id}>
+              <Link to={`/dashboard/orgworkingdoc/${item.id}`} key={item.id}>
                 <div onClick={() => createnewdoc(item.id)}>
                   <div className='border'>
                     {!item.img ? <div className="h-60 w-50 flex items-center justify-center"><p className="text-4xl mr-4">+</p></div> :
@@ -96,7 +98,7 @@ function OrgansationDoc() {
             <div className='-ml-10'>
               {alldoc?.map((item, index) => (
                 <div className="flex justify-between" key={item._id}>
-                  <Link to={`/dashboard/workingdoc/${item._id}`}>
+                  <Link to={`/dashboard/orgworkingdoc/${item._id}`}>
                     <div className='flex justify-between'>
                       <div className='flex mt-2 ml-32 space-x-1'>
                         <p className="text-xl w-12 text-right">{index + 1}.</p>

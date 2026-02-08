@@ -163,9 +163,8 @@ const personaldocdelete = asyncHandler(async (req, res) => {
 //organstion doc create
 const organstiondoccreate = asyncHandler(async (req, res) => {
 
-    const {Doc, docname ,organstionname,createuserid,createrdocusername} = req.body
-    const DocID = req.params.id
-
+    const {Doc,id, docname ,organstionname,createuserid,createrdocusername} = req.body
+    
     if (
         [Doc,docname, createrdocusername,organstionname,createuserid].some((field) => field?.trim() === "")
     ) {
@@ -178,7 +177,7 @@ const organstiondoccreate = asyncHandler(async (req, res) => {
         createuserid:createuserid,
         organstionname:organstionname,
         Doc:Doc,
-        orgnameid:DocID
+        orgnameid:id
     })
 
     if (!docget) {
@@ -419,31 +418,46 @@ const airesponsemessage = asyncHandler(async (req, res) => {
 
 //orgonedoc get docone
 const orgonedoconly = asyncHandler(async (req, res) => {
-
     const userId = req.users._id
-    let docget = await OrganstionDoc.find({createuserid:userId})
-    let joinuserdoc 
 
-    if (!docget) {
-        joinuserdoc = await OrganstionDoc.find({alluserworking:userId})
+    let docget = await OrganstionName.find({ createuserid: userId })
+    
+    if (docget.length > 0) {
+    return res.status(200).json(
+        new ApiResponse(
+        200,
+        docget,
+        "Created docs fetched successfully"
+        )
+    )
     }
 
-    if (joinuserdoc) {
-        docget =null
-    }else{
-        joinuserdoc =null
+    if (docget.length === 0) {
+    docget = await OrganstionName.find({
+    alluserworking: {
+        $elemMatch: { userid: userId }
     }
+    })
+    }
+    console.log(docget);
 
-    return res
-        .status(200)
-        .json(new ApiResponse(200, docget,joinuserdoc, "Doc details fetched successfully"));
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            docget ,
+            "Doc details fetched successfully"
+        )
+    )
 })
 
 //organstion get name
 const organstionnameget = asyncHandler(async (req, res) => {
 
-    const orgnameId = req.params.id;
-    const orgnameget = await OrganstionName.findById(orgnameId)
+    // const orgnameId = req.params.id;
+    const {id} = req.body
+    // console.log(orgnameId);
+    
+    const orgnameget = await OrganstionName.findById(id)
 
     if (!orgnameget) {
         throw new ApiError(400, "orgname not found. Please check the ID and try again");
@@ -535,6 +549,7 @@ const responseinvite = asyncHandler(async (req, res) => {
         .status(200)
         .json(new ApiResponse(200, update, "Invited Saved successfully"));
 })
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,

@@ -6,8 +6,7 @@ import authdoc from '../auth/authdoc.js'
 
 function OrgansationDashboard() {
   const navigate = useNavigate();
-  const [orgalldoc, Setorgalldoc] = useState([{ id: 1, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }, { id: 2, name: "Name", time: "1/1/2023", image: "/featureimg1.png" },
-  { id: 3, name: "Name", time: "1/1/2023", image: "/featureimg1.png" }])
+  const [orgalldoc, Setorgalldoc] = useState([])
 
   const createnewdoc = async () => {
     const craetenew = await authdoc.orgname( {organstionname:"New Organstion"})
@@ -23,7 +22,7 @@ function OrgansationDashboard() {
 
   useEffect(() => {
     authdoc.oneorgdocall().then((data) => {
-      console.log(data.data.data);
+      console.log(data);
       Setorgalldoc(data.data.data)
     })
       .catch((err) => {
@@ -38,19 +37,19 @@ function OrgansationDashboard() {
         <Button bgColor='' textColor='' onClick={createnewdoc}
           className='ml-29 px-4 py-2 bg-blue-200 hover:bg-blue-300 rounded-md mb-2'>Create New Organstion</Button>
         <div className=''>
-          {orgalldoc?.map((item) => (
-            <div key={item.id}>
+          {orgalldoc?.map((item,index) => (
+            <div key={item._id}>
               <div className='flex justify-around'>
-                <Link to={`/dashboard/orgdoc`}>
+                <Link to={`/dashboard/orgdoc/${item._id}`}>
                   <div className='flex mr-190 mt-2 space-x-1'>
-                    <p className='text-xl mt-[1px]'>{item.id}.</p>
-                    <img src={item.image} className='w-10 h-10 ml-3' />
-                    <p className='mt-[3px] ml-3'>{item.name}</p>
+                    <p className='text-xl mt-[1px]'>{index+1}.</p>
+                    <img src="/featureimg1.png" className='w-10 h-10 ml-3' />
+                    <p className='mt-[3px] ml-3'>{item.organstionname}</p>
                   </div>
                 </Link>
                 <Button bgColor='' textColor='' className='text-[14px] mb-4 border p-2 rounded-full shadow-md hover:bg-gray-100 hover:hand' 
-                onClick={() => { navigate('/dashboard/orgdoc/:id') }}>Manage</Button>
-                <p className='mt-1'>{item.time}</p>
+                onClick={() => { navigate(`/dashboard/orgdocmange/${item._id}`) }}>Manage</Button>
+                <p className='mt-1'>{item.createdAt.split("T")[0]}</p>
               </div>
             </div>
           ))}

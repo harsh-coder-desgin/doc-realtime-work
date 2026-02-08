@@ -78,7 +78,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/dashboard/orgdoc',
+        path: '/dashboard/orgdoc/:id',
         element: (
           <Userauthlayout>
             <OrgansationDoc/>
@@ -94,7 +94,7 @@ const router = createBrowserRouter([
         )
       },
       {
-        path: '/dashboard/orgdoc/:id',
+        path: '/dashboard/orgdocmange/:id',
         element: (
            <Userauthlayout>
             <OrganstionMange/>

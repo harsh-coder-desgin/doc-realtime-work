@@ -19,10 +19,11 @@ router.route("/docdelete/:id").get(verifyJWT,personaldocdelete)
 //Organstion doc
 router.route("/orgcreatedoc/:id").post(verifyJWT,organstiondoccreate)
 router.route("/orgname").post(verifyJWT,organstinamecreate)
-router.route("/getorgname/:id").get(verifyJWT,organstionnameget)
+router.route("/getorgname/:id").post(verifyJWT,organstionnameget)
 router.route("/orgnamedocget/:id").get(verifyJWT,organstionnamealldoc)
 router.route("/orgrenamedoc/:id").patch(verifyJWT,orgrenamedoc)
 
+// orgdeletedoc
 // old api 
 router.route("/oneorgdocall").get(verifyJWT,orgonedoconly)
 router.route("/orgalldoc").get(verifyJWT,organstionalldoc)

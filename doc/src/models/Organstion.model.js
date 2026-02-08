@@ -2,30 +2,36 @@ import mongoose, { Schema } from "mongoose";
 
 const OrganstionDocSchema = new Schema({
     createrdocusername: {
-        type: String, 
-        required: true 
+        type: String,
+        required: true
     },
-    createuserid: { 
-        type: Schema.Types.ObjectId, 
+    createuserid: {
+        type: Schema.Types.ObjectId,
         ref: "User"
     },
     alluserworking: [
         {
-            userid: [{ type: String, required: true }],
-            username: [{ type: String, required: true }]
+            userid: {
+                type: String,
+                required: true
+            },
+            username: {
+                type: String,
+                required: true
+            }
         }
     ],
-    organstionname:{
-        type:String,
+    organstionname: {
+        type: String,
     },
     Doc: {
         type: String,
     },
-    Docname:{
-        type:String,
+    Docname: {
+        type: String,
     },
-    orgnameid:{
-        type: Schema.Types.ObjectId, 
+    orgnameid: {
+        type: Schema.Types.ObjectId,
         ref: "OrganstionName"
     }
 },

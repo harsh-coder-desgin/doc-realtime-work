@@ -16,15 +16,11 @@ function OrganstionMange() {
     const [showdoc, SetShowdoc] = useState(false)
     const [invitedall, Setinvitedall] = useState([])
 
-
-    // const allusers = [{ id: 1, email: "123&gmail.com", name: "user1", invited: "accepted" },
-    // { id: 2, email: "xyz&gmail.com", name: "user2", invited: "accepted" }, { id: 3, email: "abc&gmail.com", name: "user3", invited: "Deline" }]
-    // const invitedall = [{ id: 1, emails: "123@gmail.com", names: "user1" }, { id: 2, emails: "123@gmail.com", names: "user1" }, { id: 3, emails: "123@gmail.com", names: "user1" }]
-    
     const handleinvite = async() =>{
         const getdefaultdoc = alldoc.find(item => (item.id == senddocid))
         const sendinvite = await authdoc.createinvite({invitedemail:sendemail,username:users.username,
             docname:getdefaultdoc.Docname,docid:senddocid,orgid:id})
+        console.log(sendinvite)
     }
 
     const hanlderesofinvite = async(ID,userresponse)=>{
