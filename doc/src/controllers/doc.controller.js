@@ -163,10 +163,10 @@ const personaldocdelete = asyncHandler(async (req, res) => {
 //organstion doc create
 const organstiondoccreate = asyncHandler(async (req, res) => {
 
-    const {Doc,id, docname ,organstionname,createuserid,createrdocusername} = req.body
-    
+    const { Doc, id, docname, organstionname, createuserid, createrdocusername } = req.body
+
     if (
-        [Doc,docname, createrdocusername,organstionname,createuserid].some((field) => field?.trim() === "")
+        [Doc, docname, createrdocusername, organstionname, createuserid].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (Doc docname createuserid organstionname createrdocusername) are required")
     }
@@ -174,10 +174,10 @@ const organstiondoccreate = asyncHandler(async (req, res) => {
     const docget = await OrganstionDoc.create({
         createrdocusername: createrdocusername,
         Docname: docname,
-        createuserid:createuserid,
-        organstionname:organstionname,
-        Doc:Doc,
-        orgnameid:id
+        createuserid: createuserid,
+        organstionname: organstionname,
+        Doc: Doc,
+        orgnameid: id
     })
 
     if (!docget) {
@@ -198,15 +198,15 @@ const organstinamecreate = asyncHandler(async (req, res) => {
     const username = req.users.username
 
     if (
-        [organstionname,username].some((field) => field?.trim() === "")
+        [organstionname, username].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (username organstionname) are required")
     }
 
     const docget = await OrganstionName.create({
-        createuserid:userId,
-        createrdocusername:username,
-        organstionname:organstionname
+        createuserid: userId,
+        createrdocusername: username,
+        organstionname: organstionname
     })
 
     if (!docget) {
@@ -302,12 +302,13 @@ const organstiondocdelete = asyncHandler(async (req, res) => {
 //Invite send organstion doc
 const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 
-    const { docname, invitedemail, username ,docid ,orgid} = req.body
+    const { docname, invitedemail,docid, orgid } = req.body
     const userId = req.users._id
     const senderemail = req.users.email
+    const username = req.users.username    
 
     if (
-        [invitedemail, userId, username,docid,orgid,senderemail].some((field) => field?.trim() === "")
+        [invitedemail, username, docid, orgid].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (invitedemail,userId,username,docid,orgid,senderemail) are required")
     }
@@ -315,11 +316,16 @@ const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
     const invited = await Invite.create({
         Docname: docname,
         invitedemail: invitedemail,
-        createrdoc: username, userId,
-        invitedaccpetreject: false,
-        docid:docid,
-        orgid:orgid,
-        senderemail:senderemail
+        createrdoc: [
+            {
+                userid: userId,
+                username: username,
+            },
+        ],
+        invitedaccpetreject: null,
+        docid: docid,
+        orgid: orgid,
+        senderemail: senderemail
         // userId
     })
 
@@ -421,30 +427,30 @@ const orgonedoconly = asyncHandler(async (req, res) => {
     const userId = req.users._id
 
     let docget = await OrganstionName.find({ createuserid: userId })
-    
+
     if (docget.length > 0) {
-    return res.status(200).json(
-        new ApiResponse(
-        200,
-        docget,
-        "Created docs fetched successfully"
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                docget,
+                "Created docs fetched successfully"
+            )
         )
-    )
     }
 
     if (docget.length === 0) {
-    docget = await OrganstionName.find({
-    alluserworking: {
-        $elemMatch: { userid: userId }
-    }
-    })
+        docget = await OrganstionName.find({
+            alluserworking: {
+                $elemMatch: { userid: userId }
+            }
+        })
     }
     console.log(docget);
 
     return res.status(200).json(
         new ApiResponse(
             200,
-            docget ,
+            docget,
             "Doc details fetched successfully"
         )
     )
@@ -454,9 +460,9 @@ const orgonedoconly = asyncHandler(async (req, res) => {
 const organstionnameget = asyncHandler(async (req, res) => {
 
     // const orgnameId = req.params.id;
-    const {id} = req.body
+    const { id } = req.body
     // console.log(orgnameId);
-    
+
     const orgnameget = await OrganstionName.findById(id)
 
     if (!orgnameget) {
@@ -472,7 +478,7 @@ const organstionnameget = asyncHandler(async (req, res) => {
 const organstionnamealldoc = asyncHandler(async (req, res) => {
 
     const orgnameId = req.params.id;
-    const orgnameget = await OrganstionDoc.find({orgnameid:orgnameId})
+    const orgnameget = await OrganstionDoc.find({ orgnameid: orgnameId })
 
     if (!orgnameget) {
         throw new ApiError(400, "Doc not found. Please check the ID and try again");
@@ -518,7 +524,7 @@ const orgrenamedoc = asyncHandler(async (req, res) => {
 //response invite 
 const responseinvite = asyncHandler(async (req, res) => {
 
-    const { acceptorreject ,inviteID} = req.body
+    const { acceptorreject, inviteID } = req.body
 
     if (
         [acceptorreject].some((field) => field?.trim() === "")
@@ -550,9 +556,31 @@ const responseinvite = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, update, "Invited Saved successfully"));
 })
 
+//organstion name delete
+const organstionnamedelete = asyncHandler(async (req, res) => {
+
+    const docId = req.params.id;
+    const deletedata = await OrganstionName.findByIdAndDelete(docId)
+
+    const deletealldata = await OrganstionDoc.deleteMany({orgnameid:docId})
+
+    if (!deletealldata) {
+        throw new ApiError(400, "Failed to delete the Doc. Please try again");
+    
+   }
+
+    if (!deletedata) {
+        throw new ApiError(400, "Failed to delete the Doc. Please try again");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, "Doc deleted successfully"));
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
-    newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate ,organstionnameget,organstionnamealldoc,orgrenamedoc,
-    accpetorreject,responseinvite
+    newpersonalsavedoc, renamedoc, airesponsemessage, orgonedoconly, organstinamecreate, organstionnameget, organstionnamealldoc, orgrenamedoc,
+    accpetorreject, responseinvite ,organstionnamedelete
 }

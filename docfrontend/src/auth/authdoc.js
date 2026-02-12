@@ -161,6 +161,15 @@ const User = {
             throw error
         }
     },
+    orgnamedelete: async (id) => {
+        try {
+            const res = await axios.get(`${API}/orgnamedelete/${id}`, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
 
     //inivite
     createinvite: async (data) => {

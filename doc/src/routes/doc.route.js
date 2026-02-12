@@ -2,7 +2,7 @@ import { Router } from "express"
 import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
     organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc ,
     newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate,organstionnameget,organstionnamealldoc ,orgrenamedoc,
-    accpetorreject,responseinvite} from "../controllers/doc.controller.js"
+    accpetorreject,responseinvite ,organstionnamedelete} from "../controllers/doc.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -30,6 +30,8 @@ router.route("/orgalldoc").get(verifyJWT,organstionalldoc)
 router.route("/orgsavedoc/:id").post(verifyJWT,organstionsavedoc)
 router.route("/orggetdoc/:id").get(verifyJWT,organstionlgetdocone)
 router.route("/orgdeletedoc/:id").get(verifyJWT,organstiondocdelete)
+
+router.route("/orgnamedelete/:id").get(verifyJWT,organstionnamedelete)
 
 //inivite
 router.route("/createinvite").post(verifyJWT,Invitesendorganstiondoc)

@@ -1,11 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
 const InviteSchema = new Schema({
-    createrdoc: [
-        {
-            userid: { type: Schema.Types.ObjectId, ref: "User"},
-            username: { type: String, required: true }
-        }
+    createrdoc:  [
+      {
+        userid: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        username: {
+          type: String,
+        },
+      },
     ],
     invitedemail: {
         type:String,
