@@ -23,7 +23,6 @@ router.route("/getorgname/:id").post(verifyJWT,organstionnameget)
 router.route("/orgnamedocget/:id").get(verifyJWT,organstionnamealldoc)
 router.route("/orgrenamedoc/:id").patch(verifyJWT,orgrenamedoc)
 
-// orgdeletedoc
 // old api 
 router.route("/oneorgdocall").get(verifyJWT,orgonedoconly)
 router.route("/orgalldoc").get(verifyJWT,organstionalldoc)

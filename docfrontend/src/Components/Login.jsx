@@ -22,6 +22,7 @@ function Login() {
                 if (users) {
                     dispatch(authlogin(users.data))
                 }
+                localStorage.setItem("name","Personal")
                 navigate('/dashboard')
             }
         } catch (error) {

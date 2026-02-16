@@ -200,6 +200,7 @@ const User = {
         }
     },
     responseofinvite: async (data) => {
+        console.log(data);
         try {
             const res = await axios.patch(`${API}/responseofinvite`,data, { withCredentials: true });
             return res

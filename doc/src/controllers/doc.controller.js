@@ -453,7 +453,7 @@ const airesponsemessage = asyncHandler(async (req, res) => {
             })
         }
     );
-    
+
     if (!response) {
         throw new ApiError(400, "Some error Try Again later")
     }
@@ -487,6 +487,7 @@ const airesponsemessage = asyncHandler(async (req, res) => {
 //orgonedoc get docone
 const orgonedoconly = asyncHandler(async (req, res) => {
     const userId = req.users._id
+    const emailuser = req.users.email
 
     let docget = await OrganstionName.find({ createuserid: userId })
 
@@ -501,11 +502,18 @@ const orgonedoconly = asyncHandler(async (req, res) => {
     }
 
     if (docget.length === 0) {
-        docget = await OrganstionName.find({
-            alluserworking: {
-                $elemMatch: { userid: userId }
-            }
-        })
+        let inviteduser = await Invite.find({ invitedemail: emailuser });
+
+        if (inviteduser.length > 0) {
+
+            const orgIds = inviteduser.map(invite => invite.orgid);
+
+            docget = await OrganstionName.find({
+                _id: { $in: orgIds }
+            });
+
+        }
+
     }
     console.log(docget);
 
@@ -588,13 +596,11 @@ const responseinvite = asyncHandler(async (req, res) => {
 
     const { acceptorreject, inviteID } = req.body
 
-    if (
-        [acceptorreject].some((field) => field?.trim() === "")
-    ) {
+    if (typeof acceptorreject !== "boolean") {
         throw new ApiError(400, "accept or reject is required")
     }
 
-    const update = await Invite.findByIdAndUpdate(
+    const updateinvited = await Invite.findByIdAndUpdate(
         inviteID,
         {
             $set: {
@@ -605,17 +611,13 @@ const responseinvite = asyncHandler(async (req, res) => {
         { new: true }
     )
 
-    await update.save().catch(() => {
-        throw new ApiError(500, "An unexpected error occurred while updating the Invited. Please try again later.");
-    });
-
-    if (!update) {
+    if (!updateinvited) {
         throw new ApiError(404, "Invited not found. Please check the Invited ID and try again.");
     }
 
     return res
         .status(200)
-        .json(new ApiResponse(200, update, "Invited Saved successfully"));
+        .json(new ApiResponse(200, updateinvited, "Invited Saved successfully"));
 })
 
 //organstion name delete

@@ -18,6 +18,7 @@ const InviteSchema = new Schema({
     },
     invitedaccpetreject:{
         type:Boolean,
+        default:null
     },
     timeexpire:{
         type:String,

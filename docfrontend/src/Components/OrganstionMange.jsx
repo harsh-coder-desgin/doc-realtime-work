@@ -10,7 +10,7 @@ function OrganstionMange() {
     const { data } = useOutletContext()
     const navigate = useNavigate()
     const users = useSelector(state => state.userAuth.users)
-    // console.log(users);
+    console.log(users);
     const [alldoc, Setalldoc] = useState([])
     const [sendemail, SetSendemail] = useState("")
     const [senddocid, SetSenddocid] = useState("")
@@ -32,7 +32,16 @@ function OrganstionMange() {
 
     const hanlderesofinvite = async(ID,userresponse)=>{
         const invitedresuser = await authdoc.responseofinvite({inviteID:ID,acceptorreject:userresponse})
+        //data.data.invitedresuser.docid naviaget it /dashboard/orgworkingdoc/:data.data.invitedresuser.docid here dashboard/orgworkingdoc/:id
         console.log(invitedresuser);
+        if (userresponse === true) {
+            navigate(`/dashboard/orgworkingdoc/${invitedresuser.data.data.docid}`)
+        }
+        const getinvitedupdate = await authdoc.userinviteget()
+        console.log(getinvitedupdate)
+        if (getinvitedupdate) {
+            Setinvitedall(getinvitedupdate.data.data)
+        }
     }
 
     const handledeleteorg = async()=>{
@@ -52,14 +61,16 @@ function OrganstionMange() {
             })
             //skip test
         authdoc.getinvite(id).then((data) => {
-            console.log(data);
+            // all send invited user 
+            // console.log(data);
             Setalluers(data.data.data)
         })
             .catch((err) => {
                 console.log(err);
             })
         authdoc.getorgname({id:id}).then((data) => {
-            if (data.data.createuserid === users._id) {
+            // console.log(data);            
+            if (data.data.data.createuserid === users.data._id) {
                 SetShowdoc(true)
               }
             })
@@ -69,6 +80,7 @@ function OrganstionMange() {
             })
             //skip test
         authdoc.userinviteget().then((data) => {
+            // get invited form other user
             // console.log(data)
             Setinvitedall(data.data.data)
             })
@@ -76,7 +88,7 @@ function OrganstionMange() {
                 console.log(err);
             })    
     }, [])
-
+    
     return (
         <div>
             {data === "Personal" ? <PersonalDoc data={data} />
@@ -130,16 +142,22 @@ function OrganstionMange() {
                             </div>
                             {invitedall?.map((data) => (
                                 <div key={data._id} className="grid grid-cols-4 items-center text-sm px-3 py-2">
-                                    <p>{data?.createrdoc?.username}</p>
+                                    <p>{data?.createrdoc[0]?.username}</p>
                                     <p>{data.senderemail}</p>
-                                    <p>{data.CreateAt}</p>
+                                    <p>{new Date(data.createdAt).toLocaleString()}</p>
                                     <div className="flex gap-2">
-                                        <Button onClick={()=>hanlderesofinvite(data._id,true)} className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
+                                      { data.invitedaccpetreject !== null && data.invitedaccpetreject === true && <p disabled className="text-center bg-green-600 text-white px-2 py-1 w-full text-xs">
+                                            Accepted
+                                        </p>}
+                                      { data.invitedaccpetreject !== null && data.invitedaccpetreject === false && <p disabled className="text-center bg-red-600 text-white px-2 py-1 w-full text-xs">
+                                            Rejected
+                                        </p>}
+                                      { data.invitedaccpetreject === null && <Button onClick={()=>hanlderesofinvite(data._id,true)} className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
                                             Accept
-                                        </Button>
-                                        <Button onClick={()=>hanlderesofinvite(data._id,false)} className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
+                                        </Button>}
+                                      { data.invitedaccpetreject === null  && <Button onClick={()=>hanlderesofinvite(data._id,false)} className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
                                             Reject
-                                        </Button>
+                                        </Button>}
                                     </div>
                                 </div>
                             ))}
