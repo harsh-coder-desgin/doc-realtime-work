@@ -8,13 +8,16 @@ import { useState } from 'react';
 function OrgWorkingDoc() {
   const { id } = useParams();
   const ref = useRef(null);
+  const bottomRef = useRef(null);
   const [docdata, Setdocdata] = useState("Hello User")
   const [open, setOpen] = useState(false);
   const [message, SetMessage] = useState({ text: "", type: "" });
   // const [Document, SetDocument] = useState([]);
   const [aidata, SetAidata] = useState("")
   const [chataidata, SetChataidata] = useState([])
-  const [messageaidata, SetMessageaidata] = useState([])
+  const [errorchataidata, SeterrorChataidata] = useState("")
+  // const [messageaidata, SetMessageaidata] = useState([])
+  const [loading, SetLoading] = useState(null)
   const [docname, setdocname] = useState("New Document");
 
   const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
@@ -30,7 +33,7 @@ function OrgWorkingDoc() {
       const data = tinyMCE.activeEditor.getContent();
       const saveddoc = localStorage.getItem("OrgDoc")
       if (saveddoc) {
-        const save = await authdoc.orgsavedoc({ doc: data ,id: saveddoc })
+        const save = await authdoc.orgsavedoc({ doc: data, id: saveddoc })
         if (save) {
           SetMessage({ text: "✅ Doc Saved successfully!", type: "success" });
         }
@@ -52,37 +55,56 @@ function OrgWorkingDoc() {
       const changedocnamelocal = await authdoc.orgrenamedoc({ docname: docname, id: saveddoc })
       localStorage.removeItem("OrgDoc");
     } else {
-      console.log(docname,id);
-      
+      console.log(docname, id);
+
       const changedocname = await authdoc.orgrenamedoc({ docname: docname, id: id })
       console.log(changedocname);
     }
   }
 
   const handleKeyDown = async (event) => {
-    const checkspace = (aidata.replace(/\s/g, ""))
-    if (checkspace.length > 1) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        SetChataidata((prev) => ([
-          ...prev,
-          {
-            userchat: aidata,
-            aichat: ""
-          }
-        ]))
-        const senddatatoai = await authdoc.airesponse({ usermessage: aidata })
-        if (senddatatoai) {
-          SetMessageaidata((prev)=>([
+    try {
+      SeterrorChataidata('')
+      SetLoading(true)
+      const checkspace = (aidata.replace(/\s/g, ""))
+      if (checkspace.length > 1) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          SetAidata("")
+          SetChataidata((prev) => ([
             ...prev,
             {
-              aichat: senddatatoai.data.data
+              userchat: aidata,
+              aichat: "",
+              status: "loading"
             }
           ]))
+          const senddatatoai = await authdoc.airesponse({ usermessage: aidata })
+          if (senddatatoai.data.data) {
+            SetLoading(false)
+            // SetMessageaidata((prev) => ([...prev, senddatatoai.data.data]))
+            chataidata.map((item) => item.userchat === aidata)
+            SetChataidata((prev) => {
+              const updated = [...prev]
+              updated[updated.length - 1] = {
+                ...updated[updated.length - 1],
+                aichat: senddatatoai.data.data,
+                status: "done"
+              }
+              return updated
+            })
+          }
         }
-        console.log(senddatatoai);
-        SetAidata("")
       }
+    } catch (error) {
+      SetChataidata(prev =>
+        prev.map((msg, index) =>
+          index === prev.length - 1
+            ? { ...msg, status: "error" }
+            : msg
+        )
+      );
+      SeterrorChataidata(error.response.data.message)
     }
   };
 
@@ -108,7 +130,9 @@ function OrgWorkingDoc() {
         SetMessage({ text: "", type: "" });
       }, 3000);
     }
-  }, [message.text.length])
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [message.text.length, chataidata])
+
   console.log(chataidata);
 
   return (
@@ -133,11 +157,60 @@ function OrgWorkingDoc() {
             Use AI
           </Button>
           {open && (
-            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-140 bg-blue-900 border rounded-lg shadow-xl z-50">
+            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-[500px] bg-blue-900 border rounded-lg">
               <div className="px-3 py-2 border-b font-semibold text-sm text-white bg-blue-700">
                 AI Assistant
               </div>
-              <div className="p-3 border-b border-gray-200">
+              {chataidata?.map((item, index) => (
+                <div key={index} className='pt-5'>
+                  <div ref={bottomRef} className="overflow-y-auto flex justify-end mr-3 mt-2">
+                    <div className="bg-blue-600 text-white px-3 py-2 rounded-lg max-w-[75%]">
+                      {item.userchat}
+                    </div>
+                  </div>
+                  <div className="max-h-auto overflow-y-auto p-3 space-y-3 text-sm mt-3">
+                    {item?.aichat && <div className="">
+                      <div className="t px-3 py-2 rounded-lg max-w-[75%] bg-white text-black">
+                        <p className='text-[15px] text-base font-semibold mb-2'>{item?.aichat.heading}</p>
+                        <p className='text-gray-700 mb-3'>{item?.aichat.explanation}</p>
+                        {item?.aichat.summary &&
+                          <>
+                            <p className='text-base font-semibold'>Summary:</p>
+                            <p className="max-w-[100%] mt-3 mb-2 font-thin">{item?.aichat.summary}</p>
+                          </>
+                        }
+                        {item?.aichat.syntax &&
+                          <>
+                            <p>Syntax:</p>
+                            <p className="max-w-[100%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mt-3 mb-2">{item?.aichat.syntax}</p>
+                          </>
+                        }
+                      </div>
+                      {item?.aichat.code &&
+                        <>
+                          <p className='mt-2 text-white'>Code:</p>
+                          <div className="max-w-[75%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mb-3 mt-2">
+                            <pre>
+                              <code>
+                                {item?.aichat.code}
+                              </code>
+                            </pre>
+                          </div>
+                        </>
+                      }
+                    </div>}
+                    {loading === true && item?.status === "loading" && <span className="relative flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-white"></span>
+                    </span>}
+                  </div>
+                </div>
+              ))}
+              <div className="p-3 border-b sticky bottom-0 border-gray-200 bg-blue-900 z-10">
+                {errorchataidata.length > 0 &&
+                  <h1 className='text-center text-sm font-semibold text-white pb-2'>
+                    {errorchataidata}
+                  </h1>}
                 <Input
                   type="text"
                   onKeyDown={handleKeyDown}
@@ -147,25 +220,40 @@ function OrgWorkingDoc() {
                   className="bg-white w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              {chataidata?.map((item, index) => (
-                <div className="flex justify-end mr-3 mt-2" key={index}>
-                  <div className="bg-blue-600 text-white px-3 py-2 rounded-lg max-w-[75%]">
-                    {item.userchat}
-                  </div>
-                </div>
-              ))}
-              {messageaidata.map((item,index) => (
-                <div className="max-h-60 overflow-y-auto p-3 space-y-3 text-sm -mt-3" key={index}>
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 px-3 py-2 rounded-lg max-w-[75%]">
-                      {item.aichat}
+              {/* {messageaidata?.map((item, index) => (
+                <div className="max-h-auto overflow-y-auto p-3 space-y-3 text-sm mt-3" key={index}>
+                  <div className="">
+                    <div className="t px-3 py-2 rounded-lg max-w-[75%] bg-white text-black">
+                      <p className='text-[15px] text-base font-semibold mb-2'>{item?.heading}</p>
+                      <p className='text-gray-700 mb-3'>{item?.explanation}</p>
+                      {item?.summary &&
+                        <>
+                          <p className='text-base font-semibold'>Summary:</p>
+                          <p className="max-w-[100%] mt-3 mb-2 font-thin">{item?.summary}</p>
+                        </>
+                      }
+                      {item?.syntax &&
+                        <>
+                          <p>Syntax:</p>
+                          <p className="max-w-[100%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mt-3 mb-2">{item?.syntax}</p>
+                        </>
+                      }
                     </div>
+                    {item?.code &&
+                      <>
+                        <p className='mt-2 text-white'>Code:</p>
+                        <div className="max-w-[75%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mb-3 mt-2">
+                          <pre>
+                            <code>
+                              {item?.code}
+                            </code>
+                          </pre>
+                        </div>
+                      </>
+                    }
                   </div>
                 </div>
-              ))}
-              <div className="border-t px-3 py-2 text-xs text-gray-200 text-center">
-                AI responses are suggestions
-              </div>
+              ))} */}
             </div>
           )}
         </div>

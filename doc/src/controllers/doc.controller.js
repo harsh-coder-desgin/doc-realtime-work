@@ -302,10 +302,10 @@ const organstiondocdelete = asyncHandler(async (req, res) => {
 //Invite send organstion doc
 const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
 
-    const { docname, invitedemail,docid, orgid } = req.body
+    const { docname, invitedemail, docid, orgid } = req.body
     const userId = req.users._id
     const senderemail = req.users.email
-    const username = req.users.username    
+    const username = req.users.username
 
     if (
         [invitedemail, username, docid, orgid].some((field) => field?.trim() === "")
@@ -412,14 +412,76 @@ const renamedoc = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, users, "Doc name updated successfully"));
 })
 
-//airepsons emessage doc
+//airepsons emessage doc       
 const airesponsemessage = asyncHandler(async (req, res) => {
 
     const { usermessage } = req.body
-    const Aires = "How are you i am good"
+
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.API_KEY}`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [{
+                            text: `
+                    if user ask for codeing related que then Respond ONLY in number(1) JSON format and if
+                    user ask other topic que then ask ONLY in number(2) JSON format and if user ask for create image return number(3) JSON format 
+
+                    number(1):{
+                    "heading": "",
+                    "explanation": "",
+                    "code": "",
+                    Give me here synatx Only. if syntax was not avaliable then give me some information only 1-2 line "syntax": ""
+                    }
+
+                    number(2):{
+                    "heading": "",
+                    "explanation": "",
+                    "summary":""
+                    }
+
+                     number(3):{
+                    "heading": "Sorry cannot create image for now",
+                    }
+                    User question: ${usermessage}`
+                        }]
+                    }
+                ]
+            })
+        }
+    );
+    
+    if (!response) {
+        throw new ApiError(400, "Some error Try Again later")
+    }
+
+    const data = await response.json();
+    // console.log(data);
+
+    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+    if (!aiText) {
+        throw new ApiError(400, "Some error Try Again later")
+    }
+
+    const cleanText = aiText
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+
+    if (!cleanText) {
+        throw new ApiError(400, "Some error Try Again later")
+    }
+
+    const structured = JSON.parse(cleanText);
+
     return res
         .status(200)
-        .json(new ApiResponse(200, Aires, "Doc name updated successfully"));
+        .json(new ApiResponse(200, structured, "Ai Reply successfully"));
 })
 
 //orgonedoc get docone
@@ -562,12 +624,12 @@ const organstionnamedelete = asyncHandler(async (req, res) => {
     const docId = req.params.id;
     const deletedata = await OrganstionName.findByIdAndDelete(docId)
 
-    const deletealldata = await OrganstionDoc.deleteMany({orgnameid:docId})
+    const deletealldata = await OrganstionDoc.deleteMany({ orgnameid: docId })
 
     if (!deletealldata) {
         throw new ApiError(400, "Failed to delete the Doc. Please try again");
-    
-   }
+
+    }
 
     if (!deletedata) {
         throw new ApiError(400, "Failed to delete the Doc. Please try again");
@@ -582,5 +644,5 @@ export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
     newpersonalsavedoc, renamedoc, airesponsemessage, orgonedoconly, organstinamecreate, organstionnameget, organstionnamealldoc, orgrenamedoc,
-    accpetorreject, responseinvite ,organstionnamedelete
+    accpetorreject, responseinvite, organstionnamedelete
 }
