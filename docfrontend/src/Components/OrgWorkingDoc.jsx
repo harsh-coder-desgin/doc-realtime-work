@@ -13,11 +13,11 @@ function OrgWorkingDoc() {
   const [open, setOpen] = useState(false);
   const [message, SetMessage] = useState({ text: "", type: "" });
   // const [Document, SetDocument] = useState([]);
-  const [aidata, SetAidata] = useState("")
   const [chataidata, SetChataidata] = useState([])
   const [errorchataidata, SeterrorChataidata] = useState("")
-  // const [messageaidata, SetMessageaidata] = useState([])
   const [loading, SetLoading] = useState(null)
+  const [aidata, SetAidata] = useState("")
+  // const [messageaidata, SetMessageaidata] = useState([])
   const [docname, setdocname] = useState("New Document");
 
   const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
