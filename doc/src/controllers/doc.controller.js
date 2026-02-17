@@ -531,7 +531,6 @@ const organstionnameget = asyncHandler(async (req, res) => {
 
     // const orgnameId = req.params.id;
     const { id } = req.body
-    // console.log(orgnameId);
 
     const orgnameget = await OrganstionName.findById(id)
 

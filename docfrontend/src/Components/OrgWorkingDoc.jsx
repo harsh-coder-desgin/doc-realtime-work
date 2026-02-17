@@ -4,11 +4,15 @@ import { Button, Input } from './index.js'
 import authdoc from '../auth/authdoc.js'
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function OrgWorkingDoc() {
   const { id } = useParams();
   const ref = useRef(null);
   const bottomRef = useRef(null);
+  const users = useSelector(state => state.userAuth.users)
+  console.log(users);
+  const [showdoc, SetShowdoc] = useState(false)
   const [docdata, Setdocdata] = useState("Hello User")
   const [open, setOpen] = useState(false);
   const [message, SetMessage] = useState({ text: "", type: "" });
@@ -110,7 +114,12 @@ function OrgWorkingDoc() {
 
   useEffect(() => {
     authdoc.orggetdoc(id).then((data) => {
-      console.log(data.data.data);
+      if (data.data.data.createuserid === users.data._id) {
+        SetShowdoc(true)
+      }else{
+        SetShowdoc(false)
+      }
+      // console.log(data.data.data);
       setdocname(data?.data?.data.Docname)
       // SetDocument(data) 
       if (data?.data?.data?.Doc) {
@@ -130,10 +139,12 @@ function OrgWorkingDoc() {
         SetMessage({ text: "", type: "" });
       }, 3000);
     }
+    //check organstion owner
+    
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [message.text.length, chataidata])
 
-  console.log(chataidata);
+  console.log(docname);
 
   return (
     <div>
@@ -145,13 +156,15 @@ function OrgWorkingDoc() {
         </h1>
       )}
       <div className="flex items-center gap-3 px-4 mt-2">
+       {showdoc === true && <>
         <Input placeholder="Doc name" className="flex-1 h-12 rounded-md bg-gray-100 px-3 text-black"
           onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname ?? "New Document"} />
         <Button className="h-12 px-4 w-35 -mt-2 text-lg flex items-center justify-center hover:bg-green-700 rounded-md"
           bgColor="bg-green-600" onClick={handlesavedoc}>
           Save Doc
         </Button>
-        <div className="relative" ref={ref}>
+        </>}
+        <div className={`relative ${showdoc === false && 'left-350 mb-2' }`} ref={ref}>
           <Button className="h-12 -mt-2 px-4 w-25 text-lg flex items-center justify-center gap-2 leading-none hover:bg-blue-900 rounded-md"
             bgColor="bg-blue-800" onClick={() => setOpen((prev) => !prev)}>
             Use AI
