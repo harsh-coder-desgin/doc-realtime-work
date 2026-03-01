@@ -164,7 +164,7 @@ function OrgWorkingDoc() {
           Save Doc
         </Button>
         </>}
-        <div className={`relative ${showdoc === false && 'left-350 mb-2' }`} ref={ref}>
+        <div className={`relative ${showdoc === false && 'left-350 mb-2 mt-2' }`} ref={ref}>
           <Button className="h-12 -mt-2 px-4 w-25 text-lg flex items-center justify-center gap-2 leading-none hover:bg-blue-900 rounded-md"
             bgColor="bg-blue-800" onClick={() => setOpen((prev) => !prev)}>
             Use AI
