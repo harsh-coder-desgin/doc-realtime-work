@@ -1,3 +1,5 @@
+//Create room socket in mange send invite through email to other user.
+//join room socket in accept invite in mange user view.
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'

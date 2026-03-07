@@ -4,6 +4,7 @@ import { useOutletContext, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import authdoc from '../auth/authdoc.js'
+import { socket } from '../../socket.js'
 
 function OrganstionMange() {
     const { id } = useParams();
@@ -18,23 +19,36 @@ function OrganstionMange() {
     const [showdoc, SetShowdoc] = useState(false)
     const [invitedall, Setinvitedall] = useState([])
 
-    const handleinvite = async() =>{
+    const handleinvite = async () => {
         const getdefaultdoc = alldoc.find(item => (item._id == senddocid))
-        const sendinvite = await authdoc.createinvite({invitedemail:sendemail,
-            docname:getdefaultdoc?.Docname || alldoc[0].Docname,docid:senddocid || alldoc[0]._id,orgid:id})
+        const sendinvite = await authdoc.createinvite({
+            invitedemail: sendemail,
+            docname: getdefaultdoc?.Docname || alldoc[0].Docname, docid: senddocid || alldoc[0]._id, orgid: id
+        })
+
         if (sendinvite) {
+            socket.emit('message', 'connceted form client')
+            socket.on('helloserver', (message) => {
+                console.log(message);
+            });
+            socket.emit("join-room", senddocid || alldoc[0]._id);
             SetSendemail("")
             SetSenddocid("")
             const getinvite = await authdoc.getinvite(id)
             Setalluers(getinvite.data.data)
-        }    
+        }
     }
 
-    const hanlderesofinvite = async(ID,userresponse)=>{
-        const invitedresuser = await authdoc.responseofinvite({inviteID:ID,acceptorreject:userresponse})
+    const hanlderesofinvite = async (ID, userresponse) => {
+        const invitedresuser = await authdoc.responseofinvite({ inviteID: ID, acceptorreject: userresponse })
         //data.data.invitedresuser.docid naviaget it /dashboard/orgworkingdoc/:data.data.invitedresuser.docid here dashboard/orgworkingdoc/:id
         console.log(invitedresuser);
         if (userresponse === true) {
+            socket.emit('message', 'connceted form client')
+            socket.on('helloserver', (message) => {
+                console.log(message);
+            });
+            socket.emit("join-room", invitedresuser.data.data.docid);
             navigate(`/dashboard/orgworkingdoc/${invitedresuser.data.data.docid}`)
         }
         const getinvitedupdate = await authdoc.userinviteget()
@@ -44,7 +58,7 @@ function OrganstionMange() {
         }
     }
 
-    const handledeleteorg = async()=>{
+    const handledeleteorg = async () => {
         const deleteorg = await authdoc.orgnamedelete(id)
         console.log(deleteorg);
         if (deleteorg) {
@@ -59,7 +73,7 @@ function OrganstionMange() {
             .catch((err) => {
                 console.log(err);
             })
-            //skip test
+        //skip test
         authdoc.getinvite(id).then((data) => {
             // all send invited user 
             // console.log(data);
@@ -68,53 +82,53 @@ function OrganstionMange() {
             .catch((err) => {
                 console.log(err);
             })
-        authdoc.getorgname({id:id}).then((data) => {
+        authdoc.getorgname({ id: id }).then((data) => {
             // console.log(data);            
             if (data.data.data.createuserid === users.data._id) {
                 SetShowdoc(true)
-              }
-            })
-              .catch((err) => {
+            }
+        })
+            .catch((err) => {
                 SetShowdoc(false)
                 console.log(err);
             })
-            //skip test
+        //skip test
         authdoc.userinviteget().then((data) => {
             // get invited form other user
             // console.log(data)
             Setinvitedall(data.data.data)
-            })
-              .catch((err) => {
+        })
+            .catch((err) => {
                 console.log(err);
-            })    
+            })
     }, [])
-    
+
     return (
         <div>
             {data === "Personal" ? <PersonalDoc data={data} />
                 : <div className="p-10 max-w-6xl">
-                  {showdoc === true &&  <div className="mb-10">
+                    {showdoc === true && <div className="mb-10">
                         <h1 className="text-xl font-medium mb-2">Send Invite</h1>
                         <label className="text-sm text-gray-600 block mb-1">
                             Enter email:
                         </label>
-                        <textarea onChange={(e)=>SetSendemail(e.target.value)} value={sendemail} 
-                        className="w-[340px] h-[90px] border border-blue-900 p-2 outline-none" />
+                        <textarea onChange={(e) => SetSendemail(e.target.value)} value={sendemail}
+                            className="w-[340px] h-[90px] border border-blue-900 p-2 outline-none" />
                         <div className='mt-2 mb-2'>
-                            <select onClick={(e)=>SetSenddocid(e.target.value)} className="block w-30 px-2 py-1 mt-2 border border-gray-300 
+                            <select onClick={(e) => SetSenddocid(e.target.value)} className="block w-30 px-2 py-1 mt-2 border border-gray-300 
                                     focus:outline-none focus:ring-blue-500 focus:border-gray-500 sm:text-sm">
                                 {alldoc?.map((item, index) => (
                                     <option key={index} value={item._id}>
                                         {item.Docname}
                                     </option>
-                                    ))}
+                                ))}
                             </select>
                         </div>
                         <Button onClick={handleinvite} className="bg-blue-800 text-white text-sm px-4 py-2 rounded hover:bg-blue-900">
                             Send Invite
                         </Button>
                     </div>}
-                   {showdoc === true && <div className="mb-12">
+                    {showdoc === true && <div className="mb-12">
                         <p className="text-indigo-500 text-xl mb-4 cursor-pointer">All send invite people</p>
                         <div className="grid grid-cols-4 text-sm font-medium mb-3">
                             <p>Email</p>
@@ -146,16 +160,16 @@ function OrganstionMange() {
                                     <p>{data.senderemail}</p>
                                     <p>{new Date(data.createdAt).toLocaleString()}</p>
                                     <div className="flex gap-2">
-                                      { data.invitedaccpetreject !== null && data.invitedaccpetreject === true && <p disabled className="text-center bg-green-600 text-white px-2 py-1 w-full text-xs">
+                                        {data.invitedaccpetreject !== null && data.invitedaccpetreject === true && <p disabled className="text-center bg-green-600 text-white px-2 py-1 w-full text-xs">
                                             Accepted
                                         </p>}
-                                      { data.invitedaccpetreject !== null && data.invitedaccpetreject === false && <p disabled className="text-center bg-red-600 text-white px-2 py-1 w-full text-xs">
+                                        {data.invitedaccpetreject !== null && data.invitedaccpetreject === false && <p disabled className="text-center bg-red-600 text-white px-2 py-1 w-full text-xs">
                                             Rejected
                                         </p>}
-                                      { data.invitedaccpetreject === null && <Button onClick={()=>hanlderesofinvite(data._id,true)} className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
+                                        {data.invitedaccpetreject === null && <Button onClick={() => hanlderesofinvite(data._id, true)} className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700">
                                             Accept
                                         </Button>}
-                                      { data.invitedaccpetreject === null  && <Button onClick={()=>hanlderesofinvite(data._id,false)} className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
+                                        {data.invitedaccpetreject === null && <Button onClick={() => hanlderesofinvite(data._id, false)} className="bg-red-600 text-white px-2 py-1 rounded text-xs hover:bg-red-700">
                                             Reject
                                         </Button>}
                                     </div>
@@ -163,7 +177,7 @@ function OrganstionMange() {
                             ))}
                         </div>
                     </div>}
-                   {showdoc === true && <div>
+                    {showdoc === true && <div>
                         <h1 className="text-lg font-medium mb-2">Delete this organisation</h1>
                         <Button onClick={handledeleteorg} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
                             Delete

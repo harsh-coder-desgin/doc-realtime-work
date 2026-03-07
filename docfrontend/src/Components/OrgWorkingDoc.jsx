@@ -5,6 +5,7 @@ import authdoc from '../auth/authdoc.js'
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { socket } from '../../socket.js'
 
 function OrgWorkingDoc() {
   const { id } = useParams();
@@ -23,6 +24,8 @@ function OrgWorkingDoc() {
   const [aidata, SetAidata] = useState("")
   // const [messageaidata, SetMessageaidata] = useState([])
   const [docname, setdocname] = useState("New Document");
+  const [content, setContent] = useState("");
+  const editorRef = useRef(null);
 
   const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
   { id: 2, name: "Resume", content: '<h1>Your Name</h1><p><em>Full-Stack Developer | Problem Solver | Tech Enthusiast</em><br />123 Your Street | Your City, ST 12345<br />(123) 456-7890 | yourname@email.com</p><hr /><h2>EXPERIENCE</h2><p><strong>ABC Technologies, Remote — Software Developer</strong><br /><em>June 2023 – Present</em><br />Developed and maintained web applications using modern JavaScript frameworks. Collaborated with cross-functional teams to deliver features on time and improve application performance and user experience.</p><p><strong>XYZ Solutions, City — Junior Developer</strong><br /><em>Jan 2022 – May 2023</em><br />Assisted in building responsive user interfaces, fixing bugs, and writing clean, maintainable code. Gained hands-on experience working with real-world production systems.</p><p><strong>Startup Studio, City — Intern</strong><br /><em>Jun 2021 – Dec 2021</em><br />Supported senior developers in developing internal tools and learned best practices for version control, debugging, and documentation.</p><h2>EDUCATION</h2><p><strong>University Name, Location — Bachelor of Computer Science</strong><br /><em>2018 – 2022</em><br />Studied core computer science subjects including data structures, algorithms, databases, and web development.</p><p><strong>Higher Secondary School, Location — Science Stream</strong><br /><em>2016 – 2018</em><br />Completed coursework with a strong foundation in mathematics and problem-solving.</p><h2>PROJECTS</h2><p><strong>Online Food Delivery App — Full-Stack Project</strong><br />Built a complete food delivery platform with user authentication, restaurant dashboards, order management, and real-time updates using modern web technologies.</p><h2>SKILLS</h2><ul><li>JavaScript, HTML, CSS</li><li>React, Next.js</li><li>Node.js, Express</li><li>MongoDB, REST APIs</li></ul><h2>AWARDS</h2><p><strong>Best Final Year Project</strong><br />Awarded for designing and implementing a scalable web application as part of the final academic project.</p><p><strong>Hackathon Participation Certificate</strong><br />Recognized for active participation and teamwork in a national-level hackathon.</p><h2>LANGUAGES</h2><p>English, Hindi, Gujarati</p>' },
@@ -116,7 +119,7 @@ function OrgWorkingDoc() {
     authdoc.orggetdoc(id).then((data) => {
       if (data.data.data.createuserid === users.data._id) {
         SetShowdoc(true)
-      }else{
+      } else {
         SetShowdoc(false)
       }
       // console.log(data.data.data);
@@ -140,11 +143,122 @@ function OrgWorkingDoc() {
       }, 3000);
     }
     //check organstion owner
-    
+
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [message.text.length, chataidata])
 
+  useEffect(() => {
+    if (!editorRef.current) {
+      // return
+    }
+
+    const editor = editorRef.current;
+
+    if (editorRef.current) {
+      let finalans = null
+      const dataall = tinyMCE.activeEditor.getContent()
+      const contentreomve = editor.dom.get('user1');
+      if (contentreomve?.outerHTML) {
+        finalans = dataall.replace(contentreomve.outerHTML, '')
+        if (finalans !== null) {
+          socket.emit("content-all", {
+            contentall: finalans
+          })
+        }
+      }
+      const selection = editor.selection.getRng();
+      const rect = selection.getBoundingClientRect();
+      console.log(rect);
+      
+      socket.emit("cursor-move", {
+        content: finalans,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        height: rect.height,
+        id: editor?.editorUid,
+        startOffset: selection.startOffset,
+      });
+    }
+
+    socket.on("content-send", (incomingHTML) => {
+      const editor = editorRef.current;
+      let bookmark = null;
+      bookmark = editor.selection.getBookmark(2, true);
+
+      const currentHTML = editor.getContent();
+      const removeNode = editor.dom.get("user1");
+
+      let HTMLdata = currentHTML;
+      if (removeNode?.outerHTML) {
+        HTMLdata = currentHTML.replace(removeNode.outerHTML, "");
+      }
+
+      const parser = new DOMParser();
+      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
+      const ccincomingDoc = parser.parseFromString(HTMLdata, "text/html");
+      const ccincomingParas = ccincomingDoc.body.children;
+      const incomingParas = incomingDoc.body.children;
+
+      for (let i = 0; i < incomingParas.length; i++) {
+        if (!ccincomingParas[i]) {
+          ccincomingDoc.body.appendChild(incomingParas[i].cloneNode(true));
+        }
+        else if (ccincomingParas[i].textContent !== incomingParas[i].textContent) {
+          ccincomingParas[i].textContent = incomingParas[i].textContent;
+        }
+        if (ccincomingParas[i]?.children) {
+          const selectionNode = editor.selection.getStart();
+          if (!ccincomingParas[i].contains(selectionNode)) {
+            ccincomingParas[i].replaceWith(incomingParas[i].cloneNode(true));
+          }
+          continue;
+        }
+      }
+      editor.setContent(ccincomingDoc.body.innerHTML);
+      editor.selection.moveToBookmark(bookmark);
+    });
+
+    socket.on('cursor-update', (data) => {
+
+      const editor = editorRef.current;
+      if (!editor) return;
+
+      let cursor = data.id
+
+      cursor = document.createElement("div");
+      cursor.style.position = "absolute";
+      cursor.textContent = "|"
+      cursor.id = "user1"
+
+      cursor.style.pointerEvents = "none";
+      cursor.style.left = `${Math.floor(data.left)}px`;
+      cursor.style.right = `${Math.floor(data.right)}px`;
+      cursor.style.top = `${Math.floor(data.top)}px`;
+      cursor.style.bottom = `${Math.floor(data.bottom)}px`;
+      const ans = editor.dom.get('user1');
+
+      if (ans) {
+        ans.style.left = `${Math.floor(data.left)}px`;
+        ans.style.right = `${Math.floor(data.right)}px`;
+        ans.style.top = `${Math.floor(data.top)}px`;
+        ans.style.bottom = `${Math.floor(data.bottom)}px`;
+      } else {
+        console.log(cursor);
+        editor.getBody().appendChild(cursor);
+      }
+    });
+    return () => {
+      socket.off("content-send");
+    };
+  }, [content]);
   console.log(docname);
+  console.log(content);
+
+  const handleEditorChange = (value) => {
+    setContent(value);
+  }
 
   return (
     <div>
@@ -156,15 +270,15 @@ function OrgWorkingDoc() {
         </h1>
       )}
       <div className="flex items-center gap-3 px-4 mt-2">
-       {showdoc === true && <>
-        <Input placeholder="Doc name" className="flex-1 h-12 rounded-md bg-gray-100 px-3 text-black"
-          onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname ?? "New Document"} />
-        <Button className="h-12 px-4 w-35 -mt-2 text-lg flex items-center justify-center hover:bg-green-700 rounded-md"
-          bgColor="bg-green-600" onClick={handlesavedoc}>
-          Save Doc
-        </Button>
+        {showdoc === true && <>
+          <Input placeholder="Doc name" className="flex-1 h-12 rounded-md bg-gray-100 px-3 text-black"
+            onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname ?? "New Document"} />
+          <Button className="h-12 px-4 w-35 -mt-2 text-lg flex items-center justify-center hover:bg-green-700 rounded-md"
+            bgColor="bg-green-600" onClick={handlesavedoc}>
+            Save Doc
+          </Button>
         </>}
-        <div className={`relative ${showdoc === false && 'left-350 mb-2 mt-2' }`} ref={ref}>
+        <div className={`relative ${showdoc === false && 'left-350 mb-2 mt-2'}`} ref={ref}>
           <Button className="h-12 -mt-2 px-4 w-25 text-lg flex items-center justify-center gap-2 leading-none hover:bg-blue-900 rounded-md"
             bgColor="bg-blue-800" onClick={() => setOpen((prev) => !prev)}>
             Use AI
@@ -273,8 +387,11 @@ function OrgWorkingDoc() {
       </div>
 
       <div className='w-full border border-gray-500 rounded-[10px]'>
-        {/* <Editor
+        <Editor
           apiKey={import.meta.env.VITE_TINYMCE_KEY}
+          onInit={(evt, editor) => {
+            editorRef.current = editor;
+          }}
           init={{
             height: 600,
             plugins: [
@@ -290,7 +407,8 @@ function OrgWorkingDoc() {
             ],
           }}
           initialValue={docdata}
-        /> */}
+          onEditorChange={handleEditorChange}
+        />
       </div>
     </div>
   )
