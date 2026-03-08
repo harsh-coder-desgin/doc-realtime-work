@@ -170,15 +170,20 @@ function OrgWorkingDoc() {
       const rect = selection.getBoundingClientRect();
       console.log(rect);
       
+      const scrollTop2= editor.getDoc().documentElement.scrollTop;
+      const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
+
       socket.emit("cursor-move", {
         content: finalans,
-        left: rect.left,
         right: rect.right,
+        left: rect.left,
         top: rect.top,
         bottom: rect.bottom,
         height: rect.height,
-        id: editor?.editorUid,
         startOffset: selection.startOffset,
+        scrollTop2 : scrollTop2,
+        scrollLeft2 : scrollLeft2,
+        id: editor?.editorUid,
       });
     }
 
@@ -231,21 +236,32 @@ function OrgWorkingDoc() {
       cursor.style.position = "absolute";
       cursor.textContent = "|"
       cursor.id = "user1"
+            
+      const range = editor.selection.getRng();
+      if (!range) return;
 
-      cursor.style.pointerEvents = "none";
-      cursor.style.left = `${Math.floor(data.left)}px`;
+      const rect = range.getBoundingClientRect();
+      const editorRect = editor.getBody().getBoundingClientRect();
+
+      if (rect.bottom < editorRect.top || rect.top > editorRect.bottom) {
+        cursor.style.pointerEvents = "none";
+      } else {
+        cursor.style.pointerEvents = "block";
+      }
+      // cursor.style.pointerEvents = "none";
+      cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
       cursor.style.right = `${Math.floor(data.right)}px`;
-      cursor.style.top = `${Math.floor(data.top)}px`;
+      cursor.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
       cursor.style.bottom = `${Math.floor(data.bottom)}px`;
+
       const ans = editor.dom.get('user1');
 
       if (ans) {
-        ans.style.left = `${Math.floor(data.left)}px`;
+        ans.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
         ans.style.right = `${Math.floor(data.right)}px`;
-        ans.style.top = `${Math.floor(data.top)}px`;
+        ans.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
         ans.style.bottom = `${Math.floor(data.bottom)}px`;
       } else {
-        console.log(cursor);
         editor.getBody().appendChild(cursor);
       }
     });

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { Editor } from "@tinymce/tinymce-react"
-// import { socket } from '../../socket.js'
+import { socket } from '../../socket.js'
 
 function DocFile() {
   const editorRef = useRef(null);
@@ -43,15 +43,30 @@ function DocFile() {
       const selection = editor.selection.getRng();
       const rect = selection.getBoundingClientRect();
 
+      // const selection = editor.selection.getRng();
+
+      // let rect = selection.getBoundingClientRect();
+
+      // if (!rect || rect.height === 0) {
+      //   rect = selection.getClientRects()[0];
+      // }
+
+      // if (!rect) return;
+
+const scrollTop2= editor.getDoc().documentElement.scrollTop;
+const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
+
       socket.emit("cursor-move", {
         content: finalans,
-        left: rect.left,
         right: rect.right,
+        left: rect.left,
         top: rect.top,
         bottom: rect.bottom,
         height: rect.height,
-        id: editor?.editorUid,
         startOffset: selection.startOffset,
+        scrollTop2 : scrollTop2,
+        scrollLeft2 : scrollLeft2,
+        id: editor?.editorUid,
       });
     }
 
@@ -105,17 +120,33 @@ function DocFile() {
       cursor.textContent = "|"
       cursor.id = "user1"
 
-      cursor.style.pointerEvents = "none";
-      cursor.style.left = `${Math.floor(data.left)}px`;
+      const scrollTop = editor.getDoc().documentElement.scrollTop;
+      const scrollLeft = editor.getDoc().documentElement.scrollLeft;
+            
+      const range = editor.selection.getRng();
+      if (!range) return;
+
+      const rect = range.getBoundingClientRect();
+      const editorRect = editor.getBody().getBoundingClientRect();
+      // console.log(scrollLeft, scrollTop);
+
+      if (rect.bottom < editorRect.top || rect.top > editorRect.bottom) {
+        cursor.style.pointerEvents = "none";
+      } else {
+        cursor.style.pointerEvents = "block";
+      }
+      // cursor.style.pointerEvents = "none";
+      cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
       cursor.style.right = `${Math.floor(data.right)}px`;
-      cursor.style.top = `${Math.floor(data.top)}px`;
+      cursor.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
       cursor.style.bottom = `${Math.floor(data.bottom)}px`;
+
       const ans = editor.dom.get('user1');
 
       if (ans) {
-        ans.style.left = `${Math.floor(data.left)}px`;
+        ans.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
         ans.style.right = `${Math.floor(data.right)}px`;
-        ans.style.top = `${Math.floor(data.top)}px`;
+        ans.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
         ans.style.bottom = `${Math.floor(data.bottom)}px`;
       } else {
         editor.getBody().appendChild(cursor);
@@ -128,7 +159,7 @@ function DocFile() {
 
   const handleEditorChange = (value) => {
     setContent(value);
-  }    
+  }
   return (
     <>
       <div className='w-full'>
@@ -141,10 +172,10 @@ function DocFile() {
           init={{
             plugins: [
               // Core editing features
-              'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+              // 'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
               // Your account includes a free trial of TinyMCE premium features
               // Try the most popular premium features until Jan 13, 2026:
-              'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+              // 'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'advtemplate', 'ai', 'uploadcare', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
             ],
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             tinycomments_mode: 'embedded',
