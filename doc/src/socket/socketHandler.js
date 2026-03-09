@@ -11,11 +11,15 @@ export const socketHandler = (io) => {
             socket.on("cursor-move", (data) => {
                 socket.broadcast.emit("cursor-update", data);
             });
-            socket.on("content-all", (alldata) => {
-                alldata['id'] = socket.id
-                socket.broadcast.emit("content-send", alldata)
-                // console.log(alldata);
-            })
+            socket.on("content-all", (data) => {
+                if (!data?.contentall) return;
+                const payload = {
+                    id: socket.id,
+                    contentall: data.contentall
+                };
+                // console.log("content received:", payload.id);
+                socket.broadcast.emit("content-send", payload);
+            });
             // io.to(roomName).emit("room-mess", "Hello room users");
         });
 

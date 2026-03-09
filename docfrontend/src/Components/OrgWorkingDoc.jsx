@@ -147,6 +147,7 @@ function OrgWorkingDoc() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [message.text.length, chataidata])
 
+
   useEffect(() => {
     if (!editorRef.current) {
       // return
@@ -155,122 +156,178 @@ function OrgWorkingDoc() {
     const editor = editorRef.current;
 
     if (editorRef.current) {
-      let finalans = null
-      const dataall = tinyMCE.activeEditor.getContent()
-      const contentreomve = editor.dom.get('user1');
-      if (contentreomve?.outerHTML) {
-        finalans = dataall.replace(contentreomve.outerHTML, '')
-        if (finalans !== null) {
-          socket.emit("content-all", {
-            contentall: finalans
-          })
-        }
-      }
-      const selection = editor.selection.getRng();
-      const rect = selection.getBoundingClientRect();
-      console.log(rect);
-      
-      const scrollTop2= editor.getDoc().documentElement.scrollTop;
-      const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
+      const editor = editorRef.current;
 
-      socket.emit("cursor-move", {
-        content: finalans,
-        right: rect.right,
-        left: rect.left,
-        top: rect.top,
-        bottom: rect.bottom,
-        height: rect.height,
-        startOffset: selection.startOffset,
-        scrollTop2 : scrollTop2,
-        scrollLeft2 : scrollLeft2,
-        id: editor?.editorUid,
+      let content = editor.getContent();
+
+      // remove all collaborative cursors
+      const cursors = editor.getBody().querySelectorAll("[id^='user']");
+
+      cursors.forEach((cursor) => {
+        content = content.replace(cursor.outerHTML, "");
+      });
+
+      socket.emit("content-all", {
+        contentall: content
       });
     }
 
-    socket.on("content-send", (incomingHTML) => {
-      const editor = editorRef.current;
-      let bookmark = null;
-      bookmark = editor.selection.getBookmark(2, true);
+    const selection = editor?.selection?.getRng();
+    if (!selection) return;
 
-      const currentHTML = editor.getContent();
-      const removeNode = editor.dom.get("user1");
+    let rect = selection.getBoundingClientRect();
 
-      let HTMLdata = currentHTML;
-      if (removeNode?.outerHTML) {
-        HTMLdata = currentHTML.replace(removeNode.outerHTML, "");
+
+    if (!rect || rect.height === 0) {
+      const rects = selection.getClientRects();
+
+      if (rects.length > 0) {
+        rect = rects[0];
+      } else {
+        rect = selection.getBoundingClientRect();
       }
+    }
 
-      const parser = new DOMParser();
-      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
-      const ccincomingDoc = parser.parseFromString(HTMLdata, "text/html");
-      const ccincomingParas = ccincomingDoc.body.children;
-      const incomingParas = incomingDoc.body.children;
+    if (!rect) return;
 
-      for (let i = 0; i < incomingParas.length; i++) {
-        if (!ccincomingParas[i]) {
-          ccincomingDoc.body.appendChild(incomingParas[i].cloneNode(true));
-        }
-        else if (ccincomingParas[i].textContent !== incomingParas[i].textContent) {
-          ccincomingParas[i].textContent = incomingParas[i].textContent;
-        }
-        if (ccincomingParas[i]?.children) {
-          const selectionNode = editor.selection.getStart();
-          if (!ccincomingParas[i].contains(selectionNode)) {
-            ccincomingParas[i].replaceWith(incomingParas[i].cloneNode(true));
-          }
-          continue;
-        }
-      }
-      editor.setContent(ccincomingDoc.body.innerHTML);
-      editor.selection.moveToBookmark(bookmark);
+    const scrollTop2 = editor.getDoc().documentElement.scrollTop;
+    const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
+
+    socket.emit("cursor-move", {
+      id: editor.editorUid,
+      left: rect.left,
+      top: rect.top,
+      height: rect.height,
+      scrollTop2,
+      scrollLeft2
     });
 
-    socket.on('cursor-update', (data) => {
+
+    socket.on("content-send", (data) => {
+
+      if (data.id === socket.id) return;
 
       const editor = editorRef.current;
       if (!editor) return;
 
-      let cursor = data.id
+      let bookmark = null;
+      if (editor.selection) {
+        bookmark = editor.selection.getBookmark(2, true);
+      }
 
-      cursor = document.createElement("div");
-      cursor.style.position = "absolute";
-      cursor.textContent = "|"
-      cursor.id = "user1"
-            
-      const range = editor.selection.getRng();
-      if (!range) return;
+      let currentHTML = editor.getContent();
 
-      const rect = range.getBoundingClientRect();
-      const editorRect = editor.getBody().getBoundingClientRect();
+      // remove cursor nodes
+      const cursors = editor.getBody().querySelectorAll("[data-cursor]");
+      cursors.forEach((c) => {
+        currentHTML = currentHTML.replace(c.outerHTML, "");
+      });
 
-      if (rect.bottom < editorRect.top || rect.top > editorRect.bottom) {
+      const parser = new DOMParser();
+
+      const incomingDoc = parser.parseFromString(data.contentall, "text/html");
+      const currentDoc = parser.parseFromString(currentHTML, "text/html");
+
+      const currentParas = currentDoc.body.children;
+      const incomingParas = incomingDoc.body.children;
+
+      for (let i = 0; i < incomingParas.length; i++) {
+
+        if (!currentParas[i]) {
+          currentDoc.body.appendChild(incomingParas[i].cloneNode(true));
+          continue;
+        }
+
+        if (currentParas[i].textContent !== incomingParas[i].textContent) {
+
+          const selectionNode = editor.selection.getStart();
+
+          if (!currentParas[i].contains(selectionNode)) {
+            currentParas[i].replaceWith(incomingParas[i].cloneNode(true));
+          }
+
+        }
+      }
+
+      editor.setContent(currentDoc.body.innerHTML);
+
+      if (bookmark) {
+        editor.selection.moveToBookmark(bookmark);
+      }
+
+    });
+
+    socket.on("cursor-update", (data) => {
+
+      const editor = editorRef.current;
+      if (!editor) return;
+
+      const id = `cursor-${data.id}`;
+      let cursor = editor.dom.get(id);
+
+      if (!cursor) {
+
+        cursor = document.createElement("div");
+        cursor.id = id;
+        cursor.style.position = "absolute";
         cursor.style.pointerEvents = "none";
-      } else {
-        cursor.style.pointerEvents = "block";
+        cursor.style.zIndex = "1000";
+
+        // label
+        const label = document.createElement("div");
+        label.className = "cursor-label";
+        label.textContent = data.name || "User";
+
+        label.style.backgroundColor = "red";
+        label.style.color = "white";
+        label.style.fontSize = "12px";
+        label.style.padding = "2px 6px";
+        label.style.borderRadius = "4px";
+        label.style.position = "absolute";
+        label.style.top = "-18px";
+        label.style.left = "0";
+        label.style.whiteSpace = "nowrap";
+
+        // line
+        const line = document.createElement("div");
+        line.className = "cursor-line";
+        line.style.width = "2px";
+        line.style.height = "20px";
+        line.style.backgroundColor = "red";
+
+        cursor.appendChild(label);
+        cursor.appendChild(line);
+
+        editor.getBody().append(cursor);
       }
-      // cursor.style.pointerEvents = "none";
+
+      // Move cursor
       cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
-      cursor.style.right = `${Math.floor(data.right)}px`;
       cursor.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
-      cursor.style.bottom = `${Math.floor(data.bottom)}px`;
 
-      const ans = editor.dom.get('user1');
-
-      if (ans) {
-        ans.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
-        ans.style.right = `${Math.floor(data.right)}px`;
-        ans.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
-        ans.style.bottom = `${Math.floor(data.bottom)}px`;
-      } else {
-        editor.getBody().appendChild(cursor);
+      // update height
+      const line = cursor.querySelector(".cursor-line");
+      if (line && data.height) {
+        line.style.height = `${data.height}px`;
       }
+
+      // visibility
+      const editorRect = editor.getBody().getBoundingClientRect();
+      const bottom = data.top + data.height;
+
+      if (data.top > editorRect.bottom || bottom < editorRect.top) {
+        cursor.style.display = "none";
+      } else {
+        cursor.style.display = "block";
+      }
+
     });
     return () => {
       socket.off("content-send");
     };
   }, [content]);
   console.log(docname);
-  console.log(content);
+  // console.log(content);
 
   const handleEditorChange = (value) => {
     setContent(value);

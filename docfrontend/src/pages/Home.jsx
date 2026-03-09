@@ -47,7 +47,7 @@ function Home() {
         </h1>
         <h1 className="text-6xl mt-5 head-up delay-2 w-190">
           document editing <a>powered</a>
-        </h1>
+        </h1>      
         <h1 className="text-5xl mt-5 underline ml-2 head-up delay-3">by TinyMce</h1>
       </div>
       <h1 className='text-center text-2xl mt-20 ml-172 text-green-100 bg-green-900 px-2 py-2 w-40 rounded-lg button-up'>Live Demo</h1>
