@@ -224,7 +224,7 @@ useEffect(() => {
 
 export default DocFile
 
-//Old file code 
+//Old file code  has code
 // import { useEffect, useState, useRef } from 'react'
 // import { Editor } from "@tinymce/tinymce-react"
 // // import { socket } from '../../socket.js'
@@ -393,4 +393,4 @@ export default DocFile
 
 // export default DocFile
 
-
+   
