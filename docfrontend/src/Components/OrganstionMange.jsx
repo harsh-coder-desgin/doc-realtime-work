@@ -32,6 +32,7 @@ function OrganstionMange() {
                 console.log(message);
             });
             socket.emit("join-room", senddocid || alldoc[0]._id);
+            socket.emit("usernamesend",users.data.username,senddocid || alldoc[0]._id);
             SetSendemail("")
             SetSenddocid("")
             const getinvite = await authdoc.getinvite(id)
@@ -49,6 +50,7 @@ function OrganstionMange() {
                 console.log(message);
             });
             socket.emit("join-room", invitedresuser.data.data.docid);
+            socket.emit("usernamesend",users.data.username);
             navigate(`/dashboard/orgworkingdoc/${invitedresuser.data.data.docid}`)
         }
         const getinvitedupdate = await authdoc.userinviteget()

@@ -1,3 +1,5 @@
+const usersName = []
+
 export const socketHandler = (io) => {
     io.on("connection", (socket) => {
         console.log("a user connected:", socket.id);
@@ -20,12 +22,21 @@ export const socketHandler = (io) => {
                 // console.log("content received:", payload.id);
                 socket.broadcast.emit("content-send", payload);
             });
+            socket.on("comeindoc", (data,nameid) => {
+                console.log(data);
+                io.emit("nameallsend",usersName,nameid);
+            });
             // io.to(roomName).emit("room-mess", "Hello room users");
         });
 
         socket.on("message", (message) => {
             // io.emit("private-mess", message);
             console.log(message);
+        });
+
+        socket.on("usernamesend", (message) => {
+            usersName.push(message);
+            console.log(usersName);
         });
 
         socket.emit("helloserver", "connected form server");

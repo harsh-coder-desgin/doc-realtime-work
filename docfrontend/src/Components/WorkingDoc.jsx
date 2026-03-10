@@ -126,7 +126,7 @@ function WorkingDoc() {
       }, 3000);
     }
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [message.text.length,chataidata])
+  }, [message.text.length, chataidata])
   console.log(chataidata);
 
   return (
@@ -151,7 +151,7 @@ function WorkingDoc() {
             Use AI
           </Button>
           {open && (
-            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-[500px] bg-blue-900 border rounded-lg">
+            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-[500px] bg-blue-900 border rounded-lg z-[9999]">
               <div className="px-3 py-2 border-b font-semibold text-sm text-white bg-blue-700">
                 AI Assistant
               </div>

@@ -26,6 +26,9 @@ function OrgWorkingDoc() {
   const [docname, setdocname] = useState("New Document");
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
+  
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [comment, setComment] = useState("");
 
   const allcontent = [{ id: 1, name: "Letter", content: "<p>Your Name<br /> 123 Your Street<br /> Your City, ST 12345<br /> (123) 456-7890<br /> no_reply@example.com</p><p>4th September 20XX</p><p>Ronny Reader<br />CEO, Company Name<br />123 Address St<br />Anytown, ST 12345</p><p>Dear Ms. Reader,</p><p>I am writing this letter to demonstrate how your content will appear once you start editing your document. This sample text helps you understand the layout, spacing, and overall structure of the letter before you replace it with your own information.</p><p>You can click anywhere in this document and begin typing. Feel free to change the wording, adjust the formatting, or add new sections as needed. This editor supports basic text styling such as bold, italics, alignment, and bullet points.</p><p>This letter is only a placeholder and is not meant to be used as final content. Once you are satisfied with your edits, you can save the document, preview it, or download it as a PDF for sharing or printing.</p><p>Sincerely,</p><p><br /><br />Your Name</p>" },
   { id: 2, name: "Resume", content: '<h1>Your Name</h1><p><em>Full-Stack Developer | Problem Solver | Tech Enthusiast</em><br />123 Your Street | Your City, ST 12345<br />(123) 456-7890 | yourname@email.com</p><hr /><h2>EXPERIENCE</h2><p><strong>ABC Technologies, Remote — Software Developer</strong><br /><em>June 2023 – Present</em><br />Developed and maintained web applications using modern JavaScript frameworks. Collaborated with cross-functional teams to deliver features on time and improve application performance and user experience.</p><p><strong>XYZ Solutions, City — Junior Developer</strong><br /><em>Jan 2022 – May 2023</em><br />Assisted in building responsive user interfaces, fixing bugs, and writing clean, maintainable code. Gained hands-on experience working with real-world production systems.</p><p><strong>Startup Studio, City — Intern</strong><br /><em>Jun 2021 – Dec 2021</em><br />Supported senior developers in developing internal tools and learned best practices for version control, debugging, and documentation.</p><h2>EDUCATION</h2><p><strong>University Name, Location — Bachelor of Computer Science</strong><br /><em>2018 – 2022</em><br />Studied core computer science subjects including data structures, algorithms, databases, and web development.</p><p><strong>Higher Secondary School, Location — Science Stream</strong><br /><em>2016 – 2018</em><br />Completed coursework with a strong foundation in mathematics and problem-solving.</p><h2>PROJECTS</h2><p><strong>Online Food Delivery App — Full-Stack Project</strong><br />Built a complete food delivery platform with user authentication, restaurant dashboards, order management, and real-time updates using modern web technologies.</p><h2>SKILLS</h2><ul><li>JavaScript, HTML, CSS</li><li>React, Next.js</li><li>Node.js, Express</li><li>MongoDB, REST APIs</li></ul><h2>AWARDS</h2><p><strong>Best Final Year Project</strong><br />Awarded for designing and implementing a scalable web application as part of the final academic project.</p><p><strong>Hackathon Participation Certificate</strong><br />Recognized for active participation and teamwork in a national-level hackathon.</p><h2>LANGUAGES</h2><p>English, Hindi, Gujarati</p>' },
@@ -149,6 +152,15 @@ function OrgWorkingDoc() {
 
 
   useEffect(() => {
+    socket.on('nameallsend', (data2,idname) => {
+      if (idname === id) {
+        setSelectedUser(data2);
+      }
+      console.log(data2);
+    });
+    socket.emit("comeindoc","just");
+
+    
     if (!editorRef.current) {
       // return
     }
@@ -342,7 +354,7 @@ function OrgWorkingDoc() {
           {message.text}
         </h1>
       )}
-      <div className="flex items-center gap-3 px-4 mt-2">
+      <div className="flex items-center gap-3 px-4 mt-2 border-b border-gray-300 pb-2 mb-2">
         {showdoc === true && <>
           <Input placeholder="Doc name" className="flex-1 h-12 rounded-md bg-gray-100 px-3 text-black"
             onBlur={newname} onChange={(e) => setdocname(e.target.value)} value={docname ?? "New Document"} />
@@ -357,7 +369,7 @@ function OrgWorkingDoc() {
             Use AI
           </Button>
           {open && (
-            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-[500px] bg-blue-900 border rounded-lg">
+            <div className="overflow-y-auto scrollbar absolute right-0 mt-2 w-[550px] h-[500px] bg-blue-900 border rounded-lg z-[9999]">
               <div className="px-3 py-2 border-b font-semibold text-sm text-white bg-blue-700">
                 AI Assistant
               </div>
@@ -458,30 +470,81 @@ function OrgWorkingDoc() {
           )}
         </div>
       </div>
+      <div className="flex w-full gap-2">
+        <div className='w-4/6 border border-gray-500 rounded-[10px] ml-2'>
+          {/* <Editor
+      apiKey={import.meta.env.VITE_TINYMCE_KEY}
+      onInit={(evt, editor) => {
+        editorRef.current = editor;
+      }}
+      init={{
+        height: 600,
+        plugins: [
+          'anchor','autolink','charmap','codesample','emoticons','link','lists',
+          'media','searchreplace','table','visualblocks','wordcount'
+        ],
+        toolbar:
+          'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        tinycomments_mode: 'embedded',
+        tinycomments_author: 'Author name',
+        mergetags_list: [
+          { value: 'First.Name', title: 'First Name' },
+          { value: 'Email', title: 'Email' }
+        ]
+      }}
+      initialValue={docdata}
+      onEditorChange={handleEditorChange}
+         /> */}
+        </div>
 
-      <div className='w-full border border-gray-500 rounded-[10px]'>
-        <Editor
-          apiKey={import.meta.env.VITE_TINYMCE_KEY}
-          onInit={(evt, editor) => {
-            editorRef.current = editor;
-          }}
-          init={{
-            height: 600,
-            plugins: [
-              'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists', 'media', 'searchreplace',
-              'table', 'visualblocks', 'wordcount',
-            ],
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
-            mergetags_list: [
-              { value: 'First.Name', title: 'First Name' },
-              { value: 'Email', title: 'Email' },
-            ],
-          }}
-          initialValue={docdata}
-          onEditorChange={handleEditorChange}
-        />
+        <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col">
+          <h2 className="font-semibold text-lg mb-4">Comments</h2>
+          <div className="flex gap-2 mb-4">
+            {selectedUser?.map((user) => (
+              <button
+                key={user}
+                onClick={() => {
+                  // setSelectedUser(user);
+                }}
+                className="px-3 py-1 border rounded bg-white hover:bg-gray-100"
+              >
+                {user}
+              </button>
+            ))}
+          </div>
+
+          {selectedUser && (
+            <>
+              {/* <div className="flex-1 overflow-y-auto space-y-3">
+                {conversations[selectedUser].map((msg, index) => (
+                  <div
+                    key={index}
+                    className={`p-3 rounded border ${msg.sender === "Me"
+                        ? "bg-blue-100 ml-10"
+                        : "bg-white mr-10"
+                      }`}
+                  >
+                    <p className="font-semibold text-sm">{msg.sender}</p>
+                    <p className="text-sm">{msg.text}</p>
+                  </div>
+                ))}
+              </div> */}
+            </>
+          )}
+
+          <div className="mt-4 flex gap-2 mb-4">
+            <input
+              type="text"
+              placeholder="Write a comment..."
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              className="flex-1 border rounded px-3 py-2"
+            />
+            <button className="px-3 py-1 bg-blue-600 text-white rounded">
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
