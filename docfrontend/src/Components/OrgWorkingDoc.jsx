@@ -152,10 +152,15 @@ function OrgWorkingDoc() {
 
 
   useEffect(() => {
-    socket.on('nameallsend', (data2,idname) => {
-      if (idname === id) {
-        setSelectedUser(data2);
-      }
+    socket.on('nameallsend', (data2) => {
+      const all_users = [];
+      data2.forEach((item) => {
+        if (item.docid === id && users.data.username !== item.name) {
+          all_users.push(item.name);
+        }
+      });
+      console.log(all_users);
+      setSelectedUser(all_users);
       console.log(data2);
     });
     socket.emit("comeindoc","just");
@@ -500,9 +505,9 @@ function OrgWorkingDoc() {
         <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col">
           <h2 className="font-semibold text-lg mb-4">Comments</h2>
           <div className="flex gap-2 mb-4">
-            {selectedUser?.map((user) => (
+            {selectedUser?.map((user,index) => (
               <button
-                key={user}
+                key={index}
                 onClick={() => {
                   // setSelectedUser(user);
                 }}

@@ -22,9 +22,9 @@ export const socketHandler = (io) => {
                 // console.log("content received:", payload.id);
                 socket.broadcast.emit("content-send", payload);
             });
-            socket.on("comeindoc", (data,nameid) => {
+            socket.on("comeindoc", (data) => {
                 console.log(data);
-                io.emit("nameallsend",usersName,nameid);
+                io.emit("nameallsend",usersName);
             });
             // io.to(roomName).emit("room-mess", "Hello room users");
         });
