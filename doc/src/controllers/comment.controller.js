@@ -9,23 +9,23 @@ import { Comment } from "../models/comment.model.js"
 //comment write
 const userwritecomment = asyncHandler(async (req, res) => {
 
-    const { docid, sendcomment, usercomment } = req.body
+    const { docid, usercomment ,sendid} = req.body
     const userID = req.users._id; 
     const username = req.users.username
 
     if (
-        [username, docid, sendcomment, usercomment].some((field) => field?.trim() === "")
+        [username, docid, usercomment].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "username, docid, sendcomment, usercommen are required")
     }
 
     const createcomment = await Comment.create({
         username: username,
-        sendcomment :sendcomment,
         usercomment: usercomment,
+        sendid:sendid,
+        docid:docid,
+        userid:userID,
         isDeleted:false,
-        // docid
-        // userID
     })
 
     if (!createcomment) {
@@ -79,7 +79,7 @@ const deletecomment = asyncHandler(async (req, res) => {
 //reply write
 const userwritereply = asyncHandler(async (req, res) => {
 
-    const { docid, replycommnet,commentid } = req.body
+    const { docid, replycommnet,commentid ,parentReplyId} = req.body
     const userID = req.users._id; 
     const username = req.users.username
 
@@ -92,7 +92,7 @@ const userwritereply = asyncHandler(async (req, res) => {
     const createreply = await Reply.create({
         username: username,
         replycommnet: replycommnet,
-        parentReplyId:null,
+        parentReplyId:parentReplyId || null,
         commentid:commentid,
         isDeleted:false,
         // docid
@@ -149,4 +149,24 @@ const deletereply = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "Comment deleted successfully"));
 })
 
-export { userwritecomment, getcomment, deletecomment, userwritereply, getreply ,deletereply }
+const Replyall = asyncHandler(async (req, res) => {
+
+  const { commentId,userID } = req.body;   // frontend sends comment id
+
+  // find the comment
+  const comment = await Comment.find({_id:commentId,sendid:userID});
+
+  if (!comment) {
+    return res.status(404).json({ message: "Comment not found" });
+  }
+
+  // find replies related to this comment
+  const replies = await Reply.find({ commentid: commentId });
+
+  res.status(200).json({
+    comment,
+    replies
+  });
+})
+
+export { userwritecomment, getcomment, deletecomment, userwritereply, getreply ,deletereply,Replyall }

@@ -24,7 +24,18 @@ export const socketHandler = (io) => {
             });
             socket.on("comeindoc", (data) => {
                 console.log(data);
-                io.emit("nameallsend",usersName);
+                io.emit("nameallsend", usersName);
+            });
+            socket.on("send-chat", (data) => {
+                const { message, formuser,touser,mes_id } = data;
+                console.log(data);
+                console.log(roomName);
+                io.to(roomName).emit("receive-chat", {
+                    message,
+                    formuser,
+                    touser,
+                    mes_id
+                });
             });
             // io.to(roomName).emit("room-mess", "Hello room users");
         });

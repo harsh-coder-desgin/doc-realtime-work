@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { userwritecomment, getcomment, deletecomment, userwritereply, getreply ,deletereply } from "../controllers/comment.controller.js"
+import { userwritecomment, getcomment, deletecomment, userwritereply, getreply ,deletereply,Replyall } from "../controllers/comment.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -18,6 +18,6 @@ router.route("/replydelete").delete(verifyJWT,deletereply)
 router.route("/createparentreply/:id").post(verifyJWT)
 router.route("/getparentreply/:id").get(verifyJWT)
 router.route("/parentreplydelete/:id").delete(verifyJWT)
-router.route("/allreply").get(verifyJWT)
+router.route("/allreply").get(verifyJWT,Replyall)
 
 export default router 

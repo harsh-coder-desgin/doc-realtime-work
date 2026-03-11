@@ -13,15 +13,19 @@ const commentSchema = new Schema({
         type: Schema.Types.ObjectId, ref: "OrganstionDoc",
         required:true
     },
-    sendcomment: [
-        {
-            sendid: { type: String, required:true},
-            sendname: { type: String, required: true }
-        }
-    ],
+    // sendcomment: [
+    //     {
+    //         sendid: { type: String, required:true},
+    //         sendname: { type: String, required: true }
+    //     }
+    // ],
     usercomment: {
         type: String,
         required: true
+    },
+    sendid:{
+        type: String, 
+        required:true
     },
     isDeleted: {
         type: Boolean,
