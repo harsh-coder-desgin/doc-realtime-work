@@ -30,7 +30,7 @@ function OrgWorkingDoc() {
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
 
-  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(['rahul','sdsad']);
   const [userselected, Setuserselected] = useState('');
   const [comment, setComment] = useState("");
   const [allmessages, setallmessages] = useState([]);
@@ -173,7 +173,7 @@ function OrgWorkingDoc() {
       setallmessages((prev) => {
 
         const checkduplicate = prev.find((item) => item.mes_id == data.mes_id);
-        console.log(checkduplicate);
+        console.log(checkduplicate,"here");
 
         if (checkduplicate) return prev;
 
@@ -202,7 +202,7 @@ function OrgWorkingDoc() {
       }
       const selection = editor.selection.getRng();
       const rect = selection.getBoundingClientRect();
-      console.log(rect);
+      // console.log(rect);
 
       const scrollTop2 = editor.getDoc().documentElement.scrollTop;
       const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
@@ -219,6 +219,7 @@ function OrgWorkingDoc() {
         startOffset: selection.startOffset,
         scrollTop2,
         scrollLeft2,
+        user_name:users.data.username
       });
     }
     }
@@ -277,7 +278,11 @@ socket.on("content-send", (incomingHTML) => {
       //   cursor.style.display = "block";
 
       // }
-
+      const namewashere= data.user_name.length
+      // console.log("sadasdasdasdasd",data.user_name.length);
+      // console.log(namewashere * 10,"dsadsad");
+      
+      
       cursor.id = "user1";
       cursor.style.position = "absolute";
       cursor.style.borderLeft = "2px solid red";
@@ -286,8 +291,9 @@ socket.on("content-send", (incomingHTML) => {
       cursor.style.paddingTop = "10px";
       cursor.style.fontSize = "10px";
       cursor.style.color = "red";
+      cursor.style.width = `${namewashere * 10}px`
 
-      cursor.textContent = "Harsh";
+      cursor.textContent = data.user_name || "User";
       cursor.style.fontWeight = "bold";
       cursor.style.fontSize = "14px";
 
@@ -325,8 +331,11 @@ socket.on("content-send", (incomingHTML) => {
       message: comment,
       formuser: users.data.username,
       touser: userselected || selectedUser[0].user_id,
-      mes_id: msgId
+      mes_id:  Date.now() + Math.random()
     });
+    console.log( Date.now() + Math.random());
+    
+    setComment('')
     // const sendcomment = await authcomment.createcomment({sendid:useridcomment,usercomment:comment,docid:id})
     // console.log(sendcomment);
     //here add reply crete with and send parentid this is reply id.
@@ -459,7 +468,7 @@ socket.on("content-send", (incomingHTML) => {
       </div>
       <div className="flex w-full gap-2">
         <div className='w-4/6 border border-gray-500 rounded-[10px] ml-2'>
-          <Editor
+          {/* <Editor
       apiKey={import.meta.env.VITE_TINYMCE_KEY}
       onInit={(evt, editor) => {
         editorRef.current = editor;
@@ -481,7 +490,7 @@ socket.on("content-send", (incomingHTML) => {
       }}
       initialValue={docdata}
       onEditorChange={handleEditorChange}
-         />
+         /> */}
         </div>
 
         <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col overflow-y-auto">

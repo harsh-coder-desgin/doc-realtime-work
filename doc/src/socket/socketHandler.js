@@ -1,4 +1,13 @@
-const usersName = []
+const usersName = [{
+    name: 'rahul',
+    docid: '6988b36975b9c3684e2f3391',
+    user_id: 'fhefuwhfewkfnkskfjl'
+  },
+{
+    name: 'tip',
+    docid: '6988b36975b9c3684e2f3391',
+    user_id: 'dasfjkhjkaemufaufiwnafu'
+  }]
 
 export const socketHandler = (io) => {
     io.on("connection", (socket) => {
@@ -28,8 +37,8 @@ export const socketHandler = (io) => {
             });
             socket.on("send-chat", (data) => {
                 const { message, formuser,touser,mes_id } = data;
-                // console.log(data);
-                // console.log(roomName);
+                console.log(data);
+                console.log(roomName);
                 io.to(roomName).emit("receive-chat", {
                     message,
                     formuser,

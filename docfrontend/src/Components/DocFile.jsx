@@ -344,20 +344,16 @@ socket.on("content-send", (incomingHTML) => {
       //   cursor.style.display = "block";
 
       // }
-
+    const namesds="djhjakhfkehkl";
       cursor.id = "user1";
-      cursor.style.position = "absolute";
-      cursor.style.borderLeft = "2px solid red";
-      cursor.style.height = "17px";
-      cursor.style.pointerEvents = "none";
-      cursor.style.paddingTop = "10px";
-      cursor.style.fontSize = "10px";
-      cursor.style.color = "red";
+cursor.style.position = "absolute";
+cursor.style.pointerEvents = "none";
+cursor.style.width = `${namesds.length * 10}px`
+cursor.style.fontWeight = "bold";
+cursor.style.fontSize = "14px";
 
-      cursor.textContent = "Harsh";
-      cursor.style.fontWeight = "bold";
-      cursor.style.fontSize = "14px";
-
+cursor.textContent = namesds
+      
       // cursor.style.pointerEvents = "none";
       cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
       cursor.style.right = `${Math.floor(data.right)}px`;
