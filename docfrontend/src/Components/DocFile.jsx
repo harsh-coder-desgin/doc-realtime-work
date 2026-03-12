@@ -274,7 +274,7 @@ function DocFile() {
       const scrollTop2 = editor.getDoc().documentElement.scrollTop;
       const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
 
-      // if (rect.x !== 0 && rect.y !== 0  && rect.height !== 0  && rect.top !== 0 ) {
+      if (rect.height !== 0  && rect.top !== 0 ) {
       socket.emit("cursor-move", {
         // content: finalans,
         left: rect.left,
@@ -288,45 +288,39 @@ function DocFile() {
         scrollLeft2,
       });
     }
-    // }
+    }
 
-    socket.on("content-send", (incomingHTML) => {
-      const editor = editorRef.current;
-      let bookmark = null;
-      bookmark = editor.selection.getBookmark(2, true);
+socket.on("content-send", (incomingHTML) => {
+  const editor = editorRef.current;
 
-      const currentHTML = editor.getContent();
-      const removeNode = editor.dom.get("user1");
+  const currentHTML = editor.getContent();
 
-      let HTMLdata = currentHTML;
-      if (removeNode?.outerHTML) {
-        HTMLdata = currentHTML.replace(removeNode.outerHTML, "");
+  const parser = new DOMParser();
+
+  const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
+  const currentDoc = parser.parseFromString(currentHTML, "text/html");
+
+  const incomingNodes = incomingDoc.body.children;
+  const editorBody = editor.getBody().children;
+
+  for (let i = 0; i < incomingNodes.length; i++) {
+
+    if (!editorBody[i]) {
+      editor.getBody().appendChild(incomingNodes[i].cloneNode(true));
+      continue;
+    }
+
+    if (editorBody[i].outerHTML !== incomingNodes[i].outerHTML) {
+
+      const selectionNode = editor.selection.getStart();
+
+      if (!editorBody[i].contains(selectionNode)) {
+        editorBody[i].replaceWith(incomingNodes[i].cloneNode(true));
       }
 
-      const parser = new DOMParser();
-      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
-      const ccincomingDoc = parser.parseFromString(HTMLdata, "text/html");
-      const ccincomingParas = ccincomingDoc.body.children;
-      const incomingParas = incomingDoc.body.children;
-
-      for (let i = 0; i < incomingParas.length; i++) {
-        if (!ccincomingParas[i]) {
-          ccincomingDoc.body.appendChild(incomingParas[i].cloneNode(true));
-        }
-        else if (ccincomingParas[i].textContent !== incomingParas[i].textContent) {
-          ccincomingParas[i].textContent = incomingParas[i].textContent;
-        }
-        if (ccincomingParas[i]?.children) {
-          const selectionNode = editor.selection.getStart();
-          if (!ccincomingParas[i].contains(selectionNode)) {
-            ccincomingParas[i].replaceWith(incomingParas[i].cloneNode(true));
-          }
-          continue;
-        }
-      }
-      editor.setContent(ccincomingDoc.body.innerHTML);
-      editor.selection.moveToBookmark(bookmark);
-    });
+    }
+  }
+});
 
     socket.on('cursor-update', (data) => {
       console.log(data);
@@ -343,13 +337,13 @@ function DocFile() {
       // cursor.id = "user1"
       console.log(data.x, data.y);
 
-      if (data.top === 0 && data.height === 0) {
-        cursor.style.display = "none";
+      // if (data.top === 0 && data.height === 0) {
+      //   cursor.style.display = "none";
 
-      } else {
-        cursor.style.display = "block";
+      // } else {
+      //   cursor.style.display = "block";
 
-      }
+      // }
 
       cursor.id = "user1";
       cursor.style.position = "absolute";
