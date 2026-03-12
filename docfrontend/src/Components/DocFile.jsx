@@ -275,19 +275,19 @@ function DocFile() {
       const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
 
       // if (rect.x !== 0 && rect.y !== 0  && rect.height !== 0  && rect.top !== 0 ) {
-        socket.emit("cursor-move", {
-          content: finalans,
-          left: rect.left,
-          right: rect.right,
-          top: rect.top,
-          bottom: rect.bottom,
-          height: rect.height,
-          id: editor?.editorUid,
-          startOffset: selection.startOffset,
-          scrollTop2,
-          scrollLeft2,
-        });
-      }
+      socket.emit("cursor-move", {
+        // content: finalans,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        height: rect.height,
+        id: editor?.editorUid,
+        startOffset: selection.startOffset,
+        scrollTop2,
+        scrollLeft2,
+      });
+    }
     // }
 
     socket.on("content-send", (incomingHTML) => {
@@ -329,29 +329,40 @@ function DocFile() {
     });
 
     socket.on('cursor-update', (data) => {
+      console.log(data);
 
       const editor = editorRef.current;
       if (!editor) return;
 
       let cursor = data.id
 
+      // if (data.x !== 0 && data.y !== 0  && data.height !== 0  && data.top !== 0 ) {
       cursor = document.createElement("div");
       // cursor.style.position = "absolute";
       // cursor.textContent = "|"
       // cursor.id = "user1"
+      console.log(data.x, data.y);
 
-cursor.id = "user1";
-cursor.style.position = "absolute";
-cursor.style.borderLeft = "2px solid red";
-cursor.style.height = "17px";
-cursor.style.pointerEvents = "none";
-cursor.style.paddingTop = "10px";
-cursor.style.fontSize = "10px";
-cursor.style.color = "red";
+      if (data.top === 0 && data.height === 0) {
+        cursor.style.display = "none";
 
-cursor.textContent = "Harsh";
-cursor.style.fontWeight = "bold";
-cursor.style.fontSize = "14px";     
+      } else {
+        cursor.style.display = "block";
+
+      }
+
+      cursor.id = "user1";
+      cursor.style.position = "absolute";
+      cursor.style.borderLeft = "2px solid red";
+      cursor.style.height = "17px";
+      cursor.style.pointerEvents = "none";
+      cursor.style.paddingTop = "10px";
+      cursor.style.fontSize = "10px";
+      cursor.style.color = "red";
+
+      cursor.textContent = "Harsh";
+      cursor.style.fontWeight = "bold";
+      cursor.style.fontSize = "14px";
 
       // cursor.style.pointerEvents = "none";
       cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
@@ -359,7 +370,7 @@ cursor.style.fontSize = "14px";
       cursor.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
       cursor.style.bottom = `${Math.floor(data.bottom)}px`;
       const ans = editor.dom.get('user1');
-      
+
       if (ans) {
         ans.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
         ans.style.right = `${Math.floor(data.right)}px`;
@@ -368,7 +379,6 @@ cursor.style.fontSize = "14px";
       } else {
         editor.getBody().appendChild(cursor);
       }
-
     });
     return () => {
       socket.off("content-send");

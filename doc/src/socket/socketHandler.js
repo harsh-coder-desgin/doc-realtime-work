@@ -28,8 +28,8 @@ export const socketHandler = (io) => {
             });
             socket.on("send-chat", (data) => {
                 const { message, formuser,touser,mes_id } = data;
-                console.log(data);
-                console.log(roomName);
+                // console.log(data);
+                // console.log(roomName);
                 io.to(roomName).emit("receive-chat", {
                     message,
                     formuser,
