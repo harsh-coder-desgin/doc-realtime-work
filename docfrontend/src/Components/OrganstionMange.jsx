@@ -11,7 +11,6 @@ function OrganstionMange() {
     const { data } = useOutletContext()
     const navigate = useNavigate()
     const users = useSelector(state => state.userAuth.users)
-    console.log(users);
     const [alldoc, Setalldoc] = useState([])
     const [sendemail, SetSendemail] = useState("")
     const [senddocid, SetSenddocid] = useState("")
@@ -32,7 +31,7 @@ function OrganstionMange() {
                 console.log(message);
             });
             socket.emit("join-room", senddocid || alldoc[0]._id);
-            socket.emit("usernamesend",{name:users.data.username,docid:senddocid || alldoc[0]._id,user_id:users.data._id});
+            socket.emit("usernamesend", { name: users.data.username, docid: senddocid || alldoc[0]._id, user_id: users.data._id });
             SetSendemail("")
             SetSenddocid("")
             const getinvite = await authdoc.getinvite(id)
@@ -42,19 +41,16 @@ function OrganstionMange() {
 
     const hanlderesofinvite = async (ID, userresponse) => {
         const invitedresuser = await authdoc.responseofinvite({ inviteID: ID, acceptorreject: userresponse })
-        //data.data.invitedresuser.docid naviaget it /dashboard/orgworkingdoc/:data.data.invitedresuser.docid here dashboard/orgworkingdoc/:id
-        console.log(invitedresuser);
         if (userresponse === true) {
             socket.emit('message', 'connceted form client')
             socket.on('helloserver', (message) => {
                 console.log(message);
             });
             socket.emit("join-room", invitedresuser.data.data.docid);
-            socket.emit("usernamesend",{name:users.data.username,docid:invitedresuser.data.data.docid,user_id:users.data._id});
+            socket.emit("usernamesend", { name: users.data.username, docid: invitedresuser.data.data.docid, user_id: users.data._id });
             navigate(`/dashboard/orgworkingdoc/${invitedresuser.data.data.docid}`)
         }
         const getinvitedupdate = await authdoc.userinviteget()
-        console.log(getinvitedupdate)
         if (getinvitedupdate) {
             Setinvitedall(getinvitedupdate.data.data)
         }
@@ -62,7 +58,6 @@ function OrganstionMange() {
 
     const handledeleteorg = async () => {
         const deleteorg = await authdoc.orgnamedelete(id)
-        console.log(deleteorg);
         if (deleteorg) {
             navigate('/dashboard')
         }
@@ -75,17 +70,13 @@ function OrganstionMange() {
             .catch((err) => {
                 console.log(err);
             })
-        //skip test
         authdoc.getinvite(id).then((data) => {
-            // all send invited user 
-            // console.log(data);
             Setalluers(data.data.data)
         })
             .catch((err) => {
                 console.log(err);
             })
         authdoc.getorgname({ id: id }).then((data) => {
-            // console.log(data);            
             if (data.data.data.createuserid === users.data._id) {
                 SetShowdoc(true)
             }
@@ -94,10 +85,7 @@ function OrganstionMange() {
                 SetShowdoc(false)
                 console.log(err);
             })
-        //skip test
         authdoc.userinviteget().then((data) => {
-            // get invited form other user
-            // console.log(data)
             Setinvitedall(data.data.data)
         })
             .catch((err) => {

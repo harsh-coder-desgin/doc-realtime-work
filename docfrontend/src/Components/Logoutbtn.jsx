@@ -1,4 +1,3 @@
-import React from 'react'
 import { useDispatch } from 'react-redux'
 import { userLogout } from "../store/userAuthslice"
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +21,5 @@ function Logoutbtn() {
         </Button>
     )
 }
-
 
 export default Logoutbtn

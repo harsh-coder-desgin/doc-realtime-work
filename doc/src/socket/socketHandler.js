@@ -1,18 +1,7 @@
-const usersName = [{
-    name: 'rahul',
-    docid: '6988b36975b9c3684e2f3391',
-    user_id: 'fhefuwhfewkfnkskfjl'
-  },
-{
-    name: 'tip',
-    docid: '6988b36975b9c3684e2f3391',
-    user_id: 'dasfjkhjkaemufaufiwnafu'
-  }]
+const usersName = []
 
 export const socketHandler = (io) => {
     io.on("connection", (socket) => {
-        console.log("a user connected:", socket.id);
-
         socket.on("join-room", (roomName) => {
             socket.join(roomName);
             socket.emit("joined-room", roomName);
@@ -28,17 +17,13 @@ export const socketHandler = (io) => {
                     id: socket.id,
                     contentall: data.contentall
                 };
-                // console.log("content received:", payload.id);
                 socket.broadcast.emit("content-send", payload);
             });
             socket.on("comeindoc", (data) => {
-                console.log(data);
                 io.emit("nameallsend", usersName);
             });
             socket.on("send-chat", (data) => {
                 const { message, formuser,touser,mes_id } = data;
-                console.log(data);
-                console.log(roomName);
                 io.to(roomName).emit("receive-chat", {
                     message,
                     formuser,
@@ -46,17 +31,14 @@ export const socketHandler = (io) => {
                     mes_id
                 });
             });
-            // io.to(roomName).emit("room-mess", "Hello room users");
         });
 
         socket.on("message", (message) => {
-            // io.emit("private-mess", message);
             console.log(message);
         });
 
         socket.on("usernamesend", (message) => {
             usersName.push(message);
-            console.log(usersName);
         });
 
         socket.emit("helloserver", "connected form server");
@@ -65,8 +47,4 @@ export const socketHandler = (io) => {
             console.log("user disconnected:", socket.id);
         });
     });
-
-    // server.listen(8000, () => {
-    //     console.log("Server running on port 8000");
-    // });
 }

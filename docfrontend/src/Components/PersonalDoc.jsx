@@ -33,7 +33,6 @@ function PersonalDoc({ data }) {
 
   useEffect(() => {
     authdoc.alldoc().then((data) => {
-      console.log(data.data.data);
       Setalldoc(data.data.data)
     })
       .catch((err) => {

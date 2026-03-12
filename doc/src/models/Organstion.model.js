@@ -40,4 +40,3 @@ const OrganstionDocSchema = new Schema({
     })
 
 export const OrganstionDoc = mongoose.model("OrganstionDoc", OrganstionDocSchema)
-

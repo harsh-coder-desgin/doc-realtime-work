@@ -22,4 +22,3 @@ const PersonalDocSchema = new Schema({
     })
 
 export const PersonalDoc = mongoose.model("PersonalDoc", PersonalDocSchema)
-

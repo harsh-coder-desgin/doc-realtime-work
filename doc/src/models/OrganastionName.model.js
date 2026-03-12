@@ -18,4 +18,3 @@ const OrganstionNameSchema = new Schema({
     })
 
 export const OrganstionName = mongoose.model("OrganstionName", OrganstionNameSchema)
-

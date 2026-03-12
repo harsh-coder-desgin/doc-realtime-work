@@ -1,42 +1,42 @@
 import mongoose, { Schema } from "mongoose";
 
 const InviteSchema = new Schema({
-    createrdoc:  [
-      {
-        userid: {
-          type: Schema.Types.ObjectId,
-          ref: "User",
+    createrdoc: [
+        {
+            userid: {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+            },
+            username: {
+                type: String,
+            },
         },
-        username: {
-          type: String,
-        },
-      },
     ],
     invitedemail: {
-        type:String,
-        required:true
+        type: String,
+        required: true
     },
-    invitedaccpetreject:{
-        type:Boolean,
-        default:null
+    invitedaccpetreject: {
+        type: Boolean,
+        default: null
     },
-    timeexpire:{
-        type:String,
+    timeexpire: {
+        type: String,
     },
-    docid:{
+    docid: {
         type: Schema.Types.ObjectId, ref: "OrganstionDoc",
-        required:true
+        required: true
     },
-    Docname:{
-        type:String,
-        required:true
+    Docname: {
+        type: String,
+        required: true
     },
-    orgid:{
+    orgid: {
         type: Schema.Types.ObjectId, ref: "OrganstionName",
-        required:true
+        required: true
     },
-    senderemail:{
-        type:String
+    senderemail: {
+        type: String
     }
 },
     {
@@ -44,4 +44,3 @@ const InviteSchema = new Schema({
     })
 
 export const Invite = mongoose.model("Invite", InviteSchema)
-

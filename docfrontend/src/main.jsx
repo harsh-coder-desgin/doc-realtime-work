@@ -1,7 +1,3 @@
-//Create room socket in mange send invite through email to other user.
-//join room socket in accept invite in mange user view.
-
-//in sending name in socekt send id also of doc id it help ful to show only connect doc in room 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
@@ -23,7 +19,7 @@ const router = createBrowserRouter([
         path: '/',
         element: (
         <Userauthlayout>
-          <DocFile />
+          <Home />
         </Userauthlayout> 
         )
       },

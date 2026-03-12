@@ -29,7 +29,6 @@ router.route("/orgalldoc").get(verifyJWT,organstionalldoc)
 router.route("/orgsavedoc/:id").post(verifyJWT,organstionsavedoc)
 router.route("/orggetdoc/:id").get(verifyJWT,organstionlgetdocone)
 router.route("/orgdeletedoc/:id").get(verifyJWT,organstiondocdelete)
-
 router.route("/orgnamedelete/:id").get(verifyJWT,organstionnamedelete)
 
 //inivite

@@ -2,35 +2,29 @@ import React, { useEffect, useRef } from 'react'
 import { Editor } from "@tinymce/tinymce-react"
 import { Button, Input } from './index.js'
 import authdoc from '../auth/authdoc.js'
-import authcomment from '../auth/authcomment.js'
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { socket } from '../../socket.js'
-import { useId } from 'react'
 
 function OrgWorkingDoc() {
   const { id } = useParams();
-  const msgId = useId();
   const ref = useRef(null);
   const bottomRef = useRef(null);
+  const editorRef = useRef(null);
   const users = useSelector(state => state.userAuth.users)
-  console.log(users);
+
   const [showdoc, SetShowdoc] = useState(false)
   const [docdata, Setdocdata] = useState("Hello User")
   const [open, setOpen] = useState(false);
   const [message, SetMessage] = useState({ text: "", type: "" });
-  // const [Document, SetDocument] = useState([]);
   const [chataidata, SetChataidata] = useState([])
   const [errorchataidata, SeterrorChataidata] = useState("")
   const [loading, SetLoading] = useState(null)
   const [aidata, SetAidata] = useState("")
-  // const [messageaidata, SetMessageaidata] = useState([])
   const [docname, setdocname] = useState("New Document");
   const [content, setContent] = useState("");
-  const editorRef = useRef(null);
-
-  const [selectedUser, setSelectedUser] = useState(['rahul','sdsad']);
+  const [selectedUser, setSelectedUser] = useState(['rahul', 'sdsad']);
   const [userselected, Setuserselected] = useState('');
   const [comment, setComment] = useState("");
   const [allmessages, setallmessages] = useState([]);
@@ -70,10 +64,7 @@ function OrgWorkingDoc() {
       const changedocnamelocal = await authdoc.orgrenamedoc({ docname: docname, id: saveddoc })
       localStorage.removeItem("OrgDoc");
     } else {
-      console.log(docname, id);
-
       const changedocname = await authdoc.orgrenamedoc({ docname: docname, id: id })
-      console.log(changedocname);
     }
   }
 
@@ -130,9 +121,7 @@ function OrgWorkingDoc() {
       } else {
         SetShowdoc(false)
       }
-      // console.log(data.data.data);
       setdocname(data?.data?.data.Docname)
-      // SetDocument(data) 
       if (data?.data?.data?.Doc) {
         Setdocdata(data?.data?.data.Doc);
       }
@@ -150,11 +139,8 @@ function OrgWorkingDoc() {
         SetMessage({ text: "", type: "" });
       }, 3000);
     }
-    //check organstion owner
-
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [message.text.length, chataidata])
-
 
   useEffect(() => {
     socket.on('nameallsend', (data2) => {
@@ -164,19 +150,13 @@ function OrgWorkingDoc() {
           all_users.push({ name: item.name, user_id: item.user_id });
         }
       });
-      console.log(all_users);
       setSelectedUser(all_users);
-      console.log(data2);
     });
 
     socket.on("receive-chat", (data) => {
       setallmessages((prev) => {
-
         const checkduplicate = prev.find((item) => item.mes_id == data.mes_id);
-        console.log(checkduplicate,"here");
-
         if (checkduplicate) return prev;
-
         return [...prev, data];
       });
     });
@@ -202,87 +182,65 @@ function OrgWorkingDoc() {
       }
       const selection = editor.selection.getRng();
       const rect = selection.getBoundingClientRect();
-      // console.log(rect);
 
       const scrollTop2 = editor.getDoc().documentElement.scrollTop;
       const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
 
-      if (rect.height !== 0  && rect.top !== 0 ) {
-      socket.emit("cursor-move", {
-        // content: finalans,
-        left: rect.left,
-        right: rect.right,
-        top: rect.top,
-        bottom: rect.bottom,
-        height: rect.height,
-        id: editor?.editorUid,
-        startOffset: selection.startOffset,
-        scrollTop2,
-        scrollLeft2,
-        user_name:users.data.username
-      });
-    }
-    }
-
-socket.on("content-send", (incomingHTML) => {
-  const editor = editorRef.current;
-
-  const currentHTML = editor.getContent();
-
-  const parser = new DOMParser();
-
-  const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
-  const currentDoc = parser.parseFromString(currentHTML, "text/html");
-
-  const incomingNodes = incomingDoc.body.children;
-  const editorBody = editor.getBody().children;
-
-  for (let i = 0; i < incomingNodes.length; i++) {
-
-    if (!editorBody[i]) {
-      editor.getBody().appendChild(incomingNodes[i].cloneNode(true));
-      continue;
-    }
-
-    if (editorBody[i].outerHTML !== incomingNodes[i].outerHTML) {
-
-      const selectionNode = editor.selection.getStart();
-
-      if (!editorBody[i].contains(selectionNode)) {
-        editorBody[i].replaceWith(incomingNodes[i].cloneNode(true));
+      if (rect.height !== 0 && rect.top !== 0) {
+        socket.emit("cursor-move", {
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom,
+          height: rect.height,
+          id: editor?.editorUid,
+          startOffset: selection.startOffset,
+          scrollTop2,
+          scrollLeft2,
+          user_name: users.data.username
+        });
       }
-
     }
-  }
-});
+
+    socket.on("content-send", (incomingHTML) => {
+      const editor = editorRef.current;
+
+      const currentHTML = editor.getContent();
+
+      const parser = new DOMParser();
+
+      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
+      const currentDoc = parser.parseFromString(currentHTML, "text/html");
+
+      const incomingNodes = incomingDoc.body.children;
+      const editorBody = editor.getBody().children;
+
+      for (let i = 0; i < incomingNodes.length; i++) {
+
+        if (!editorBody[i]) {
+          editor.getBody().appendChild(incomingNodes[i].cloneNode(true));
+          continue;
+        }
+
+        if (editorBody[i].outerHTML !== incomingNodes[i].outerHTML) {
+
+          const selectionNode = editor.selection.getStart();
+
+          if (!editorBody[i].contains(selectionNode)) {
+            editorBody[i].replaceWith(incomingNodes[i].cloneNode(true));
+          }
+
+        }
+      }
+    });
 
     socket.on('cursor-update', (data) => {
-      console.log(data);
-
       const editor = editorRef.current;
       if (!editor) return;
 
       let cursor = data.id
-
-      // if (data.x !== 0 && data.y !== 0  && data.height !== 0  && data.top !== 0 ) {
       cursor = document.createElement("div");
-      // cursor.style.position = "absolute";
-      // cursor.textContent = "|"
-      // cursor.id = "user1"
-      console.log(data.x, data.y);
-
-      // if (data.top === 0 && data.height === 0) {
-      //   cursor.style.display = "none";
-
-      // } else {
-      //   cursor.style.display = "block";
-
-      // }
-      const namewashere= data.user_name.length
-      // console.log("sadasdasdasdasd",data.user_name.length);
-      // console.log(namewashere * 10,"dsadsad");
-      
-      
+      const namewashere = data.user_name.length
       cursor.id = "user1";
       cursor.style.position = "absolute";
       cursor.style.borderLeft = "2px solid red";
@@ -297,7 +255,6 @@ socket.on("content-send", (incomingHTML) => {
       cursor.style.fontWeight = "bold";
       cursor.style.fontSize = "14px";
 
-      // cursor.style.pointerEvents = "none";
       cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
       cursor.style.right = `${Math.floor(data.right)}px`;
       cursor.style.top = `${Math.floor(data.top + data.scrollTop2)}px`;
@@ -313,14 +270,12 @@ socket.on("content-send", (incomingHTML) => {
         editor.getBody().appendChild(cursor);
       }
     });
+
     return () => {
       socket.off("content-send");
       socket.off("receive-chat");
     };
   }, [content]);
-
-  console.log(docname);
-  // console.log(content);
 
   const handleEditorChange = (value) => {
     setContent(value);
@@ -331,14 +286,9 @@ socket.on("content-send", (incomingHTML) => {
       message: comment,
       formuser: users.data.username,
       touser: userselected || selectedUser[0].user_id,
-      mes_id:  Date.now() + Math.random()
+      mes_id: Date.now() + Math.random()
     });
-    console.log( Date.now() + Math.random());
-    
     setComment('')
-    // const sendcomment = await authcomment.createcomment({sendid:useridcomment,usercomment:comment,docid:id})
-    // console.log(sendcomment);
-    //here add reply crete with and send parentid this is reply id.
   }
 
   return (
@@ -428,40 +378,6 @@ socket.on("content-send", (incomingHTML) => {
                   className="bg-white w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              {/* {messageaidata?.map((item, index) => (
-                <div className="max-h-auto overflow-y-auto p-3 space-y-3 text-sm mt-3" key={index}>
-                  <div className="">
-                    <div className="t px-3 py-2 rounded-lg max-w-[75%] bg-white text-black">
-                      <p className='text-[15px] text-base font-semibold mb-2'>{item?.heading}</p>
-                      <p className='text-gray-700 mb-3'>{item?.explanation}</p>
-                      {item?.summary &&
-                        <>
-                          <p className='text-base font-semibold'>Summary:</p>
-                          <p className="max-w-[100%] mt-3 mb-2 font-thin">{item?.summary}</p>
-                        </>
-                      }
-                      {item?.syntax &&
-                        <>
-                          <p>Syntax:</p>
-                          <p className="max-w-[100%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mt-3 mb-2">{item?.syntax}</p>
-                        </>
-                      }
-                    </div>
-                    {item?.code &&
-                      <>
-                        <p className='mt-2 text-white'>Code:</p>
-                        <div className="max-w-[75%] bg-gray-900 text-white rounded-lg p-4 overflow-x-auto text-xs mb-3 mt-2">
-                          <pre>
-                            <code>
-                              {item?.code}
-                            </code>
-                          </pre>
-                        </div>
-                      </>
-                    }
-                  </div>
-                </div>
-              ))} */}
             </div>
           )}
         </div>
@@ -469,43 +385,39 @@ socket.on("content-send", (incomingHTML) => {
       <div className="flex w-full gap-2">
         <div className='w-4/6 border border-gray-500 rounded-[10px] ml-2'>
           {/* <Editor
-      apiKey={import.meta.env.VITE_TINYMCE_KEY}
-      onInit={(evt, editor) => {
-        editorRef.current = editor;
-      }}
-      init={{
-        height: 600,
-        plugins: [
-          'anchor','autolink','charmap','codesample','emoticons','link','lists',
-          'media','searchreplace','table','visualblocks','wordcount'
-        ],
-        toolbar:
-          'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-        tinycomments_mode: 'embedded',
-        tinycomments_author: 'Author name',
-        mergetags_list: [
-          { value: 'First.Name', title: 'First Name' },
-          { value: 'Email', title: 'Email' }
-        ]
-      }}
-      initialValue={docdata}
-      onEditorChange={handleEditorChange}
-         /> */}
+            apiKey={import.meta.env.VITE_TINYMCE_KEY}
+            onInit={(evt, editor) => {
+              editorRef.current = editor;
+            }}
+            init={{
+              height: 600,
+              plugins: [
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'link', 'lists',
+                'media', 'searchreplace', 'table', 'visualblocks', 'wordcount'
+              ],
+              toolbar:
+                'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | addcomment showcomments | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+              tinycomments_mode: 'embedded',
+              tinycomments_author: 'Author name',
+              mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' }
+              ]
+            }}
+            initialValue={docdata}
+            onEditorChange={handleEditorChange}
+          /> */}
         </div>
 
         <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col overflow-y-auto">
           <h2 className="font-semibold text-lg mb-4">Comments</h2>
           <div className="flex gap-2 mb-4">
             {selectedUser?.map((user, index) => (
-              <Button
-                bgColor=''
-                textColor=''
-                key={index}
+              <Button bgColor='' textColor='' key={index}
                 onClick={() => {
                   Setuserselected(user.user_id);
                 }}
-                className="px-3 py-1 border rounded bg-white hover:bg-gray-100"
-              >
+                className="px-3 py-1 border rounded bg-white hover:bg-gray-100">
                 {user.name}
               </Button>
             ))}
@@ -513,7 +425,6 @@ socket.on("content-send", (incomingHTML) => {
 
           {allmessages?.map((msg, index) => (
             <div key={index} className="flex flex-col mb-2">
-
               {msg.formuser === users?.data?.username ? (
                 <div className="flex justify-end">
                   <div className="bg-blue-600 text-white px-4 py-2 rounded-lg max-w-xs shadow">
@@ -530,18 +441,12 @@ socket.on("content-send", (incomingHTML) => {
                   </div>
                 </div>
               )}
-
             </div>
           ))}
 
           <div className="mt-4 mb-4 flex gap-2 sticky bottom-0 bg-gray-50 pt-2">
-            <Input
-              type="text"
-              placeholder="Write a comment..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="flex-1 border rounded px-3 py-2 w-full"
-            />
+            <Input type="text" placeholder="Write a comment..." value={comment} onChange={(e) => setComment(e.target.value)} 
+            className="flex-1 border rounded px-3 py-2 w-full"/>
             <Button onClick={handlecommentsend} bgColor='' textColor=''
               className="h-10 w-20 bg-blue-600 text-white rounded">
               Send

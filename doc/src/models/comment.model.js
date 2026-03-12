@@ -13,12 +13,6 @@ const commentSchema = new Schema({
         type: Schema.Types.ObjectId, ref: "OrganstionDoc",
         required:true
     },
-    // sendcomment: [
-    //     {
-    //         sendid: { type: String, required:true},
-    //         sendname: { type: String, required: true }
-    //     }
-    // ],
     usercomment: {
         type: String,
         required: true
@@ -33,7 +27,5 @@ const commentSchema = new Schema({
     },
 
 }, { timestamps: true })
-
-
 
 export const Comment = mongoose.model("Comment", commentSchema);

@@ -16,7 +16,7 @@ const replySchema = new Schema({
     parentReplyId: {
         type: Schema.Types.ObjectId,
         ref: "Reply",
-        default: null // Important for top-level replies
+        default: null 
     },
     replycommnet: {
         type: String,
@@ -32,7 +32,5 @@ const replySchema = new Schema({
     },
 
 }, { timestamps: true })
-
-
 
 export const Reply = mongoose.model("Reply", replySchema);

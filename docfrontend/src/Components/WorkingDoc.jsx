@@ -54,7 +54,6 @@ function WorkingDoc() {
       localStorage.removeItem("Doc");
     } else {
       const changedocname = await authdoc.renamedoc({ docname: docname, id: id })
-      console.log(changedocname);
     }
   }
 
@@ -106,7 +105,6 @@ function WorkingDoc() {
 
   useEffect(() => {
     authdoc.getdoc(id).then((data) => {
-      console.log(data);
       setdocname(data?.data?.data?.Docname)
       if (data?.data?.data?.Doc) {
         Setdocdata(data?.data?.data?.Doc);
@@ -127,7 +125,6 @@ function WorkingDoc() {
     }
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [message.text.length, chataidata])
-  console.log(chataidata);
 
   return (
     <div>

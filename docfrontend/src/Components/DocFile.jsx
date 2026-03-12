@@ -274,53 +274,53 @@ function DocFile() {
       const scrollTop2 = editor.getDoc().documentElement.scrollTop;
       const scrollLeft2 = editor.getDoc().documentElement.scrollLeft;
 
-      if (rect.height !== 0  && rect.top !== 0 ) {
-      socket.emit("cursor-move", {
-        // content: finalans,
-        left: rect.left,
-        right: rect.right,
-        top: rect.top,
-        bottom: rect.bottom,
-        height: rect.height,
-        id: editor?.editorUid,
-        startOffset: selection.startOffset,
-        scrollTop2,
-        scrollLeft2,
-      });
-    }
-    }
-
-socket.on("content-send", (incomingHTML) => {
-  const editor = editorRef.current;
-
-  const currentHTML = editor.getContent();
-
-  const parser = new DOMParser();
-
-  const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
-  const currentDoc = parser.parseFromString(currentHTML, "text/html");
-
-  const incomingNodes = incomingDoc.body.children;
-  const editorBody = editor.getBody().children;
-
-  for (let i = 0; i < incomingNodes.length; i++) {
-
-    if (!editorBody[i]) {
-      editor.getBody().appendChild(incomingNodes[i].cloneNode(true));
-      continue;
-    }
-
-    if (editorBody[i].outerHTML !== incomingNodes[i].outerHTML) {
-
-      const selectionNode = editor.selection.getStart();
-
-      if (!editorBody[i].contains(selectionNode)) {
-        editorBody[i].replaceWith(incomingNodes[i].cloneNode(true));
+      if (rect.height !== 0 && rect.top !== 0) {
+        socket.emit("cursor-move", {
+          // content: finalans,
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom,
+          height: rect.height,
+          id: editor?.editorUid,
+          startOffset: selection.startOffset,
+          scrollTop2,
+          scrollLeft2,
+        });
       }
-
     }
-  }
-});
+
+    socket.on("content-send", (incomingHTML) => {
+      const editor = editorRef.current;
+
+      const currentHTML = editor.getContent();
+
+      const parser = new DOMParser();
+
+      const incomingDoc = parser.parseFromString(incomingHTML.contentall, "text/html");
+      const currentDoc = parser.parseFromString(currentHTML, "text/html");
+
+      const incomingNodes = incomingDoc.body.children;
+      const editorBody = editor.getBody().children;
+
+      for (let i = 0; i < incomingNodes.length; i++) {
+
+        if (!editorBody[i]) {
+          editor.getBody().appendChild(incomingNodes[i].cloneNode(true));
+          continue;
+        }
+
+        if (editorBody[i].outerHTML !== incomingNodes[i].outerHTML) {
+
+          const selectionNode = editor.selection.getStart();
+
+          if (!editorBody[i].contains(selectionNode)) {
+            editorBody[i].replaceWith(incomingNodes[i].cloneNode(true));
+          }
+
+        }
+      }
+    });
 
     socket.on('cursor-update', (data) => {
       console.log(data);
@@ -344,16 +344,16 @@ socket.on("content-send", (incomingHTML) => {
       //   cursor.style.display = "block";
 
       // }
-    const namesds="djhjakhfkehkl";
+      const namesds = "djhjakhfkehkl";
       cursor.id = "user1";
-cursor.style.position = "absolute";
-cursor.style.pointerEvents = "none";
-cursor.style.width = `${namesds.length * 10}px`
-cursor.style.fontWeight = "bold";
-cursor.style.fontSize = "14px";
+      cursor.style.position = "absolute";
+      cursor.style.pointerEvents = "none";
+      cursor.style.width = `${namesds.length * 10}px`
+      cursor.style.fontWeight = "bold";
+      cursor.style.fontSize = "14px";
 
-cursor.textContent = namesds
-      
+      cursor.textContent = `${namesds.length * 10}px`
+
       // cursor.style.pointerEvents = "none";
       cursor.style.left = `${Math.floor(data.left + data.scrollLeft2)}px`;
       cursor.style.right = `${Math.floor(data.right)}px`;
@@ -414,5 +414,3 @@ cursor.textContent = namesds
 }
 
 export default DocFile
-
-

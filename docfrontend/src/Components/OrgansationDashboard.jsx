@@ -8,15 +8,12 @@ import { useSelector } from 'react-redux'
 function OrgansationDashboard() {
   const navigate = useNavigate();
   const users = useSelector(state => state.userAuth.users)
-  console.log(users);
   const [orgalldoc, Setorgalldoc] = useState([])
   const [ownerdoc, Setownerdoc] = useState(false)
 
   const createnewdoc = async () => {
     const craetenew = await authdoc.orgname({ organstionname: "New Organstion" })
-    console.log(craetenew);
     if (craetenew) {
-      // if userid match to Orgnstion then load data and if in organstion alluserworking have my userid then load data
       const alldoc = await authdoc.oneorgdocall()
       if (alldoc) {
         Setorgalldoc(alldoc.data.data)
@@ -26,7 +23,6 @@ function OrgansationDashboard() {
 
   const checkownerdoc = async (orgID) => {
     const check = await authdoc.getorgname({ id: orgID })
-    console.log(check.data.data); //createuserid
     if (check.data.data.createuserid === users.data._id) {
       Setownerdoc(true)
       navigate(`/dashboard/orgdoc/${orgID}`)
@@ -35,14 +31,12 @@ function OrgansationDashboard() {
 
   useEffect(() => {
     authdoc.oneorgdocall().then((data) => {
-      console.log(data);
       Setorgalldoc(data.data.data)
     })
       .catch((err) => {
         console.log(err);
       })
   }, [])
-  console.log(ownerdoc);
 
   return (
     <div>

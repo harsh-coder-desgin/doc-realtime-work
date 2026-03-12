@@ -70,7 +70,6 @@ const User = {
 
     //Organstion doc
     orgcreatedoc: async (data,id) => {
-        console.log(data,id);
         try {
             const res = await axios.post(`${API}/orgcreatedoc/${data.id}`, data, { withCredentials: true });
             return res
@@ -89,7 +88,6 @@ const User = {
         }
     },
     getorgname: async (id) => {
-        console.log(id);
         try {
             const res = await axios.post(`${API}/getorgname/${id}`,id, { withCredentials: true });
             return res
@@ -200,7 +198,6 @@ const User = {
         }
     },
     responseofinvite: async (data) => {
-        console.log(data);
         try {
             const res = await axios.patch(`${API}/responseofinvite`,data, { withCredentials: true });
             return res

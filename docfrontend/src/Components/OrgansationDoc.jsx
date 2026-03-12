@@ -1,4 +1,4 @@
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom'
 import { PersonalDoc, Button } from './index.js';
@@ -6,12 +6,9 @@ import { useSelector } from 'react-redux';
 import authdoc from '../auth/authdoc.js'
 
 function OrgansationDoc() {
-  const { id } = useParams();  
+  const { id } = useParams();
   const { data } = useOutletContext()
-
   const users = useSelector(state => state.userAuth.users)
-  console.log(users);
-
   const [alldoc, Setalldoc] = useState([])
   const [showdoc, SetShowdoc] = useState(false)
   const [getid, SetGetid] = useState("")
@@ -28,7 +25,7 @@ function OrgansationDoc() {
 
   const createnewdoc = async (ID) => {
     const getdefaultdoc = allcontent.find(item => (item.id == ID))
-    const orgname = await authdoc.getorgname({id:id})
+    const orgname = await authdoc.getorgname({ id: id })
     if (orgname) {
       const createdoc = await authdoc.orgcreatedoc({
         docname: "New Document", Doc: getdefaultdoc.content, organstionname: orgname.data.data.organstionname,
@@ -51,14 +48,12 @@ function OrgansationDoc() {
 
   useEffect(() => {
     authdoc.orgnamedocget(id).then((data) => {
-      console.log(data.data.data);
       Setalldoc(data.data.data)
     })
       .catch((err) => {
         console.log(err);
       })
-    authdoc.getorgname({id:id}).then((data) => {
-      console.log(data)
+    authdoc.getorgname({ id: id }).then((data) => {
       SetGetid(id)
       if (data.data.createuserid === users._id) {
         SetShowdoc(true)
@@ -67,7 +62,7 @@ function OrgansationDoc() {
       .catch((err) => {
         SetShowdoc(false)
         console.log(err);
-      })  
+      })
 
     const localdoc = localStorage.getItem("OrgDoc")
     if (localdoc) {
@@ -78,9 +73,9 @@ function OrgansationDoc() {
   return (
     <div>
       {data === "Personal" ? <PersonalDoc data={data} /> : <div>
-       {showdoc === true && <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>}
+        {showdoc === true && <h1 className='ml-18 text-2xl mt-8 text-blue-900'>Create New Organation Document</h1>}
         <div>
-        {showdoc === true &&  <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
+          {showdoc === true && <div className='grid grid-cols-7 text-center mt-5 w-353 ml-20 gap-y-15 gap-x-7'>
             {doc.map((item) => (
               <Link to={`/dashboard/orgworkingdoc/${item.id}`} key={item.id}>
                 <div onClick={() => createnewdoc(item.id)}>

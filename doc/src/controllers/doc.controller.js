@@ -5,8 +5,6 @@ import { PersonalDoc } from "../models/personaldoc.model.js";
 import { OrganstionDoc } from "../models/Organstion.model.js"
 import { Invite } from "../models/Invite.model.js"
 import { OrganstionName } from "../models/OrganastionName.model.js";
-// import jwt from "jsonwebtoken"
-// import mongoose from "mongoose";
 
 //Personal Doc api
 //personal doc create
@@ -45,7 +43,6 @@ const personaldoccreate = asyncHandler(async (req, res) => {
 
 //personal alldoc
 const personalalldoc = asyncHandler(async (req, res) => {
-
     const userid = req.users._id.toString()
 
     const getalldoc = await PersonalDoc.find({ userid: userid })
@@ -216,7 +213,6 @@ const organstinamecreate = asyncHandler(async (req, res) => {
     return res.status(201).json(
         new ApiResponse(200, docget, "Organstion Create successfully")
     )
-
 })
 
 //organstion alldoc
@@ -351,17 +347,6 @@ const Invitegetorganstiondoc = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
-
-    // const useremail = req.users.email
-    // const invited = await Invite.find({ invitedemail: useremail })
-
-    // if (!invited) {
-    //     throw new ApiError(400, "Invited not found. Please check the ID and try again");
-    // }
-
-    // return res
-    //     .status(200)
-    //     .json(new ApiResponse(200, invited, "Doc details fetched successfully"));
 })
 
 //Invite get for input accpet or reject users organstion doc
@@ -459,8 +444,6 @@ const airesponsemessage = asyncHandler(async (req, res) => {
     }
 
     const data = await response.json();
-    // console.log(data);
-
     const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     if (!aiText) {
@@ -505,17 +488,12 @@ const orgonedoconly = asyncHandler(async (req, res) => {
         let inviteduser = await Invite.find({ invitedemail: emailuser });
 
         if (inviteduser.length > 0) {
-
             const orgIds = inviteduser.map(invite => invite.orgid);
-
             docget = await OrganstionName.find({
                 _id: { $in: orgIds }
             });
-
         }
-
     }
-    console.log(docget);
 
     return res.status(200).json(
         new ApiResponse(
@@ -529,9 +507,7 @@ const orgonedoconly = asyncHandler(async (req, res) => {
 //organstion get name
 const organstionnameget = asyncHandler(async (req, res) => {
 
-    // const orgnameId = req.params.id;
     const { id } = req.body
-
     const orgnameget = await OrganstionName.findById(id)
 
     if (!orgnameget) {
@@ -624,12 +600,10 @@ const organstionnamedelete = asyncHandler(async (req, res) => {
 
     const docId = req.params.id;
     const deletedata = await OrganstionName.findByIdAndDelete(docId)
-
     const deletealldata = await OrganstionDoc.deleteMany({ orgnameid: docId })
 
     if (!deletealldata) {
         throw new ApiError(400, "Failed to delete the Doc. Please try again");
-
     }
 
     if (!deletedata) {
