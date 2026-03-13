@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import authdoc from '../auth/authdoc.js'
 import { useSelector } from 'react-redux'
+import { socket } from '../../socket.js'
 
 function OrgansationDashboard() {
   const navigate = useNavigate();
@@ -30,6 +31,10 @@ function OrgansationDashboard() {
   }
 
   useEffect(() => {
+    const rejoindoc = localStorage.getItem('docnamesaveid');
+    if (rejoindoc) {
+      socket.emit("join-room", rejoindoc);
+    }
     authdoc.oneorgdocall().then((data) => {
       Setorgalldoc(data.data.data)
     })

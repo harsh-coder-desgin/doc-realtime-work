@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router-dom'
 import { PersonalDoc, Button } from './index.js';
 import { useSelector } from 'react-redux';
 import authdoc from '../auth/authdoc.js'
+import { socket } from '../../socket.js'
 
 function OrgansationDoc() {
   const { id } = useParams();
@@ -47,6 +48,10 @@ function OrgansationDoc() {
   }
 
   useEffect(() => {
+    const rejoindoc = localStorage.getItem('docnamesaveid');
+    if (rejoindoc) {
+      socket.emit("join-room", rejoindoc);
+    }
     authdoc.orgnamedocget(id).then((data) => {
       Setalldoc(data.data.data)
     })

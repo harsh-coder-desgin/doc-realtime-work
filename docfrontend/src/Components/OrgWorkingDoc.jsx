@@ -115,6 +115,10 @@ function OrgWorkingDoc() {
   };
 
   useEffect(() => {
+    const rejoindoc = localStorage.getItem('docnamesaveid');
+    if (rejoindoc) {
+      socket.emit("join-room", rejoindoc);
+    }
     authdoc.orggetdoc(id).then((data) => {
       if (data.data.data.createuserid === users.data._id) {
         SetShowdoc(true)
@@ -283,10 +287,10 @@ function OrgWorkingDoc() {
 
   const handlecommentsend = () => {
     socket.emit("send-chat", {
-        message: comment,
-        formuser: users.data.username,
-        touser: userselected || selectedUser[0].name,
-        mes_id: Date.now() + Math.random()
+      message: comment,
+      formuser: users.data.username,
+      touser: userselected || selectedUser[0].name,
+      mes_id: Date.now() + Math.random()
     });
     setComment('')
   }

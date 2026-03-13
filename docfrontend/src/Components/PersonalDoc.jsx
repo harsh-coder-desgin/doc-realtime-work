@@ -32,6 +32,7 @@ function PersonalDoc({ data }) {
   }
 
   useEffect(() => {
+    localStorage.removeItem('docnamesaveid')
     authdoc.alldoc().then((data) => {
       Setalldoc(data.data.data)
     })

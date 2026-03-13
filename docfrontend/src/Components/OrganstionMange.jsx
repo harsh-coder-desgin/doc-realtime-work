@@ -39,6 +39,7 @@ function OrganstionMange() {
                   console.log(message);
               });
               socket.emit("join-room", senddocid || alldoc[0]._id);
+              localStorage.setItem('docnamesaveid', senddocid || alldoc[0]._id);
               socket.emit("usernamesend", { name: users.data.username, docid: senddocid || alldoc[0]._id, user_id: users.data._id });
               SetSendemail("")
               SetSenddocid("")
@@ -58,6 +59,7 @@ function OrganstionMange() {
                 console.log(message);
             });
             socket.emit("join-room", invitedresuser.data.data.docid);
+            localStorage.setItem('docnamesaveid', invitedresuser.data.data.docid);
             socket.emit("usernamesend", { name: users.data.username, docid: invitedresuser.data.data.docid, user_id: users.data._id });
             navigate(`/dashboard/orgworkingdoc/${invitedresuser.data.data.docid}`)
         }
@@ -75,6 +77,10 @@ function OrganstionMange() {
     }
 
     useEffect(() => {
+        const rejoindoc = localStorage.getItem('docnamesaveid');
+        if (rejoindoc) {
+            socket.emit("join-room", rejoindoc);
+        }
         authdoc.orgnamedocget(id).then((data) => {
             Setalldoc(data.data.data)
         })
