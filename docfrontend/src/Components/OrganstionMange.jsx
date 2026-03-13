@@ -18,30 +18,36 @@ function OrganstionMange() {
     const [showdoc, SetShowdoc] = useState(false)
     const [invitedall, Setinvitedall] = useState([])
     const [text, setText] = useState("");
+    const [error, setError] = useState("");
+
 
     const handleEdit = async () => {
-        const editorgname = await authdoc.editorgnationname({ organtionname: text,id:id })
+        const editorgname = await authdoc.editorgnationname({ organtionname: text, id: id })
     };
 
     const handleinvite = async () => {
-        const getdefaultdoc = alldoc.find(item => (item._id == senddocid))
-        const sendinvite = await authdoc.createinvite({
-            invitedemail: sendemail,
-            docname: getdefaultdoc?.Docname || alldoc[0].Docname, docid: senddocid || alldoc[0]._id, orgid: id
-        })
-
-        if (sendinvite) {
-            socket.emit('message', 'connceted form client')
-            socket.on('helloserver', (message) => {
-                console.log(message);
-            });
-            socket.emit("join-room", senddocid || alldoc[0]._id);
-            socket.emit("usernamesend", { name: users.data.username, docid: senddocid || alldoc[0]._id, user_id: users.data._id });
-            SetSendemail("")
-            SetSenddocid("")
-            const getinvite = await authdoc.getinvite(id)
-            Setalluers(getinvite.data.data)
-        }
+      try {
+          const getdefaultdoc = alldoc.find(item => (item._id == senddocid))
+          const sendinvite = await authdoc.createinvite({
+              invitedemail: sendemail,
+              docname: getdefaultdoc?.Docname || alldoc[0].Docname, docid: senddocid || alldoc[0]._id, orgid: id
+          })
+  
+          if (sendinvite) {
+              socket.emit('message', 'connceted form client')
+              socket.on('helloserver', (message) => {
+                  console.log(message);
+              });
+              socket.emit("join-room", senddocid || alldoc[0]._id);
+              socket.emit("usernamesend", { name: users.data.username, docid: senddocid || alldoc[0]._id, user_id: users.data._id });
+              SetSendemail("")
+              SetSenddocid("")
+              const getinvite = await authdoc.getinvite(id)
+              Setalluers(getinvite.data.data)
+          }
+      } catch (error) {
+        setError(error?.response?.data?.message)
+      }
     }
 
     const hanlderesofinvite = async (ID, userresponse) => {
@@ -69,7 +75,7 @@ function OrganstionMange() {
     }
 
     useEffect(() => {
-        authdoc.orgnamedocget(id).then((data) => {            
+        authdoc.orgnamedocget(id).then((data) => {
             Setalldoc(data.data.data)
         })
             .catch((err) => {
@@ -85,7 +91,7 @@ function OrganstionMange() {
             if (data.data.data.createuserid === users.data._id) {
                 setText(data.data.data.organstionname)
                 SetShowdoc(true)
-            }            
+            }
         })
             .catch((err) => {
                 SetShowdoc(false)
@@ -110,6 +116,7 @@ function OrganstionMange() {
                         </label>
                         <textarea onChange={(e) => SetSendemail(e.target.value)} value={sendemail}
                             className="w-[340px] h-[90px] border border-blue-900 p-2 outline-none" />
+                        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
                         <div className='mt-2 mb-2'>
                             <select onClick={(e) => SetSenddocid(e.target.value)} className="block w-30 px-2 py-1 mt-2 border border-gray-300 
                                     focus:outline-none focus:ring-blue-500 focus:border-gray-500 sm:text-sm">

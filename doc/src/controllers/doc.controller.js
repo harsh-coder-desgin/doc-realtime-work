@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { PersonalDoc } from "../models/personaldoc.model.js";
 import { OrganstionDoc } from "../models/Organstion.model.js"
 import { Invite } from "../models/Invite.model.js"
+import { User } from "../models/user.model.js"
 import { OrganstionName } from "../models/OrganastionName.model.js";
 
 //Personal Doc api
@@ -307,6 +308,14 @@ const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
         [invitedemail, username, docid, orgid].some((field) => field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields (invitedemail,userId,username,docid,orgid,senderemail) are required")
+    }
+
+    const users = await User.findOne({
+        $or: [{ invitedemail }]
+    })
+
+    if (!users) {
+        throw new ApiError(400, "No account matches the provided email")
     }
 
     const invited = await Invite.create({
