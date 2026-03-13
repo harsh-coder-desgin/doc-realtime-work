@@ -615,9 +615,41 @@ const organstionnamedelete = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, "Doc deleted successfully"));
 })
 
+//organstion name edit
+const editorgnationname = asyncHandler(async (req, res) => {
+    
+    const { organtionname,id } = req.body
+
+    if (
+        [organtionname].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "organtion name required")
+    }
+
+    if (organtionname.trim().length < 2) {
+        throw new ApiError(400, "organtion name must be at least 2 characters long")
+    }
+
+    const users = await OrganstionName.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                organstionname: organtionname,
+            }
+        }
+        ,
+        { new: true }
+    )
+    
+    return res
+        .status(200)
+        .json(new ApiResponse(200, users, "organstion name updated successfully"));
+  
+})
+
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
     newpersonalsavedoc, renamedoc, airesponsemessage, orgonedoconly, organstinamecreate, organstionnameget, organstionnamealldoc, orgrenamedoc,
-    accpetorreject, responseinvite, organstionnamedelete
+    accpetorreject, responseinvite, organstionnamedelete,editorgnationname
 }

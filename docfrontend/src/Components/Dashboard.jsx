@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 function Dashboard() {
   const { data } = useOutletContext()
   const users = useSelector(state => state.userAuth.users)
-  console.log(users);
   
   return (
     <div>

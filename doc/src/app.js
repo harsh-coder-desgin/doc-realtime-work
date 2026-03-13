@@ -15,12 +15,10 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import user from './routes/user.route.js'
-import comment from './routes/comment.route.js'
 import doc from './routes/doc.route.js'
 
 // http://localhost:8000/api/v1/users/register
 app.use("/api/user",user)
-app.use("/api/comment",comment)
 app.use("/api/doc",doc)
 app.use(errorHandler)
 

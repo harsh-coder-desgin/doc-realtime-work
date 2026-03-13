@@ -207,6 +207,16 @@ const User = {
         }
     },
 
+    editorgnationname: async (data) => {
+        try {
+            const res = await axios.patch(`${API}/editorgnationname`,data, { withCredentials: true });
+            return res
+        } catch (error) {
+            console.log(error);
+            throw error
+        }
+    },
+
     //ai api
     airesponse: async (data) => {
         try {

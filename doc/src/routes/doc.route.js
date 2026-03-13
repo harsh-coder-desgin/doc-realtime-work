@@ -2,7 +2,7 @@ import { Router } from "express"
 import { personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete ,organstiondoccreate,
     organstionalldoc,organstionsavedoc,organstionlgetdocone,organstiondocdelete ,Invitesendorganstiondoc,Invitegetorganstiondoc ,
     newpersonalsavedoc,renamedoc,airesponsemessage,orgonedoconly,organstinamecreate,organstionnameget,organstionnamealldoc ,orgrenamedoc,
-    accpetorreject,responseinvite ,organstionnamedelete} from "../controllers/doc.controller.js"
+    accpetorreject,responseinvite ,organstionnamedelete,editorgnationname} from "../controllers/doc.controller.js"
 import { verifyJWT } from "../middlewares/usertoken.middleware.js"
 
 const router = Router()
@@ -22,6 +22,7 @@ router.route("/orgname").post(verifyJWT,organstinamecreate)
 router.route("/getorgname/:id").post(verifyJWT,organstionnameget)
 router.route("/orgnamedocget/:id").get(verifyJWT,organstionnamealldoc)
 router.route("/orgrenamedoc/:id").patch(verifyJWT,orgrenamedoc)
+router.route("/editorgnationname").patch(verifyJWT,editorgnationname)
 
 // old api 
 router.route("/oneorgdocall").get(verifyJWT,orgonedoconly)

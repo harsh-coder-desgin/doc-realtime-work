@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, PersonalDoc } from '../Components/index.js'
+import { Button, PersonalDoc, Input } from '../Components/index.js'
 import { useOutletContext, useParams } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
@@ -17,6 +17,11 @@ function OrganstionMange() {
     const [alluers, Setalluers] = useState([])
     const [showdoc, SetShowdoc] = useState(false)
     const [invitedall, Setinvitedall] = useState([])
+    const [text, setText] = useState("");
+
+    const handleEdit = async () => {
+        const editorgname = await authdoc.editorgnationname({ organtionname: text,id:id })
+    };
 
     const handleinvite = async () => {
         const getdefaultdoc = alldoc.find(item => (item._id == senddocid))
@@ -64,7 +69,7 @@ function OrganstionMange() {
     }
 
     useEffect(() => {
-        authdoc.orgnamedocget(id).then((data) => {
+        authdoc.orgnamedocget(id).then((data) => {            
             Setalldoc(data.data.data)
         })
             .catch((err) => {
@@ -78,8 +83,9 @@ function OrganstionMange() {
             })
         authdoc.getorgname({ id: id }).then((data) => {
             if (data.data.data.createuserid === users.data._id) {
+                setText(data.data.data.organstionname)
                 SetShowdoc(true)
-            }
+            }            
         })
             .catch((err) => {
                 SetShowdoc(false)
@@ -167,6 +173,26 @@ function OrganstionMange() {
                             ))}
                         </div>
                     </div>}
+                    {showdoc && (
+                        <div className="flex items-center gap-2 w-full max-w-md">
+                            <Input
+                                type="text"
+                                value={text}
+                                onChange={(e) => setText(e.target.value)}
+                                placeholder="Enter Name"
+                                className="flex-1 border border-gray-300 px-3 py-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+
+                            <Button
+                                bgColor=""
+                                textColor=""
+                                onClick={handleEdit}
+                                className="bg-blue-600 text-white px-4 py-2  -mt-2 rounded-md hover:bg-blue-700 whitespace-nowrap"
+                            >
+                                Edit
+                            </Button>
+                        </div>
+                    )}
                     {showdoc === true && <div>
                         <h1 className="text-lg font-medium mb-2">Delete this organisation</h1>
                         <Button onClick={handledeleteorg} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
