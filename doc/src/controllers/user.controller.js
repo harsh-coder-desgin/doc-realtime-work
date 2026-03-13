@@ -232,89 +232,9 @@ const refreshaccesstoken = asyncHandler(async (req, res) => {
     }
 })
 
-//changepassword
-const changepassword = asyncHandler(async (req, res) => {
-
-    const { currentPassword, newPassword, confirmPassword } = req.body
-
-    if (
-        [currentPassword, newPassword, confirmPassword].some((field) => field?.trim() === "")
-    ) {
-        throw new ApiError(400, "Both old and new passwords are required")
-    }
-
-    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
-    if (!strongPasswordRegex.test(currentPassword)) {
-        throw new ApiError(400, "OldPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (!strongPasswordRegex.test(newPassword)) {
-        throw new ApiError(400, "NewPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (!strongPasswordRegex.test(confirmPassword)) {
-        throw new ApiError(400, "ConfirmPassword must be at least 8 characters long and include uppercase, lowercase, number, and special character");
-    }
-
-    if (confirmPassword !== newPassword) {
-        throw new ApiError(400, "New password cannot match ConfirmPassword")
-    }
-
-    if (currentPassword === newPassword) {
-        throw new ApiError(400, "New password must be different from the old password")
-    }
-
-    const users = await User.findById(req.users?._id)
-    const ispasswordcorrect = await users.isPasswordCorrect(currentPassword)
-
-    if (!ispasswordcorrect) {
-        throw new ApiError(400, "Old password is incorrect")
-    }
-
-    users.password = newPassword
-    await users.save({ validateBeforeSave: false })
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, {}, "Password changed successfully"))
-})
-
-//editprofile
-const editprofile = asyncHandler(async (req, res) => {
-
-    const { username } = req.body
-
-    if (
-        [username].some((field) => field?.trim() === "")
-    ) {
-        throw new ApiError(400, "User name required")
-    }
-
-    if (username.trim().length < 5) {
-        throw new ApiError(400, "User name must be at least 5 characters long")
-    }
-
-    const users = await User.findByIdAndUpdate(
-        req.users?._id,
-        {
-            $set: {
-                username: username,
-            }
-        }
-        ,
-        { new: true }
-    )
-        .select("-password -refreshToken");
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, users, "User name updated successfully"));
-})
-
 //verfiyauth
 const verifyauth = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200,req.users,"User fetched Successfully"))
 })
 
-export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken ,changepassword,editprofile,verifyauth }
+export { userregister, userlogin, userlogout, getcurrentuser, refreshaccesstoken,verifyauth }

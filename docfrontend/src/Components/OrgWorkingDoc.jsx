@@ -24,7 +24,7 @@ function OrgWorkingDoc() {
   const [aidata, SetAidata] = useState("")
   const [docname, setdocname] = useState("New Document");
   const [content, setContent] = useState("");
-  const [selectedUser, setSelectedUser] = useState(['rahul', 'sdsad']);
+  const [selectedUser, setSelectedUser] = useState([]);
   const [userselected, Setuserselected] = useState('');
   const [comment, setComment] = useState("");
   const [allmessages, setallmessages] = useState([]);
