@@ -310,17 +310,17 @@ const Invitesendorganstiondoc = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields (invitedemail,userId,username,docid,orgid,senderemail) are required")
     }
 
-    const users = await User.findOne({
-        $or: [{ invitedemail }]
-    })
+    const user = await User.findOne({
+        email: invitedemail
+    });
 
-    if (!users) {
-        throw new ApiError(400, "No account matches the provided email")
+    if (!user) {
+        throw new ApiError(400, "No account matches the provided email");
     }
 
     const invited = await Invite.create({
         Docname: docname,
-        invitedemail: invitedemail,
+        invitedemail: invitedemail.trim(),
         createrdoc: [
             {
                 userid: userId,
@@ -626,8 +626,8 @@ const organstionnamedelete = asyncHandler(async (req, res) => {
 
 //organstion name edit
 const editorgnationname = asyncHandler(async (req, res) => {
-    
-    const { organtionname,id } = req.body
+
+    const { organtionname, id } = req.body
 
     if (
         [organtionname].some((field) => field?.trim() === "")
@@ -649,16 +649,16 @@ const editorgnationname = asyncHandler(async (req, res) => {
         ,
         { new: true }
     )
-    
+
     return res
         .status(200)
         .json(new ApiResponse(200, users, "organstion name updated successfully"));
-  
+
 })
 
 export {
     personaldoccreate, personalalldoc, personalsavedoc, personalgetdocone, personaldocdelete, organstiondoccreate,
     organstionalldoc, organstionsavedoc, organstionlgetdocone, organstiondocdelete, Invitesendorganstiondoc, Invitegetorganstiondoc,
     newpersonalsavedoc, renamedoc, airesponsemessage, orgonedoconly, organstinamecreate, organstionnameget, organstionnamealldoc, orgrenamedoc,
-    accpetorreject, responseinvite, organstionnamedelete,editorgnationname
+    accpetorreject, responseinvite, organstionnamedelete, editorgnationname
 }

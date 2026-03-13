@@ -283,10 +283,10 @@ function OrgWorkingDoc() {
 
   const handlecommentsend = () => {
     socket.emit("send-chat", {
-      message: comment,
-      formuser: users.data.username,
-      touser: userselected || selectedUser[0].user_id,
-      mes_id: Date.now() + Math.random()
+        message: comment,
+        formuser: users.data.username,
+        touser: userselected || selectedUser[0].name,
+        mes_id: Date.now() + Math.random()
     });
     setComment('')
   }
@@ -411,11 +411,11 @@ function OrgWorkingDoc() {
 
         <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col overflow-y-auto">
           <h2 className="font-semibold text-lg mb-4">Comments</h2>
-          <div className="flex gap-2 mb-4">
+          <div className="sticky top-0 z-10 flex gap-2 mb-4 ">
             {selectedUser?.map((user, index) => (
               <Button bgColor='' textColor='' key={index}
                 onClick={() => {
-                  Setuserselected(user.user_id);
+                  Setuserselected(user.name);
                 }}
                 className="px-3 py-1 border rounded bg-white hover:bg-gray-100">
                 {user.name}
@@ -428,16 +428,23 @@ function OrgWorkingDoc() {
               {msg.formuser === users?.data?.username ? (
                 <div className="flex justify-end">
                   <div className="bg-blue-600 text-white px-4 py-2 rounded-lg max-w-xs shadow">
-                    {msg.message}
+                    <div className="text-xs text-blue-200 font-semibold">
+                      To: {msg.touser}
+                    </div>
+                    <div className="mt-1">
+                      {msg.message}
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="flex justify-start">
-                  <div className="bg-gray-200 text-black px-4 py-2 rounded-lg max-w-xs shadow">
-                    <div className="text-xs font-semibold text-gray-600">
-                      {msg.formuser}
+                  <div className={`${msg.touser === users?.data?.username ? 'bg-green-300' : "bg-gray-200"} text-black px-4 py-2 rounded-lg max-w-xs shadow`}>
+                    <div className="text-xs font-semibold text-gray-600 flex gap-2">
+                      <span>{msg.formuser}</span>
+                      <span className="text-gray-400">→</span>
+                      <span className="text-blue-600">{msg.touser}</span>
                     </div>
-                    <div>{msg.message}</div>
+                    <div className="mt-1">{msg.message}</div>
                   </div>
                 </div>
               )}
@@ -445,8 +452,8 @@ function OrgWorkingDoc() {
           ))}
 
           <div className="mt-4 mb-4 flex gap-2 sticky bottom-0 bg-gray-50 pt-2">
-            <Input type="text" placeholder="Write a comment..." value={comment} onChange={(e) => setComment(e.target.value)} 
-            className="flex-1 border rounded px-3 py-2 w-full"/>
+            <Input type="text" placeholder="Write a comment..." value={comment} onChange={(e) => setComment(e.target.value)}
+              className="flex-1 border rounded px-3 py-2 w-full" />
             <Button onClick={handlecommentsend} bgColor='' textColor=''
               className="h-10 w-20 bg-blue-600 text-white rounded">
               Send
