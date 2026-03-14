@@ -35,5 +35,5 @@ export{
     TinyMceDoc,
     Userauthlayout,
     Logoutbtn,
-    OrgWorkingDoc
+    OrgWorkingDoc,
 }

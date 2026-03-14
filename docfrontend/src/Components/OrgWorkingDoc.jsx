@@ -143,7 +143,15 @@ function OrgWorkingDoc() {
         SetMessage({ text: "", type: "" });
       }, 3000);
     }
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (bottomRef.current) {
+      const container = bottomRef.current.closest('.overflow-y-auto.scrollbar');
+      if (container) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
   }, [message.text.length, chataidata])
 
   useEffect(() => {
@@ -325,7 +333,7 @@ function OrgWorkingDoc() {
               </div>
               {chataidata?.map((item, index) => (
                 <div key={index} className='pt-5'>
-                  <div ref={bottomRef} className="overflow-y-auto flex justify-end mr-3 mt-2">
+                  <div className="overflow-y-auto flex justify-end mr-3 mt-2">
                     <div className="bg-blue-600 text-white px-3 py-2 rounded-lg max-w-[75%]">
                       {item.userchat}
                     </div>
@@ -361,6 +369,7 @@ function OrgWorkingDoc() {
                         </>
                       }
                     </div>}
+                    <div ref={bottomRef}></div>
                     {loading === true && item?.status === "loading" && <span className="relative flex size-3">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
                       <span className="relative inline-flex size-3 rounded-full bg-white"></span>
@@ -369,7 +378,7 @@ function OrgWorkingDoc() {
                 </div>
               ))}
               <div className="p-3 border-b sticky bottom-0 border-gray-200 bg-blue-900 z-10">
-                {errorchataidata.length > 0 &&
+                {errorchataidata?.length > 0 &&
                   <h1 className='text-center text-sm font-semibold text-white pb-2'>
                     {errorchataidata}
                   </h1>}
@@ -388,7 +397,7 @@ function OrgWorkingDoc() {
       </div>
       <div className="flex w-full gap-2">
         <div className='w-4/6 border border-gray-500 rounded-[10px] ml-2'>
-          {/* <Editor
+          <Editor
             apiKey={import.meta.env.VITE_TINYMCE_KEY}
             onInit={(evt, editor) => {
               editorRef.current = editor;
@@ -410,7 +419,7 @@ function OrgWorkingDoc() {
             }}
             initialValue={docdata}
             onEditorChange={handleEditorChange}
-          /> */}
+          />
         </div>
 
         <div className="w-2/6 h-[600px] border border-gray-500 rounded-[10px] p-4 bg-gray-50 mr-2 flex flex-col overflow-y-auto">

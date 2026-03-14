@@ -123,7 +123,15 @@ function WorkingDoc() {
         SetMessage({ text: "", type: "" });
       }, 3000);
     }
-    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (bottomRef.current) {
+      const container = bottomRef.current.closest('.overflow-y-auto.scrollbar');
+      if (container) {
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }
   }, [message.text.length, chataidata])
 
   return (
@@ -154,7 +162,7 @@ function WorkingDoc() {
               </div>
               {chataidata?.map((item, index) => (
                 <div key={index} className='pt-5'>
-                  <div ref={bottomRef} className="overflow-y-auto flex justify-end mr-3 mt-2">
+                  <div className="overflow-y-auto flex justify-end mr-3 mt-2">
                     <div className="bg-blue-600 text-white px-3 py-2 rounded-lg max-w-[75%]">
                       {item.userchat}
                     </div>
@@ -190,6 +198,7 @@ function WorkingDoc() {
                         </>
                       }
                     </div>}
+                    <div ref={bottomRef}></div>
                     {loading === true && item?.status === "loading" && <span className="relative flex size-3">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75"></span>
                       <span className="relative inline-flex size-3 rounded-full bg-white"></span>
@@ -198,7 +207,7 @@ function WorkingDoc() {
                 </div>
               ))}
               <div className="p-3 border-b sticky bottom-0 border-gray-200 bg-blue-900 z-10">
-                {errorchataidata.length > 0 &&
+                {errorchataidata?.length > 0 &&
                   <h1 className='text-center text-sm font-semibold text-white pb-2'>
                     {errorchataidata}
                   </h1>}
@@ -217,7 +226,7 @@ function WorkingDoc() {
       </div>
 
       <div className='w-full border border-gray-500 rounded-[10px]'>
-        {/* <Editor
+        <Editor
           apiKey={import.meta.env.VITE_TINYMCE_KEY}
           init={{
             height: 600,
@@ -234,7 +243,7 @@ function WorkingDoc() {
             ],
           }}
           initialValue={docdata}
-        /> */}
+        />
       </div>
     </div>
   )

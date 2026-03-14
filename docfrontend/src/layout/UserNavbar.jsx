@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Input, Button, Logoutbtn } from '../Components/index.js'
+import { Button, Logoutbtn } from '../Components/index.js'
 
 function UserNavbar({ sendfunction }) {
   const [doc, Setdoc] = useState("")
@@ -10,10 +10,9 @@ function UserNavbar({ sendfunction }) {
   }, [data])
 
   return (
-    <div className='w-full border-b border-gray-200 mt-5'>
-      <div className='flex items-center justify-between -mt-2 mb-1 px-6'>
+    <div className='w-full border-b border-gray-200 mt-7'>
+      <div className='flex items-center justify-between -mt-2 mb-1 px-6 mb-2'>
         <h1 className='text-xl -mt-2'>Logo</h1>
-        <Input placeholder='Search' className='px-5 py-2 bg-gray-100 w-130 rounded-full ml-110' />
         <div className="flex items-center gap-4 -mt-2">
           <div className="relative inline-block group w-40">
             <Button bgColor="" textColor=""

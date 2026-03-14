@@ -1,10 +1,8 @@
 import { useOutletContext } from 'react-router-dom'
 import { PersonalDoc, OrgansationDashboard } from './index.js'
-import { useSelector } from 'react-redux';
 
 function Dashboard() {
   const { data } = useOutletContext()
-  const users = useSelector(state => state.userAuth.users)
   
   return (
     <div>
