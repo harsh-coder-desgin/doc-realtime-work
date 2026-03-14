@@ -17,8 +17,8 @@ function Footer() {
                     </div>
                 </div>
                 <div className="flex flex-col items-center md:items-start space-y-4">
-                    <img src="/logoreview.png" alt="Logo" className="h-16 w-16 object-contain" />
-                    <p className="text-sm text-white mt-20">© 2026. All rights reserved.</p>
+                    <img src="/logos of.png" alt="Logo" className="h-46 w-46 object-contain" />
+                    <p className="text-sm text-white mt-2">© 2026. All rights reserved.</p>
                 </div>
             </div>
         </footer>

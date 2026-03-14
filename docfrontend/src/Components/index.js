@@ -1,5 +1,4 @@
 import Dashboard from './Dashboard'
-import DocFile from './DocFile'
 import Input from './Input'
 import Login from './Login'
 import Navbar from './Navbar'
@@ -19,7 +18,6 @@ import OrgWorkingDoc from './OrgWorkingDoc'
 
 export{
     Dashboard,
-    DocFile,
     Input,
     Login,
     Navbar,

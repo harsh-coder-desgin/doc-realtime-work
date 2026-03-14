@@ -12,7 +12,7 @@ function UserNavbar({ sendfunction }) {
   return (
     <div className='w-full border-b border-gray-200 mt-7'>
       <div className='flex items-center justify-between -mt-2 mb-1 px-6 mb-2'>
-        <h1 className='text-xl -mt-2'>Logo</h1>
+        <img src="/logos of.png" alt="Logo" className="h-16 w-40 object-contain" />
         <div className="flex items-center gap-4 -mt-2">
           <div className="relative inline-block group w-40">
             <Button bgColor="" textColor=""
